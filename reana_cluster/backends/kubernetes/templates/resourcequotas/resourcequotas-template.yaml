@@ -1,0 +1,11 @@
+{% for namespace in NAMESPACES %}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{namespace.NAME}}-quota
+  namespace: {{namespace.NAME}}
+spec:
+  hard:
+    pods: {{namespace.RESOURCEQUOTA.NUMBER_OF_PODS}}
+{% endfor %}

@@ -19,10 +19,14 @@
 # granted to it by virtue of its status as an Intergovernmental Organization or
 # submit itself to any jurisdiction.
 
-"""REANA-Cluster."""
+"""REANA-cluster."""
 
 from __future__ import absolute_import, print_function
 
 from .version import __version__
 
-__all__ = ('__version__')
+from .reana_backend import ReanaBackendABC
+
+from .backends.kubernetes import KubernetesBackend
+
+__all__ = ('__version__', 'ReanaBackendABC', 'KubernetesBackend')

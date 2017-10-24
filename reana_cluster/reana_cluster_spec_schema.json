@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "reana_cluster_spec",
+  "type": "object",
+  "title": "REANA cluster configuration specification",
+  "description": "No description yet",
+  "required": [
+    "cluster",
+    "components"
+  ],
+  "properties": {
+    "cluster": {
+      "id": "/properties/cluster",
+      "type": "object",
+      "title": "Cluster configuration",
+      "description": "No description yet",
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "id": "/properties/code/properties/type",
+          "type": "string",
+          "enum": [
+            "kubernetes"
+          ],
+          "title": "Type of the cluster",
+          "description": "No description yet"
+        },
+        "version": {
+          "id": "/properties/code/properties/version",
+          "type": "string",
+          "title": "Source code files list.",
+          "description": "No description yet"
+        }
+      }
+    },
+    "components": {
+      "id": "/properties/components",
+      "title": "Components deployed to REANA cluster.",
+      "description": "No description yet",
+      "required": [
+        "reana-job-controller",
+        "reana-workflow-controller",
+        "reana-server",
+        "reana-message-broker",
+        "reana-workflow-monitor"
+      ],
+      "properties": {
+        "reana-job-controller": {
+          "id": "/properties/components/properties/reana-job-controller",
+          "type": "object",
+          "title": "REANA component",
+          "description": "No description yet",
+          "properties": {
+            "image": {
+              "id": "/properties/components/properties/reana-job-controller/properties/image",
+              "type": "string",
+              "title": "Location of the image",
+              "description": "No description yet"
+            },
+            "type": {
+              "id": "/properties/components/properties/reana-job-controller/properties/type",
+              "type": "string",
+              "title": "Container technology of component's deployment image",
+              "description": "Name which represents a supported container technology (e.g. docker)",
+              "default": "docker"
+            },
+            "environment": {
+              "id": "/properties/components/properties/reana-job-controller/properties/environment",
+              "type": "array",
+              "title": "Environment variables available in the component",
+              "description": "No description yet",
+              "items": {
+
+              }
+            }
+          }
+        },
+        "reana-workflow-controller": {
+          "id": "/properties/components/properties/reana-workflow-controller",
+          "type": "object",
+          "title": "REANA component",
+          "description": "No description yet",
+          "properties": {
+            "image": {
+              "id": "/properties/components/properties/reana-job-controller/properties/image",
+              "type": "string",
+              "title": "Location of the image",
+              "description": "No description yet"
+            },
+            "type": {
+              "id": "/properties/components/properties/reana-job-controller/properties/type",
+              "type": "string",
+              "title": "Container technology of component's deployment image",
+              "description": "Name which represents a supported container technology (e.g. docker)",
+              "default": "docker"
+            },
+            "environment": {
+              "id": "/properties/components/properties/reana-job-controller/properties/environment",
+              "type": "array",
+              "title": "Environment variables available in the component",
+              "description": "No description yet",
+              "items": {
+
+              }
+            }
+          }
+        },
+        "reana-server": {
+          "id": "/properties/components/properties/reana-server",
+          "type": "object",
+          "title": "REANA component",
+          "description": "No description yet",
+          "properties": {
+            "image": {
+              "id": "/properties/components/properties/reana-job-controller/properties/image",
+              "type": "string",
+              "title": "Location of the image",
+              "description": "No description yet"
+            },
+            "type": {
+              "id": "/properties/components/properties/reana-job-controller/properties/type",
+              "type": "string",
+              "title": "Container technology of component's deployment image",
+              "description": "Name which represents a supported container technology (e.g. docker)",
+              "default": "docker"
+            },
+            "environment": {
+              "id": "/properties/components/properties/reana-job-controller/properties/environment",
+              "type": "array",
+              "title": "Environment variables available in the component",
+              "description": "No description yet",
+              "items": {
+
+              }
+            }
+          }
+        },
+        "reana-message-broker": {
+          "id": "/properties/components/properties/reana-message-broker",
+          "type": "object",
+          "title": "REANA component",
+          "description": "No description yet",
+          "properties": {
+            "image": {
+              "id": "/properties/components/properties/reana-job-controller/properties/image",
+              "type": "string",
+              "title": "Location of the image",
+              "description": "No description yet"
+            },
+            "type": {
+              "id": "/properties/components/properties/reana-job-controller/properties/type",
+              "type": "string",
+              "title": "Container technology of component's deployment image",
+              "description": "Name which represents a supported container technology (e.g. docker)",
+              "default": "docker"
+            },
+            "environment": {
+              "id": "/properties/components/properties/reana-job-controller/properties/environment",
+              "type": "array",
+              "title": "Environment variables available in the component",
+              "description": "No description yet",
+              "items": {
+
+              }
+            }
+          }
+        },
+        "reana-workflow-monitor": {
+          "id": "/properties/components/properties/reana-workflow-monitor",
+          "type": "object",
+          "title": "REANA component",
+          "description": "No description yet",
+          "properties": {
+            "image": {
+              "id": "/properties/components/properties/reana-job-controller/properties/image",
+              "type": "string",
+              "title": "Location of the image",
+              "description": "No description yet"
+            },
+            "type": {
+              "id": "/properties/components/properties/reana-job-controller/properties/type",
+              "type": "string",
+              "title": "Container technology of component's deployment image",
+              "description": "Name which represents a supported container technology (e.g. docker)",
+              "default": "docker"
+            },
+            "environment": {
+              "id": "/properties/components/properties/reana-job-controller/properties/environment",
+              "type": "array",
+              "title": "Environment variables available in the component",
+              "description": "No description yet",
+              "items": {
+
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

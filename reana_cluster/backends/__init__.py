@@ -18,13 +18,4 @@
 # In applying this license, CERN does not waive the privileges and immunities
 # granted to it by virtue of its status as an Intergovernmental Organization or
 # submit itself to any jurisdiction.
-
-"""Version information for REANA-cluster.
-
-This file is imported by ``reana_cluster.__init__``
-and parsed by ``setup.py``.
-"""
-
-from __future__ import absolute_import, print_function
-
-__version__ = "0.0.1.dev20170627"
+"""."""

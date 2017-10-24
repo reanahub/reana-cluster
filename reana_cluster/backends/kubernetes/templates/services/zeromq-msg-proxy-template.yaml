@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zeromq-msg-proxy
+spec:
+  type: "NodePort"
+  ports:
+  - port: 8666
+    name: backend
+    targetPort: 8666
+    protocol: TCP
+  - port: 8667
+    name: frontend
+    targetPort: 8667
+    protocol: TCP
+  selector:
+    app: zeromq-msg-proxy

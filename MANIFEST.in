@@ -22,7 +22,10 @@ include *.rst
 include *.sh
 include pytest.ini
 include docs/requirements.txt
+include cluster_spec.yaml
 recursive-include reana_cluster *.py
+recursive-include reana_cluster *.json
+recursive-include reana_cluster *.yaml
 prune docs/_build
 recursive-include docs *.py
 recursive-include docs *.png

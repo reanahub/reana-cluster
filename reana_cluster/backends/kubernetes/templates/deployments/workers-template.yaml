@@ -1,0 +1,52 @@
+{% for worker in WORKERS %}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
+spec:
+  replicas: {{worker.REPLICAS}}
+  template:
+    metadata:
+      labels:
+        app: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
+    spec:
+      containers:
+      - name: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
+        image: {{WORKFLOW_ENGINE_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        env:
+        - name: ZMQ_PROXY_CONNECT
+          value: tcp://zeromq-msg-proxy.default.svc.cluster.local:8666
+        - name: QUEUE_ENV
+          value: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-queue
+        - name: REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT
+          value: {{worker.EXPERIMENT}}
+        - name: SHARED_VOLUME
+          value: {{worker.SHARED_VOLUME.MOUNT_POINT}}
+        volumeMounts:
+        - name: {{worker.EXPERIMENT}}-shared-volume
+          mountPath: {{worker.SHARED_VOLUME.MOUNT_POINT}}
+      volumes:
+      - name: {{worker.EXPERIMENT}}-shared-volume
+        {%- if DEPLOYMENT == 'prod' %}
+          {% set shared_volume=worker.SHARED_VOLUME.PROD %}
+        {% else %}
+          {% set shared_volume=worker.SHARED_VOLUME.LOCAL %}
+        {% endif -%}
+        {% if shared_volume.TYPE == 'cephfs' %}
+        cephfs:
+          monitors:
+          {% for monitor in shared_volume.MONITORS  %}
+           - {{monitor}}
+          {% endfor %}
+          path: {{shared_volume.PATH}}
+          user: {{shared_volume.USER}}
+          secretRef:
+            name: {{shared_volume.SECRET_NAME}}
+          readOnly: {{shared_volume.READONLY}}
+        {% elif shared_volume.TYPE == 'hostpath' %}
+        hostPath:
+            path: {{shared_volume.PATH}}
+        {% endif %}
+{% endfor %}

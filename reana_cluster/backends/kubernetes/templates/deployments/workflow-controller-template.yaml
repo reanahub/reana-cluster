@@ -1,0 +1,49 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: workflow-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: workflow-controller
+    spec:
+      containers:
+      - name: workflow-controller
+        image: {{WORKFLOW_CONTROLLER_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        volumeMounts:
+        - mountPath: "/reana"
+          name: reana-shared-volume
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: SHARED_VOLUME_PATH
+          value: "/reana"
+        - name: ORGANIZATIONS
+          value: {{ORGANIZATIONS}}
+      volumes:
+      - name: reana-shared-volume
+        {% if DEPLOYMENT == 'prod' %}
+          {% set shared_volume=ROOT_SHARED_VOLUME.PROD %}
+        {% else %}
+          {% set shared_volume=ROOT_SHARED_VOLUME.LOCAL %}
+        {% endif %}
+        {% if shared_volume.TYPE == 'cephfs' %}
+        cephfs:
+          monitors:
+          {% for monitor in shared_volume.MONITORS  %}
+           - {{monitor}}
+          {% endfor %}
+          path: {{shared_volume.PATH}}
+          user: {{shared_volume.USER}}
+          secretRef:
+            name: {{shared_volume.SECRET_NAME}}
+          readOnly: {{shared_volume.READONLY}}
+        {% elif shared_volume.TYPE == 'hostpath' %}
+        hostPath:
+          path: {{shared_volume.PATH}}
+        {% endif %}

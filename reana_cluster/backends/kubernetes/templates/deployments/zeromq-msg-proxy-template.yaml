@@ -1,0 +1,23 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zeromq-msg-proxy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zeromq-msg-proxy
+    spec:
+      containers:
+      - name: zeromq-msg-proxy
+        image: {{WORKFLOW_MONITOR_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        ports:
+        - containerPort: 8666
+        - containerPort: 8667
+        command:
+        - sh
+        - "-c"
+        - cd tracker; python proxy.py

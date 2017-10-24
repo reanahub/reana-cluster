@@ -9,5 +9,5 @@ Version 0.0.1 (YYYY-MM-DD)
 
 .. admonition:: CAVEAT LECTOR
 
-   Please note that REANA Cluster is in an early developer preview alpha stage.
+   Please note that REANA cluster is in an early developer preview alpha stage.
    No detailed changelog is provided yet.

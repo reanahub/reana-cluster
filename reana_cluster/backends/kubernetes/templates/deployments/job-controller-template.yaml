@@ -1,0 +1,29 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: job-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: job-controller
+    spec:
+      containers:
+      - name: job-controller
+        image: {{JOB_CONTROLLER_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        ports:
+        - containerPort: 5000
+          name: http
+        volumeMounts:
+        - name: svaccount
+          mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
+        env:
+        - name: REANA_STORAGE_BACKEND
+          value: {% if DEPLOYMENT == 'prod' %}CEPHFS{% else %}LOCAL{% endif %}
+      volumes:
+      - name: svaccount
+        secret:
+          secretName: {{K8S_APISERVER_SECRET}}

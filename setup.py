@@ -19,7 +19,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization or
 # submit itself to any jurisdiction.
 
-"""REANA-Cluster."""
+"""REANA-cluster."""
 
 from __future__ import absolute_import, print_function
 
@@ -62,7 +62,11 @@ setup_requires = [
 
 install_requires = [
     'click>=6.7',
-    'Flask>=0.11'
+    'Flask>=0.11',
+    'Jinja2>=2.9.6',
+    'jsonschema>=2.6.0',
+    'kubernetes>=3.0.0',
+    'PyYAML>=3.12'
 ]
 
 packages = find_packages()
@@ -85,18 +89,26 @@ setup(
     url='https://github.com/reanahub/reana-cluster',
     packages=['reana_cluster'],
     zip_safe=False,
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'reana-cluster = reana_cluster.cli:cli',
+        ],
+    },
     extras_require=extras_require,
     install_requires=install_requires,
     setup_requires=setup_requires,
     tests_require=tests_require,
     classifiers=[
-        'Environment :: Web Environment',
+        'Environment :: Console',
         'Intended Audience :: Developers',
+        'Intended Audience :: Information Technology'
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: System :: Clustering',
+        'Topic :: System :: Systems Administration'
+        'Topic :: Utilities',
         'Development Status :: 3 - Alpha',
     ],
 )

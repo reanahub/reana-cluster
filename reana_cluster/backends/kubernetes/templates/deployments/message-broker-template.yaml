@@ -1,0 +1,21 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: message-broker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: message-broker
+    spec:
+      containers:
+      - name: message-broker
+        image: {{MESSAGE_BROKER_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        ports:
+        - containerPort: 5672
+          name: tcp
+        - containerPort: 15672
+          name: management

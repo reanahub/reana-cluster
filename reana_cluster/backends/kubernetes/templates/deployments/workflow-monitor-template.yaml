@@ -1,0 +1,26 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: workflow-monitor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: workflow-monitor
+    spec:
+      containers:
+      - name: workflow-monitor
+        image: {{WORKFLOW_MONITOR_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        command:
+        - sh
+        - "-c"
+        - cd server; python app.py
+        env:
+        - name: ZMQ_PROXY_CONNECT
+          value: tcp://zeromq-msg-proxy.default.svc.cluster.local:8667
+        ports:
+        - containerPort: 5000
+          name: tcp

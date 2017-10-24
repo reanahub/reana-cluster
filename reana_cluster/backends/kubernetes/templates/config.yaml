@@ -1,0 +1,171 @@
+---
+# Deployment:
+# Defines whether the environment created for the system should be
+# `local` or `production`.
+# `local` -> Deployable using `minikube`. Uses the host VM file system
+#            for sharing information between workflow steps. Also uses
+#            local docker images instead of remote ones for speeding
+#            up the development.
+# `prod`  -> Deployable on the CERN OpenStack Kubernetes cluster using
+#            real distributed file system and images from a docker
+#            registry.
+DEPLOYMENT: local
+
+# Docker registry:
+# Defines the docker registry where images should be grabbed from when
+# prod environment is set.
+DOCKER_REGISTRY: reanahub
+# Docker images:
+# Defines the name of the docker images used by the system.
+#SERVER_IMAGE: reana-server
+#JOB_CONTROLLER_IMAGE: reana-job-controller
+#WORKFLOW_CONTROLLER_IMAGE: reana-workflow-controller
+#WORKFLOW_MONITOR_IMAGE: reana-workflow-monitor
+#ZERO_MQ_IMAGE: reana-workflow-monitor
+#MESSAGE_BROKER_IMAGE: reana-message-broker
+#WORKFLOW_ENGINE_YADAGE: reana-workflow-engine-yadage
+
+# Workflow engines:
+# List which contains all available workflow engines.
+WORKFLOW_ENGINES:
+  - YADAGE: &yadage
+      NAME: yadage
+      DOCKER_IMAGE: reana-workflow-engine-yadage
+
+# Base system config:
+# Variables used to configure the base system.
+K8S_APISERVER_SECRET: default-token-8p260
+IMAGE_PULL_POLICY: IfNotPresent
+ROOT_SHARED_VOLUME:
+  LOCAL:
+    TYPE: hostpath
+    PATH: "/reana"
+  PROD:
+    TYPE: cephfs
+    MONITORS:
+      - 128.142.36.227:6790
+      - 128.142.39.77:6790
+      - 128.142.39.144:6790
+    PATH: "/reana"
+    USER: k8s
+    SECRET_NAME: ceph-secret
+    READONLY: False
+
+# REANA Workflow Controller configuration
+ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+
+# Workers:
+# List which contains all the kind of workers which are going to be
+# created when loading the output configuration into Kubernetes.
+WORKERS:
+ - EXPERIMENT: default
+   WORKFLOW_ENGINE: *yadage
+   REPLICAS: 1
+   SHARED_VOLUME:
+     MOUNT_POINT: "/data"
+     LOCAL:
+       TYPE: hostpath
+       PATH: "/reana/default"
+     PROD:
+       TYPE: cephfs
+       MONITORS:
+         - 128.142.36.227:6790
+         - 128.142.39.77:6790
+         - 128.142.39.144:6790
+       PATH: "/reana/default"
+       USER: k8s
+       SECRET_NAME: ceph-secret
+       READONLY: false
+
+ - EXPERIMENT: alice
+   WORKFLOW_ENGINE: *yadage
+   REPLICAS: 1
+   SHARED_VOLUME:
+     MOUNT_POINT: "/data"
+     LOCAL:
+       TYPE: hostpath
+       PATH: "/reana/alice"
+     PROD:
+       TYPE: cephfs
+       MONITORS:
+         - 128.142.36.227:6790
+         - 128.142.39.77:6790
+         - 128.142.39.144:6790
+       PATH: "/reana/alice"
+       USER: k8s
+       SECRET_NAME: ceph-secret
+       READONLY: false
+
+ - EXPERIMENT: atlas
+   WORKFLOW_ENGINE: *yadage
+   REPLICAS: 1
+   SHARED_VOLUME:
+     MOUNT_POINT: "/data"
+     LOCAL:
+       TYPE: hostpath
+       PATH: "/reana/atlas"
+     PROD:
+       TYPE: cephfs
+       MONITORS:
+         - 128.142.36.227:6790
+         - 128.142.39.77:6790
+         - 128.142.39.144:6790
+       PATH: "/reana/atlas"
+       USER: k8s
+       SECRET_NAME: ceph-secret
+       READONLY: false
+
+ - EXPERIMENT: cms
+   WORKFLOW_ENGINE: *yadage
+   REPLICAS: 1
+   SHARED_VOLUME:
+     MOUNT_POINT: "/data"
+     LOCAL:
+       TYPE: hostpath
+       PATH: "/reana/cms"
+     PROD:
+       TYPE: cephfs
+       MONITORS:
+         - 128.142.36.227:6790
+         - 128.142.39.77:6790
+         - 128.142.39.144:6790
+       PATH: "/reana/cms"
+       USER: k8s
+       SECRET_NAME: ceph-secret
+       READONLY: false
+
+ - EXPERIMENT: lhcb
+   WORKFLOW_ENGINE: *yadage
+   REPLICAS: 1
+   SHARED_VOLUME:
+     MOUNT_POINT: "/data"
+     LOCAL:
+       TYPE: hostpath
+       PATH: "/reana/lhcb"
+     PROD:
+       TYPE: cephfs
+       MONITORS:
+         - 128.142.36.227:6790
+         - 128.142.39.77:6790
+         - 128.142.39.144:6790
+       PATH: "/reana/lhcb"
+       USER: k8s
+       SECRET_NAME: ceph-secret
+       READONLY: false
+
+# Namespaces and resourcequotas:
+# List which contains the different namespaces which will be supported
+# by the system along with the resource quotas associated to them.
+NAMESPACES:
+  - NAME: alice
+    RESOURCEQUOTA:
+      NUMBER_OF_PODS: 4
+  - NAME: atlas
+    RESOURCEQUOTA:
+      NUMBER_OF_PODS: 4
+  - NAME: cms
+    RESOURCEQUOTA:
+      NUMBER_OF_PODS: 4
+  - NAME: lhcb
+    RESOURCEQUOTA:
+      NUMBER_OF_PODS: 4
