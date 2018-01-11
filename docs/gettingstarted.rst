@@ -5,11 +5,7 @@ Getting started
 Quickstart
 ----------
 
-0. Install `Minikube <https://kubernetes.io/docs/getting-started-guides/minikube/#installation>`_.
-
-.. |br| raw:: html
-
-      <br />
+0. `Install Minikube <https://kubernetes.io/docs/getting-started-guides/minikube/#installation>`_.
 
 1. Start Minikube
    ::
@@ -207,4 +203,3 @@ were deployed during `init`, you run:
 .. code-block:: console
 
    $ reana-cluster down
-
