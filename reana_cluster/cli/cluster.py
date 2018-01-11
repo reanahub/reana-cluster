@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of REANA.
-# Copyright (C) 2017 CERN.
+# Copyright (C) 2017, 2018 CERN.
 #
 # REANA is free software; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -61,7 +61,7 @@ def get(ctx, component, namespace):
     try:
         component_info = ctx.obj.backend.get_component(component, namespace)
 
-        for key, value in component_info.iteritems():
+        for key, value in component_info.items():
             click.echo('{}: {}'.format(key, value))
 
     except Exception as e:
