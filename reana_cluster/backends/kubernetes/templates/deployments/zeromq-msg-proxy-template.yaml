@@ -21,3 +21,8 @@ spec:
         - sh
         - "-c"
         - cd tracker; python proxy.py
+        env:
+        - name: WDB_SOCKET_SERVER
+          value: "wdb"
+        - name: WDB_NO_BROWSER_AUTO_OPEN
+          value: "True"

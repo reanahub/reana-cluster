@@ -23,6 +23,12 @@ spec:
         env:
         - name: REANA_STORAGE_BACKEND
           value: {% if DEPLOYMENT == 'prod' %}CEPHFS{% else %}LOCAL{% endif %}
+        - name: WDB_SOCKET_SERVER
+          value: "wdb"
+        - name: WDB_NO_BROWSER_AUTO_OPEN
+          value: "True"
+        - name: FLASK_DEBUG
+          value: "1"
       volumes:
       - name: svaccount
         secret:

@@ -1,0 +1,19 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wdb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wdb
+    spec:
+      containers:
+      - name: wdb
+        image: kozea/wdb-server
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1984
+        - containerPort: 19840
