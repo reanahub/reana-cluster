@@ -20,10 +20,10 @@ Quickstart
    $ pip install -e 'git+https://github.com/reanahub/reana-cluster.git@master#egg=reana-cluster'
 
 
-3. Download default cluster_spec.yaml -file
+3. Download default reana-cluster.yaml -file
    ::
 
-   $ wget https://raw.githubusercontent.com/reanahub/reana-cluster/master/cluster_spec.yaml
+   $ wget https://raw.githubusercontent.com/reanahub/reana-cluster/master/reana-cluster.yaml
 
 
 4. Initialize a REANA cluster
@@ -142,7 +142,7 @@ configuration file from the root of our GitHub repository:
 
 .. code-block:: console
 
-   $ wget https://raw.githubusercontent.com/reanahub/reana-cluster/master/cluster_spec.yaml
+   $ wget https://raw.githubusercontent.com/reanahub/reana-cluster/master/reana-cluster.yaml
 
 
 Default REANA cluster specifications file deploys latest

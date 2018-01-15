@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of REANA.
-# Copyright (C) 2017 CERN.
+# Copyright (C) 2017, 2018 CERN.
 #
 # REANA is free software; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -25,7 +25,7 @@ import pkg_resources
 
 from .backends.kubernetes import KubernetesBackend
 
-cluster_spec_default_file_path = './cluster_spec.yaml'
+cluster_spec_default_file_path = './reana-cluster.yaml'
 """REANA cluster specification file default location."""
 
 generated_cluster_conf_default_path = './cluster_config/'
