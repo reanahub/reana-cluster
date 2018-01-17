@@ -45,7 +45,8 @@ tests_require = [
 extras_require = {
     'docs': [
         'Sphinx>=1.4.4,<1.6',
-        'sphinx-rtd-theme>=0.1.9'
+        'sphinx-rtd-theme>=0.1.9',
+        'sphinx-click>=1.0.4',
     ],
     'tests': tests_require,
 }
