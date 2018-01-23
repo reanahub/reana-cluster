@@ -1,0 +1,55 @@
+cluster:
+  type: "kubernetes"
+  # Can be used to specify kubeconfig configuration that reana-cluster will
+  # use to connecting to K8S cluster. If not specified, will default to
+  # '$HOME/.kube/config', which is default location of `kubectl` tool.
+  #config: "./development-kubeconfig.yaml"
+
+  # Specifies which K8S context from the kubeconfig configuration will be used.
+  # If not specified will use the value of `current-context:` key of kubeconfig.
+  #config_context: "minikube"
+  version: "v1.6.4"
+  url: "http://localhost"
+
+components:
+  reana-workflow-controller:
+    type: "docker"
+    image: "reanahub/reana-workflow-controller:v0.0.1"
+    environment:
+      - SHARED_VOLUME_PATH: "/reana"
+      - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+
+  reana-job-controller:
+    type: "docker"
+    image: "reanahub/reana-job-controller:v0.0.1"
+    environment:
+      - REANA_STORAGE_BACKEND: "LOCAL"
+
+  reana-server:
+    type: "docker"
+    image: "reanahub/reana-server:v0.0.1"
+    environment:
+      - API_HOST: "api"
+      - WORKFLOW_CONTROLLER_SERVICE_HOST: "0.0.0.0"
+      - WORKFLOW_CONTROLLER_SERVICE_PORT_HTTP: "5000"
+
+  reana-message-broker:
+    type: "docker"
+    image: "reanahub/reana-message-broker:v0.0.1"
+    environment:
+      - API_HOST: "api"
+
+  reana-workflow-monitor:
+    type: "docker"
+    image: "reanahub/reana-workflow-monitor:v0.0.1"
+    environment:
+      - API_HOST: "api"
+
+  reana-workflow-engine-yadage:
+    type: "docker"
+    image: "reanahub/reana-workflow-engine-yadage:v0.0.1"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+      - QUEUE_ENV: "yadage-default-queue"
+      - REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT: "default"
+      - SHARED_VOLUME: "/data"

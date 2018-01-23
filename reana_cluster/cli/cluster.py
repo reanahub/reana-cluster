@@ -95,7 +95,6 @@ def restart(ctx, remove_persistent_storage):
     '-o',
     '--output',
     type=click.Path(exists=False, resolve_path=False),
-    default=generated_cluster_conf_default_path,
     help='Path where generated cluster configuration files should be saved.'
          'If no value is given no files are outputted.')
 @click.pass_context
