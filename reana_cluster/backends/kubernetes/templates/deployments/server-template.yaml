@@ -14,6 +14,12 @@ spec:
       - name: server
         image: {{SERVER_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        volumeMounts:
+        {% set mountpoints=RS_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         ports:
         - containerPort: 5000
           name: http
@@ -24,3 +30,9 @@ spec:
           value: "True"
         - name: FLASK_DEBUG
           value: "1"
+      volumes:
+        {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}

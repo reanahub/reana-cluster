@@ -14,6 +14,12 @@ spec:
       - name: message-broker
         image: {{MESSAGE_BROKER_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        volumeMounts:
+        {% set mountpoints=RMB_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         ports:
         - containerPort: 5672
           name: tcp
@@ -24,3 +30,9 @@ spec:
           value: "wdb"
         - name: WDB_NO_BROWSER_AUTO_OPEN
           value: "True"
+      volumes:
+        {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}

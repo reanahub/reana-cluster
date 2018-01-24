@@ -17,6 +17,11 @@ spec:
         volumeMounts:
         - mountPath: "/reana"
           name: reana-shared-volume
+        {% set mountpoints=RWFC_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         ports:
         - containerPort: 5000
           name: http
@@ -53,3 +58,8 @@ spec:
         hostPath:
           path: {{shared_volume.PATH}}
         {% endif %}
+      {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}

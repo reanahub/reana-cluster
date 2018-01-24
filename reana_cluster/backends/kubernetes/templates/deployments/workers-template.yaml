@@ -31,6 +31,11 @@ spec:
         volumeMounts:
         - name: {{worker.EXPERIMENT}}-shared-volume
           mountPath: {{worker.SHARED_VOLUME.MOUNT_POINT}}
+        {% set mountpoints=RWE_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
       volumes:
       - name: {{worker.EXPERIMENT}}-shared-volume
         {%- if DEPLOYMENT == 'prod' %}
@@ -53,4 +58,9 @@ spec:
         hostPath:
             path: {{shared_volume.PATH}}
         {% endif %}
+      {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}
 {% endfor %}

@@ -15,6 +15,10 @@ components:
   reana-workflow-controller:
     type: "docker"
     image: "reanahub/reana-workflow-controller:v0.0.1"
+    mountpoints:
+      - type: hostPath
+        name: reana-workflow-controller-code
+        path: "/code/reana-workflow-controller:/code"
     environment:
       - SHARED_VOLUME_PATH: "/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
@@ -22,12 +26,20 @@ components:
   reana-job-controller:
     type: "docker"
     image: "reanahub/reana-job-controller:v0.0.1"
+    mountpoints:
+      - type: hostPath
+        name: reana-job-controller-code
+        path: "/code/reana-job-controller:/code"
     environment:
       - REANA_STORAGE_BACKEND: "LOCAL"
 
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:v0.0.1"
+    mountpoints:
+      - type: hostPath
+        name: reana-server-code
+        path: "/code/reana-server:/code"
     environment:
       - API_HOST: "api"
       - WORKFLOW_CONTROLLER_SERVICE_HOST: "0.0.0.0"
@@ -36,18 +48,30 @@ components:
   reana-message-broker:
     type: "docker"
     image: "reanahub/reana-message-broker:v0.0.1"
+    mountpoints:
+      - type: hostPath
+        name: reana-message-broker-code
+        path: "/code/reana-message-broker:/code"
     environment:
       - API_HOST: "api"
 
   reana-workflow-monitor:
     type: "docker"
     image: "reanahub/reana-workflow-monitor:v0.0.1"
+    mountpoints:
+      - type: hostPath
+        name: reana-workflow-monitor-code
+        path: "/code/reana-workflow-monitor:/code"
     environment:
       - API_HOST: "api"
 
   reana-workflow-engine-yadage:
     type: "docker"
     image: "reanahub/reana-workflow-engine-yadage:v0.0.1"
+    mountpoints:
+      - type: hostPath
+        name: reana-workflow-engine-yadage-code
+        path: "/code/reana-workflow-engine-yadage:/code"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
       - QUEUE_ENV: "yadage-default-queue"

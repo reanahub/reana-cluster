@@ -79,15 +79,15 @@ class KubernetesBackend(ReanaBackendABC):
 
         """
         logging.debug('Creating a ReanaBackend object '
-                     'for Kubernetes interaction.')
+                      'for Kubernetes interaction.')
 
         # Load Kubernetes cluster configuration. If reana-cluster.yaml
         # doesn't specify this K8S Python API defaults to '$HOME/.kube/config'
         if kubeconfig is None:
-            kubeconfig = cluster_spec['cluster'].get('config')
+            kubeconfig = cluster_spec['cluster'].get('config', None)
 
         if context is None:
-            context = cluster_spec['cluster'].get('config_context')
+            context = cluster_spec['cluster'].get('config_context', None)
 
         k8s_config.load_kube_config(kubeconfig, context)
 
@@ -158,6 +158,19 @@ class KubernetesBackend(ReanaBackendABC):
                 rmb_img = components['reana-message-broker']['image']
                 rwe_img = components['reana-workflow-engine-yadage']['image']
 
+                rs_mountpoints = components['reana-server']\
+                    .get('mountpoints', [])
+                rjc_mountpoints = components['reana-job-controller']\
+                    .get('mountpoints', [])
+                rwfc_mountpoints = components['reana-workflow-controller']\
+                    .get('mountpoints', [])
+                rwm_mountpoints = components['reana-workflow-monitor'] \
+                    .get('mountpoints', [])
+                rmb_mountpoints = components['reana-message-broker'] \
+                    .get('mountpoints', [])
+                rwe_mountpoints = components['reana-workflow-engine-yadage'] \
+                    .get('mountpoints', [])
+
                 # Render the template using given backend config parameters
                 cluster_conf = template.\
                     render(backend_conf_parameters,
@@ -167,6 +180,12 @@ class KubernetesBackend(ReanaBackendABC):
                            WORKFLOW_MONITOR_IMAGE=rwm_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,
                            WORKFLOW_ENGINE_IMAGE=rwe_img,
+                           RS_MOUNTPOINTS=rs_mountpoints,
+                           RJC_MOUNTPOINTS=rjc_mountpoints,
+                           RWFC_MOUNTPOINTS=rwfc_mountpoints,
+                           RWM_MOUNTPOINTS=rwm_mountpoints,
+                           RMB_MOUNTPOINTS=rmb_mountpoints,
+                           RWE_MOUNTPOINTS=rwe_mountpoints,
                            )
 
                 # Strip empty lines for improved readability

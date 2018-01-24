@@ -20,6 +20,11 @@ spec:
         volumeMounts:
         - name: svaccount
           mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
+        {% set mountpoints=RJC_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         env:
         - name: REANA_STORAGE_BACKEND
           value: {% if DEPLOYMENT == 'prod' %}CEPHFS{% else %}LOCAL{% endif %}
@@ -33,3 +38,8 @@ spec:
       - name: svaccount
         secret:
           secretName: {{K8S_APISERVER_SECRET}}
+      {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}

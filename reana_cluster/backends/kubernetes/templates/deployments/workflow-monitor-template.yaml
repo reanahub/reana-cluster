@@ -14,6 +14,12 @@ spec:
       - name: workflow-monitor
         image: {{WORKFLOW_MONITOR_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        volumeMounts:
+        {% set mountpoints=RWM_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         command:
         - sh
         - "-c"
@@ -30,3 +36,9 @@ spec:
         ports:
         - containerPort: 5000
           name: tcp
+      volumes:
+        {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}
