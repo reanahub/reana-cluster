@@ -20,5 +20,27 @@ REANA Cluster
 .. image:: https://img.shields.io/github/license/reanahub/reana-cluster.svg
    :target: https://github.com/reanahub/reana-cluster/blob/master/COPYING
 
-This repository provides REANA Cluster management utilities that can be used to
-configure, start, stop, and otherwise manage the REANA cluster instance.
+About
+-----
+
+REANA-Cluster is a component of the `REANA <http://reanahub.io/>`_ reusable
+analysis platform. It takes care of deploying and managing cluster components on
+Kubernetes.
+
+Features
+--------
+
+- deploy REANA cluster on Kubernetes
+- configure REANA cluster components
+- inspect status of REANA components
+
+Useful links
+------------
+
+- `documentation <https://reana-cluster.readthedocs.io/>`_
+- `releases <https://github.com/reanahub/reana-cluster/releases>`_
+- `known issues <https://github.com/reanahub/reana-cluster/issues>`_
+- `source code <https://github.com/reanahub/reana-cluster>`_
+
+For more information about the REANA reusable analysis platform, please see the
+general `REANA documentation <http://reana.readthedocs.io/>`_.

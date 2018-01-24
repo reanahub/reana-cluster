@@ -121,7 +121,7 @@ html_theme = 'alabaster'
 #
 html_theme_options = {
     'logo': 'logo-reana.png',
-    'description': 'REANA cluster',
+    'description': 'REANA-Cluster',
     'github_user': 'reanahub',
     'github_repo': 'reana-cluster',
     'github_button': False,
