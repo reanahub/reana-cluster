@@ -16,18 +16,19 @@ spec:
         image: {{WORKFLOW_ENGINE_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         env:
-        - name: ZMQ_PROXY_CONNECT
-          value: tcp://zeromq-msg-proxy.default.svc.cluster.local:8666
         - name: QUEUE_ENV
           value: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-queue
         - name: REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT
           value: {{worker.EXPERIMENT}}
         - name: SHARED_VOLUME
           value: {{worker.SHARED_VOLUME.MOUNT_POINT}}
-        - name: WDB_SOCKET_SERVER
-          value: "wdb"
-        - name: WDB_NO_BROWSER_AUTO_OPEN
-          value: "True"
+        {% set environment=RWE_ENVIRONMENT %}
+        {% for envvar in environment %}
+        {% for key, value in envvar.items() %}
+        - name: {{key}}
+          value: "{{value}}"
+        {% endfor %}
+        {% endfor %}
         volumeMounts:
         - name: {{worker.EXPERIMENT}}-shared-volume
           mountPath: {{worker.SHARED_VOLUME.MOUNT_POINT}}

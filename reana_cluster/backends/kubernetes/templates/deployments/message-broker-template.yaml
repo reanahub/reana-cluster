@@ -26,10 +26,13 @@ spec:
         - containerPort: 15672
           name: management
         env:
-        - name: WDB_SOCKET_SERVER
-          value: "wdb"
-        - name: WDB_NO_BROWSER_AUTO_OPEN
-          value: "True"
+        {% set environment=RMB_ENVIRONMENT %}
+        {% for envvar in environment %}
+        {% for key, value in envvar.items() %}
+        - name: {{key}}
+          value: "{{value}}"
+        {% endfor %}
+        {% endfor %}
       volumes:
         {% for mount in mountpoints %}
       - name: {{mount['name']}}

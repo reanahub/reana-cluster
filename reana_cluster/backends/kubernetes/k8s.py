@@ -158,6 +158,19 @@ class KubernetesBackend(ReanaBackendABC):
                 rmb_img = components['reana-message-broker']['image']
                 rwe_img = components['reana-workflow-engine-yadage']['image']
 
+                rs_environment = components['reana-server']\
+                    .get('environment', [])
+                rjc_environment = components['reana-job-controller'] \
+                    .get('environment', [])
+                rwfc_environment = components['reana-workflow-controller'] \
+                    .get('environment', [])
+                rwm_environment = components['reana-workflow-monitor'] \
+                    .get('environment', [])
+                rmb_environment = components['reana-message-broker'] \
+                    .get('environment', [])
+                rwe_environment = components['reana-workflow-engine-yadage'] \
+                    .get('environment', [])
+
                 rs_mountpoints = components['reana-server']\
                     .get('mountpoints', [])
                 rjc_mountpoints = components['reana-job-controller']\
@@ -186,6 +199,12 @@ class KubernetesBackend(ReanaBackendABC):
                            RWM_MOUNTPOINTS=rwm_mountpoints,
                            RMB_MOUNTPOINTS=rmb_mountpoints,
                            RWE_MOUNTPOINTS=rwe_mountpoints,
+                           RS_ENVIRONMENT=rs_environment,
+                           RJC_ENVIRONMENT=rjc_environment,
+                           RWFC_ENVIRONMENT=rwfc_environment,
+                           RWM_ENVIRONMENT=rwm_environment,
+                           RMB_ENVIRONMENT=rmb_environment,
+                           RWE_ENVIRONMENT=rwe_environment,
                            )
 
                 # Strip empty lines for improved readability

@@ -20,22 +20,14 @@ components:
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:v0.0.1"
-    environment:
-      - API_HOST: "api"
-      - WORKFLOW_CONTROLLER_SERVICE_HOST: "0.0.0.0"
-      - WORKFLOW_CONTROLLER_SERVICE_PORT_HTTP: "5000"
 
   reana-message-broker:
     type: "docker"
     image: "reanahub/reana-message-broker:v0.0.1"
-    environment:
-      - API_HOST: "api"
 
   reana-workflow-monitor:
     type: "docker"
     image: "reanahub/reana-workflow-monitor:v0.0.1"
-    environment:
-      - API_HOST: "api"
 
   reana-workflow-engine-yadage:
     type: "docker"

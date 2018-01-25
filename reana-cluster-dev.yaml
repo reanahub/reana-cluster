@@ -22,6 +22,9 @@ components:
     environment:
       - SHARED_VOLUME_PATH: "/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
+      - FLASK_DEBUG: "1"
 
   reana-job-controller:
     type: "docker"
@@ -32,6 +35,9 @@ components:
         path: "/code/reana-job-controller:/code"
     environment:
       - REANA_STORAGE_BACKEND: "LOCAL"
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
+      - FLASK_DEBUG:  "1"
 
   reana-server:
     type: "docker"
@@ -41,9 +47,9 @@ components:
         name: reana-server-code
         path: "/code/reana-server:/code"
     environment:
-      - API_HOST: "api"
-      - WORKFLOW_CONTROLLER_SERVICE_HOST: "0.0.0.0"
-      - WORKFLOW_CONTROLLER_SERVICE_PORT_HTTP: "5000"
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
+      - FLASK_DEBUG: "1"
 
   reana-message-broker:
     type: "docker"
@@ -53,7 +59,8 @@ components:
         name: reana-message-broker-code
         path: "/code/reana-message-broker:/code"
     environment:
-      - API_HOST: "api"
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
 
   reana-workflow-monitor:
     type: "docker"
@@ -63,7 +70,10 @@ components:
         name: reana-workflow-monitor-code
         path: "/code/reana-workflow-monitor:/code"
     environment:
-      - API_HOST: "api"
+      - ZMQ_PROXY_CONNECT: tcp://zeromq-msg-proxy.default.svc.cluster.local:8667
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
+      - FLASK_DEBUG: "1"
 
   reana-workflow-engine-yadage:
     type: "docker"
@@ -74,6 +84,6 @@ components:
         path: "/code/reana-workflow-engine-yadage:/code"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
-      - QUEUE_ENV: "yadage-default-queue"
-      - REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT: "default"
-      - SHARED_VOLUME: "/data"
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
+

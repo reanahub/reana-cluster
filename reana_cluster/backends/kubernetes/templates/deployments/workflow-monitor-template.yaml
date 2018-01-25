@@ -25,14 +25,13 @@ spec:
         - "-c"
         - cd server; python app.py
         env:
-        - name: ZMQ_PROXY_CONNECT
-          value: tcp://zeromq-msg-proxy.default.svc.cluster.local:8667
-        - name: WDB_SOCKET_SERVER
-          value: "wdb"
-        - name: WDB_NO_BROWSER_AUTO_OPEN
-          value: "True"
-        - name: FLASK_DEBUG
-          value: "1"
+        {% set environment=RWM_MOUNTPOINTS %}
+        {% for envvar in environment %}
+        {% for key, value in envvar.items() %}
+        - name: {{key}}
+          value: "{{value}}"
+        {% endfor %}
+        {% endfor %}
         ports:
         - containerPort: 5000
           name: tcp
