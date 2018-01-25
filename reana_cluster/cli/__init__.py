@@ -86,7 +86,6 @@ def cli(ctx, loglevel, skip_validation, file):
         logging.info("Cluster type specified in cluster "
                      "specifications file is '{}'"
                      .format(cluster_type))
-
         ctx.obj.backend = supported_backends[cluster_type](cluster_spec)
 
     # This might be unnecessary since validation of cluster specifications

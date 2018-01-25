@@ -29,7 +29,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from kubernetes import client as k8s_client
 from kubernetes import config as k8s_config
-from kubernetes.client import configuration
+from kubernetes.client import Configuration
 from kubernetes.client.rest import ApiException
 from pkg_resources import parse_version
 
@@ -50,8 +50,8 @@ class KubernetesBackend(ReanaBackendABC):
     _conf = {
         'templates_folder': pkg_resources.resource_filename(
             __name__, '/templates'),
-        'min_version': 'v1.6.4',
-        'max_version': 'v1.6.4',
+        'min_version': 'v1.9.4',
+        'max_version': 'v1.9.4',
     }
 
     def __init__(self,
@@ -88,12 +88,19 @@ class KubernetesBackend(ReanaBackendABC):
         self.kubeconfig_context = kubeconfig_context or \
             cluster_spec['cluster'].get('config_context', None)
 
-        k8s_config.load_kube_config(self.kubeconfig, self.kubeconfig_context)
+        k8s_api_client_config = Configuration()
+
+        k8s_config.load_kube_config(kubeconfig, self.kubeconfig_context,
+                                    k8s_api_client_config)
+
+        Configuration.set_default(k8s_api_client_config)
 
         # Instantiate clients for various Kubernetes REST APIs
         self._corev1api = k8s_client.CoreV1Api()
         self._versionapi = k8s_client.VersionApi()
         self._extbetav1api = k8s_client.ExtensionsV1beta1Api()
+
+        self.k8s_api_client_config = k8s_api_client_config
 
         self.cluster_spec = cluster_spec
         self.cluster_conf = cluster_conf or \
@@ -107,12 +114,12 @@ class KubernetesBackend(ReanaBackendABC):
     @property
     def cluster_url(self):
         """Return URL of Kubernetes instance `reana-cluster` connects to."""
-        return configuration.host
+        return self.k8s_api_client_config.host
 
     @property
     def current_config(self):
-        """Return configuration of Kubernetes Client(s)."""
-        return configuration
+        """Return Kubernetes configuration (e.g. `~/.kube/config`)."""
+        return self.k8s_api_client_config
 
     @property
     def current_kubeconfig_context(self):
@@ -205,8 +212,6 @@ class KubernetesBackend(ReanaBackendABC):
                 rwm_environment = components['reana-workflow-monitor'] \
                     .get('environment', [])
                 rmb_environment = components['reana-message-broker'] \
-                    .get('environment', [])
-                rwe_environment = components['reana-workflow-engine-yadage'] \
                     .get('environment', [])
 
                 rs_mountpoints = components['reana-server']\

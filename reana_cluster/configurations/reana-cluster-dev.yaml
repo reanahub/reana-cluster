@@ -3,13 +3,11 @@ cluster:
   # Can be used to specify kubeconfig configuration that reana-cluster will
   # use to connecting to K8S cluster. If not specified, will default to
   # '$HOME/.kube/config', which is default location of `kubectl` tool.
-  #config: "./development-kubeconfig.yaml"
+  # config: "./development-kubeconfig.yaml"
 
   # Specifies which K8S context from the kubeconfig configuration will be used.
   # If not specified will use the value of `current-context:` key of kubeconfig.
-  config_context: "reana-dev"
-  version: "v1.6.4"
-  url: "http://localhost"
+  version: "v1.9.4"
   db_config: &db_base_config
     - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@reana-db:5432/reana"
 
