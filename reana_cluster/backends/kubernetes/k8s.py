@@ -196,6 +196,19 @@ class KubernetesBackend(ReanaBackendABC):
                     'reana-workflow-engine-serial'] \
                     .get('environment', [])
 
+                rs_environment = components['reana-server']\
+                    .get('environment', [])
+                rjc_environment = components['reana-job-controller'] \
+                    .get('environment', [])
+                rwfc_environment = components['reana-workflow-controller'] \
+                    .get('environment', [])
+                rwm_environment = components['reana-workflow-monitor'] \
+                    .get('environment', [])
+                rmb_environment = components['reana-message-broker'] \
+                    .get('environment', [])
+                rwe_environment = components['reana-workflow-engine-yadage'] \
+                    .get('environment', [])
+
                 rs_mountpoints = components['reana-server']\
                     .get('mountpoints', [])
                 rjc_mountpoints = components['reana-job-controller']\

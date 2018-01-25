@@ -25,7 +25,7 @@ spec:
         - "-c"
         - cd server; python app.py
         env:
-        {% set environment=RWM_ENVIRONMENT %}
+        {% set environment=RWM_MOUNTPOINTS %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
         - name: {{key}}
