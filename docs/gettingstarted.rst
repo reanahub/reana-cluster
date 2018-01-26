@@ -23,25 +23,25 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 .. code-block:: console
 
    $ mkvirtualenv reana-cluster
-   $ pip install -e 'git+https://github.com/reanahub/reana-cluster.git@master#egg=reana-cluster'
+   $ pip install reana-cluster
 
-4. Configure REANA cluster. You can download default ``reana-cluster.yaml`` configuration file:
-
-.. code-block:: console
-
-   $ wget https://raw.githubusercontent.com/reanahub/reana-cluster/master/reana-cluster.yaml
-
-5. Start REANA cluster instance on Minikube:
+4. Start REANA cluster instance on Minikube:
 
 .. code-block:: console
 
    $ reana-cluster init
 
-6. Check status of deployed REANA cluster components:
+5. Check the status of deployed REANA cluster components:
 
 .. code-block:: console
 
    $ reana-cluster verify components
+
+6. Check whether all the pods are running:
+
+.. code-block:: console
+
+   $ kubectl get pods
 
 The REANA cluster is now ready to serve users. Please see the `reana-client
 <https://reana-client.readthedocs.io/>`_ documentation on how to run reusable

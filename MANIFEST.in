@@ -22,8 +22,6 @@ include *.rst
 include *.sh
 include pytest.ini
 include docs/requirements.txt
-include reana-cluster.yaml
-include reana-cluster-dev.yaml
 recursive-include reana_cluster *.py
 recursive-include reana_cluster *.json
 recursive-include reana_cluster *.yaml
