@@ -106,20 +106,20 @@ Example:
   components:
     reana-workflow-controller:
       type: "docker"
-      image: "reanahub/reana-workflow-controller:v0.0.1"
+      image: "reanahub/reana-workflow-controller:0.1.0"
       environment:
         - SHARED_VOLUME_PATH: "/reana"
         - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
     reana-job-controller:
       type: "docker"
-      image: "reanahub/reana-job-controller:v0.0.1"
+      image: "reanahub/reana-job-controller:0.1.0"
       environment:
         - REANA_STORAGE_BACKEND: "LOCAL"
 
     reana-server:
       type: "docker"
-      image: "reanahub/reana-server:v0.0.1"
+      image: "reanahub/reana-server:0.1.0"
       environment:
         - API_HOST: "api"
         - WORKFLOW_CONTROLLER_SERVICE_HOST: "0.0.0.0"
@@ -127,24 +127,21 @@ Example:
 
     reana-message-broker:
       type: "docker"
-      image: "reanahub/reana-message-broker:v0.0.1"
+      image: "reanahub/reana-message-broker:0.1.0"
       environment:
         - API_HOST: "api"
 
     reana-workflow-monitor:
       type: "docker"
-      image: "reanahub/reana-workflow-monitor:v0.0.1"
+      image: "reanahub/reana-workflow-monitor:0.1.0"
       environment:
         - API_HOST: "api"
 
     reana-workflow-engine-yadage:
       type: "docker"
-      image: "reanahub/reana-workflow-engine-yadage:v0.0.1"
+      image: "reanahub/reana-workflow-engine-yadage:0.1.0"
       environment:
         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
-        - QUEUE_ENV: "yadage-default-queue"
-        - REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT: "default"
-        - SHARED_VOLUME: "/data"
 
 
 Initialize a REANA cluster
