@@ -80,8 +80,7 @@ class KubernetesBackend(ReanaBackendABC):
         """
         logging.debug('Creating a ReanaBackend object '
                       'for Kubernetes interaction.')
-
-        # Load Kubernetes cluster configuration. If reana-cluster.yaml
+# Load Kubernetes cluster configuration. If reana-cluster.yaml
         # doesn't specify this K8S Python API defaults to '$HOME/.kube/config'
         if kubeconfig is None:
             kubeconfig = cluster_spec['cluster'].get('config', None)
@@ -646,34 +645,34 @@ class KubernetesBackend(ReanaBackendABC):
                      .format(curr_ver, expected_ver, max_ver, min_ver))
 
         # Compare current K8S version to max / min
-        if curr_ver >= max_ver:
+        if curr_ver > max_ver:
             logging.error('Your Kubernetes version is too new: {cur} \n'
                           'Newest version REANA supports is: {max}'
                           .format(cur=curr_ver, max=max_ver))
 
-        elif curr_ver <= min_ver:
+        elif curr_ver < min_ver:
             logging.error('Your Kubernetes version is too old: {cur} \n'
                           'Oldest version REANA supports is: {min}'
                           .format(cur=curr_ver, min=min_ver))
 
         # Compare specified version to max/min
-        elif expected_ver >= max_ver:
+        elif expected_ver > max_ver:
             logging.error('Specified Kubernetes version is too new: {cur} \n'
                           'Newest version REANA supports is: {max}'
                           .format(cur=curr_ver, max=max_ver))
 
-        elif expected_ver <= min_ver:
+        elif expected_ver < min_ver:
             logging.error('Specified Kubernetes version is too old: {cur} \n'
                           'Oldest version REANA supports is: {min}'
                           .format(cur=curr_ver, min=min_ver))
 
         # Compare specified version to current K8S version
-        elif expected_ver <= curr_ver:
+        elif expected_ver < curr_ver:
             logging.error('Your Kubernetes version is too new: {cur} \n'
                           'Specification expects: {expected}'
                           .format(cur=curr_ver, expected=expected_ver))
 
-        elif expected_ver >= curr_ver:
+        elif expected_ver > curr_ver:
             logging.error('Your Kubernetes version is too old: {cur} \n'
                           'Specification expects: {expected}'
                           .format(cur=curr_ver, expected=expected_ver))
