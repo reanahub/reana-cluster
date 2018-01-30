@@ -104,7 +104,7 @@ setup(
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'Intended Audience :: Information Technology'
+        'Intended Audience :: Information Technology',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
@@ -114,7 +114,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python',
         'Topic :: System :: Clustering',
-        'Topic :: System :: Systems Administration'
+        'Topic :: System :: Systems Administration',
         'Topic :: Utilities',
     ],
 )
