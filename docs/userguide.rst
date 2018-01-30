@@ -53,14 +53,11 @@ configured properly:
 Install reana-cluster cli tool
 ------------------------------
 
-reana-cluster command line interface tool is not yet released
-in PyPI, so install it from our GitHub repotory:
+``reana-cluster`` command line interface tool is easily installable from PyPI:
 
 .. code-block:: console
 
-   $ pip install \
-     -e 'git+https://github.com/reanahub/reana-cluster.git@master#egg=reana-cluster'
-
+   $ pip install reana-cluster
 
 .. _configure:
 
@@ -77,72 +74,51 @@ components should be deployed and how the configuration of each
 component should be set up.
 
 ``reana-cluster`` expects to get information via REANA cluster specification
-file.
-
-The specifications file is written in YAML syntax, but since
-reana-cluster is still work-in-progress the structure of
-REANA specifications file might change rapidly.
-We therefore suggest that you download our default
-configuration file from the root of our GitHub repository:
-
-.. code-block:: console
-
-   $ wget https://raw.githubusercontent.com/reanahub/reana-cluster/master/reana-cluster.yaml
-
-Default REANA cluster specifications file deploys latest
-released versions of all REANA components in their
-default configuration. Please note that default specifications file
-is intended for evaluation, not for production deployments.
-
-Example:
+file that comes with the package:
 
 .. code-block:: yaml
 
-  cluster:
-    type: "kubernetes"
-    version: "v1.6.4"
-    url: "http://localhost"
+    cluster:
+      type: "kubernetes"
+      version: "v1.6.4"
+      url: "http://localhost"
 
-  components:
-    reana-workflow-controller:
-      type: "docker"
-      image: "reanahub/reana-workflow-controller:0.1.0"
-      environment:
-        - SHARED_VOLUME_PATH: "/reana"
-        - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+    components:
+      reana-workflow-controller:
+        type: "docker"
+        image: "reanahub/reana-workflow-controller:0.1.0"
+        environment:
+          - SHARED_VOLUME_PATH: "/reana"
+          - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
-    reana-job-controller:
-      type: "docker"
-      image: "reanahub/reana-job-controller:0.1.0"
-      environment:
-        - REANA_STORAGE_BACKEND: "LOCAL"
+      reana-job-controller:
+        type: "docker"
+        image: "reanahub/reana-job-controller:0.1.0"
+        environment:
+          - REANA_STORAGE_BACKEND: "LOCAL"
 
-    reana-server:
-      type: "docker"
-      image: "reanahub/reana-server:0.1.0"
-      environment:
-        - API_HOST: "api"
-        - WORKFLOW_CONTROLLER_SERVICE_HOST: "0.0.0.0"
-        - WORKFLOW_CONTROLLER_SERVICE_PORT_HTTP: "5000"
+      reana-server:
+        type: "docker"
+        image: "reanahub/reana-server:0.1.0"
 
-    reana-message-broker:
-      type: "docker"
-      image: "reanahub/reana-message-broker:0.1.0"
-      environment:
-        - API_HOST: "api"
+      reana-message-broker:
+        type: "docker"
+        image: "reanahub/reana-message-broker:0.1.0"
 
-    reana-workflow-monitor:
-      type: "docker"
-      image: "reanahub/reana-workflow-monitor:0.1.0"
-      environment:
-        - API_HOST: "api"
+      reana-workflow-monitor:
+        type: "docker"
+        image: "reanahub/reana-workflow-monitor:0.1.0"
+        environment:
+          - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
 
-    reana-workflow-engine-yadage:
-      type: "docker"
-      image: "reanahub/reana-workflow-engine-yadage:0.1.0"
-      environment:
-        - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+      reana-workflow-engine-yadage:
+        type: "docker"
+        image: "reanahub/reana-workflow-engine-yadage:0.1.0"
+        environment:
+          - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
 
+You can use the supplied ``reana-cluster.yaml``, or create use ``-f``
+command-line option and specify your own file.
 
 Initialize a REANA cluster
 --------------------------

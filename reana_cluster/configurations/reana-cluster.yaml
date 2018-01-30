@@ -28,6 +28,8 @@ components:
   reana-workflow-monitor:
     type: "docker"
     image: "reanahub/reana-workflow-monitor:0.1.0"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
 
   reana-workflow-engine-yadage:
     type: "docker"
