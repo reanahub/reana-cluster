@@ -1,6 +1,15 @@
 Changes
 =======
 
+Version 0.1.1 (2018-01-31)
+--------------------------
+
+- Fixes Python packaging problem related to classifier list.
+- Fixes REANA-Workflow-Monitor component configuration related to environment
+  variables and ``ZMQ_PROXY_CONNECT`` settings.
+- Fixes ``reana-cluster verify backend`` version comparison.
+- Adds developer documentation on how to use Minikube on remote hosts.
+
 Version 0.1.0 (2018-01-30)
 --------------------------
 
