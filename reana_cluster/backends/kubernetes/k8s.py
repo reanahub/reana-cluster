@@ -155,7 +155,10 @@ class KubernetesBackend(ReanaBackendABC):
                 rwfc_img = components['reana-workflow-controller']['image']
                 rwm_img = components['reana-workflow-monitor']['image']
                 rmb_img = components['reana-message-broker']['image']
-                rwe_img = components['reana-workflow-engine-yadage']['image']
+                rweyadage_img = components[
+                    'reana-workflow-engine-yadage']['image']
+                rwecwl_img = components[
+                    'reana-workflow-engine-cwl']['image']
 
                 rs_environment = components['reana-server']\
                     .get('environment', [])
@@ -167,7 +170,11 @@ class KubernetesBackend(ReanaBackendABC):
                     .get('environment', [])
                 rmb_environment = components['reana-message-broker'] \
                     .get('environment', [])
-                rwe_environment = components['reana-workflow-engine-yadage'] \
+                rweyadage_environment = components[
+                    'reana-workflow-engine-yadage'] \
+                    .get('environment', [])
+                rwecwl_environment = components[
+                    'reana-workflow-engine-cwl'] \
                     .get('environment', [])
 
                 rs_mountpoints = components['reana-server']\
@@ -180,7 +187,11 @@ class KubernetesBackend(ReanaBackendABC):
                     .get('mountpoints', [])
                 rmb_mountpoints = components['reana-message-broker'] \
                     .get('mountpoints', [])
-                rwe_mountpoints = components['reana-workflow-engine-yadage'] \
+                rweyadage_mountpoints = components[
+                    'reana-workflow-engine-yadage'] \
+                    .get('mountpoints', [])
+                rwecwl_mountpoints = components[
+                    'reana-workflow-engine-cwl'] \
                     .get('mountpoints', [])
 
                 # Render the template using given backend config parameters
@@ -191,19 +202,22 @@ class KubernetesBackend(ReanaBackendABC):
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
                            WORKFLOW_MONITOR_IMAGE=rwm_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,
-                           WORKFLOW_ENGINE_IMAGE=rwe_img,
+                           WORKFLOW_ENGINE_YADAGE_IMAGE=rweyadage_img,
+                           WORKFLOW_ENGINE_CWL_IMAGE=rwecwl_img,
                            RS_MOUNTPOINTS=rs_mountpoints,
                            RJC_MOUNTPOINTS=rjc_mountpoints,
                            RWFC_MOUNTPOINTS=rwfc_mountpoints,
                            RWM_MOUNTPOINTS=rwm_mountpoints,
                            RMB_MOUNTPOINTS=rmb_mountpoints,
-                           RWE_MOUNTPOINTS=rwe_mountpoints,
+                           RWEYADAGE_MOUNTPOINTS=rweyadage_mountpoints,
+                           RWECWL_MOUNTPOINTS=rwecwl_mountpoints,
                            RS_ENVIRONMENT=rs_environment,
                            RJC_ENVIRONMENT=rjc_environment,
                            RWFC_ENVIRONMENT=rwfc_environment,
                            RWM_ENVIRONMENT=rwm_environment,
                            RMB_ENVIRONMENT=rmb_environment,
-                           RWE_ENVIRONMENT=rwe_environment,
+                           RWEYADAGE_ENVIRONMENT=rweyadage_environment,
+                           RWECWL_ENVIRONMENT=rwecwl_environment,
                            )
 
                 # Strip empty lines for improved readability

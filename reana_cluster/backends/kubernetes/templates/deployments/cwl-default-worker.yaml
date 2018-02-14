@@ -1,0 +1,47 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cwl-default-worker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cwl-default-worker
+    spec:
+      containers:
+      - name: cwl-default-worker
+        image: {{WORKFLOW_ENGINE_CWL_IMAGE}}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        env:
+        - name: QUEUE_ENV
+          value: cwl-default-queue
+        - name: REANA_WORKFLOW_ENGINE_EXPERIMENT
+          value: default
+        - name: SHARED_VOLUME
+          value: /data
+        {% set environment=RWECWL_ENVIRONMENT %}
+        {% for envvar in environment %}
+        {% for key, value in envvar.items() %}
+        - name: {{key}}
+          value: "{{value}}"
+        {% endfor %}
+        {% endfor %}
+        volumeMounts:
+        - name: default-shared-volume
+          mountPath: /data
+        {% set mountpoints=RWECWL_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
+      volumes:
+      - hostPath:
+          path: /reana/default
+        name: default-shared-volume
+      {% for mount in mountpoints %}
+      - name: {{mount['name']}}
+        {{mount['type']}}:
+          path: {{mount['path'].split(':')[0]}}
+      {% endfor %}

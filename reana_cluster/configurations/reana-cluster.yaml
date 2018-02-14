@@ -36,3 +36,9 @@ components:
     image: "reanahub/reana-workflow-engine-yadage:0.1.0"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+
+  reana-workflow-engine-cwl:
+    type: "docker"
+    image: "reanahub/reana-workflow-engine-cwl:v0.0.1"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"

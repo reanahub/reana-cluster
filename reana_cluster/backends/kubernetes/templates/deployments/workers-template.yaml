@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
-        image: {{WORKFLOW_ENGINE_IMAGE}}
+        image: {{WORKFLOW_ENGINE_YADAGE_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         env:
         - name: QUEUE_ENV
@@ -22,7 +22,7 @@ spec:
           value: {{worker.EXPERIMENT}}
         - name: SHARED_VOLUME
           value: {{worker.SHARED_VOLUME.MOUNT_POINT}}
-        {% set environment=RWE_ENVIRONMENT %}
+        {% set environment=RWEYADAGE_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
         - name: {{key}}
@@ -32,7 +32,7 @@ spec:
         volumeMounts:
         - name: {{worker.EXPERIMENT}}-shared-volume
           mountPath: {{worker.SHARED_VOLUME.MOUNT_POINT}}
-        {% set mountpoints=RWE_MOUNTPOINTS %}
+        {% set mountpoints=RWEYADAGE_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
           name: {{mount['name']}}

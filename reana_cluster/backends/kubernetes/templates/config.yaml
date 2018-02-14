@@ -24,6 +24,7 @@ DOCKER_REGISTRY: reanahub
 #ZERO_MQ_IMAGE: reana-workflow-monitor
 #MESSAGE_BROKER_IMAGE: reana-message-broker
 #WORKFLOW_ENGINE_YADAGE: reana-workflow-engine-yadage
+#WORKFLOW_ENGINE_CWL: reana-workflow-engine-cwl
 
 # Workflow engines:
 # List which contains all available workflow engines.
@@ -31,6 +32,9 @@ WORKFLOW_ENGINES:
   - YADAGE: &yadage
       NAME: yadage
       DOCKER_IMAGE: reana-workflow-engine-yadage
+  - CWL: &cwl
+      NAME: cwl
+      DOCKER_IMAGE: reana-workflow-engine-cwl
 
 # Base system config:
 # Variables used to configure the base system.
@@ -58,6 +62,25 @@ ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 # List which contains all the kind of workers which are going to be
 # created when loading the output configuration into Kubernetes.
 WORKERS:
+# - EXPERIMENT: default
+#   WORKFLOW_ENGINE: *cwl
+#   REPLICAS: 1
+#   SHARED_VOLUME:
+#     MOUNT_POINT: "/data"
+#     LOCAL:
+#       TYPE: hostpath
+#       PATH: "/reana/default"
+#     PROD:
+#       TYPE: cephfs
+#       MONITORS:
+#         - 128.142.36.227:6790
+#         - 128.142.39.77:6790
+#         - 128.142.39.144:6790
+#       PATH: "/reana/default"
+#       USER: k8s
+#       SECRET_NAME: ceph-secret
+#       READONLY: false
+
  - EXPERIMENT: default
    WORKFLOW_ENGINE: *yadage
    REPLICAS: 1
