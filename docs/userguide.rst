@@ -6,52 +6,97 @@ User guide
 Prerequisites
 -------------
 
-Currently reana-cluster command line tool supports deploying
-REANA components only to `Kubernetes <https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/>`_
-infrastructure, so in order to deploy REANA components one needs to have a
-working Kubernetes deployment.
+REANA cloud uses `Kubernetes <https://kubernetes.io/>`_ container orchestration
+system. The best way to try it out locally on your laptop is to set up `Minikube
+<https://kubernetes.io/docs/getting-started-guides/minikube/>`_. How to do this
+depends on your operating system.
 
-reana-cluster utilizes configuration files of `kubectl -tool <https://kubernetes.io/docs/user-guide/kubectl-overview/>`_
-to set up a connection to Kubernetes infrastructure, so in order
-to use reana-cluster one needs to have kubectl installed
-and configured properly.
+Arch Linux
+~~~~~~~~~~
 
+For example, on Arch Linux, you should install the following packages:
 
-Test reana-cluster using Minikube
----------------------------------
+- `docker <https://www.archlinux.org/packages/community/x86_64/docker/>`_
+- `kubectl-bin (AUR) <https://aur.archlinux.org/packages/kubectl-bin/>`_
+- `minikube (AUR) <https://aur.archlinux.org/packages/minikube/>`_
 
-Easiest way to test reana-cluster without dedicating time to
-setting up a real Kubernetes infrastructure is to use
-`Minikube <https://kubernetes.io/docs/getting-started-guides/minikube/>`_,
-which is spins up a working Kubernetes deployment in a virtual machine.
+Moreover, if you plan to run Minikube via the VirtualBox hypervisor, you should
+install also:
 
-Once you have installed kubectl and Minikube, start Minikube by running:
+- `virtualbox <https://www.archlinux.org/packages/community/x86_64/virtualbox/>`_
+- `virtualbox-guest-iso <https://www.archlinux.org/packages/community/x86_64/virtualbox-guest-iso/>`_
+- `virtualbox-host-modules-arch <https://www.archlinux.org/packages/community/x86_64/virtualbox-host-modules-arch/>`_
+
+Alternatively, if you plan to run Minikube using the KVM2 hypervisor:
+
+- `docker-machine <https://www.archlinux.org/packages/community/x86_64/docker-machine/>`_
+- `docker-machine-driver-kvm2 (AUR) <https://aur.archlinux.org/packages/docker-machine-driver-kvm2/>`_
+- `libvirt <https://www.archlinux.org/packages/community/x86_64/libvirt/>`_
+- `qemu <https://www.archlinux.org/packages/extra/x86_64/qemu/>`_
+
+Here is one example of well-working versions for REANA v0.1.0:
+
+.. code-block:: console
+
+   $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
+   docker 1:18.02.0-1
+   docker-compose 1.18.0-2
+   docker-machine 0.13.0-2
+   docker-machine-driver-kvm2 0.25.0-1
+   docker-machine-kvm 0.7.0-2
+   kubectl-bin 1.9.1-1
+   libvirt 4.0.0-1
+   minikube 0.23.0-1
+   python-docker 2.7.0-1
+   python-docker-pycreds 0.2.1-2
+   python-dockerpty 0.4.1-2
+   qemu 2.11.0-4
+   virtualbox 5.2.6-2
+   virtualbox-guest-iso 5.2.7-1
+   virtualbox-host-modules-arch 5.2.6-11
+
+Start minikube
+--------------
+
+Once you have installed ``kubectl`` and ``minikube``, you can start minikube by
+running:
 
 .. code-block:: console
 
    $ minikube start --kubernetes-version="v1.6.4"
-   ...
-   minikube: Running
-   cluster: Running
-   kubectl: Correctly Configured: pointing to minikube-vm at 192.168.99.100
 
-.. note::
-   Currently REANA supports only Kubernetes v1.6.4
+or, in case of KVM2 hypervisor:
 
-As seen from the output, Minikube startup routines should
-configure kubectl to interact with the newly created
-virtual machine, but it best to test that kubectl is indeed
-configured properly:
+.. code-block:: console
+
+   $ minikube start --kubernetes-version="v1.6.4" --vm-driver=kvm2
+
+You will see an output like:
+
+.. code-block:: console
+
+   Starting local Kubernetes v1.6.4 cluster...
+   Starting VM...
+   Getting VM IP address...
+   Moving files into cluster...
+   Setting up certs...
+   Connecting to cluster...
+   Setting up kubeconfig...
+   Starting cluster components...
+   Kubectl is now configured to use the cluster.
+
+As seen from the output, Minikube startup routines already configured
+``kubectl`` to interact with the newly created Kubernetes deployment, but it
+best to test whether ``kubectl`` is indeed configured properly:
 
 .. code-block:: console
 
    $ kubectl get all
-   NAME             CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-   svc/kubernetes   10.0.0.1     <none>        443/TCP   3d
+   NAME             TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+   svc/kubernetes   ClusterIP   10.0.0.1     <none>        443/TCP   1m
 
-
-Install reana-cluster cli tool
-------------------------------
+Install ``reana-cluster`` CLI tool
+----------------------------------
 
 ``reana-cluster`` command line interface tool is easily installable from PyPI:
 
@@ -129,6 +174,11 @@ running `init` with reana-cluster:
 .. code-block:: console
 
    $ reana-cluster init
+   [INFO] Validating REANA cluster specification file: /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml
+   [INFO] /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml is a valid REANA cluster specification.
+   [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
+   [INFO] Connecting to Kubernetes at https://192.168.39.115:8443
+   Init complete
 
 Verify REANA components
 -----------------------
@@ -139,6 +189,33 @@ to what is defined in REANA cluster specifications file `verify`:
 .. code-block:: console
 
    $ reana-cluster verify components
+
+Verify REANA cluster readiness
+------------------------------
+
+You can verify whether the REANA cluster is ready to serve the user requests by
+using the ``kubectl`` tool:
+
+.. code-block:: console
+
+   $ kubectl get pods
+   NAME                                     READY     STATUS              RESTARTS   AGE
+   job-controller-3230226419-fxw6v          1/1       Running             0          1m
+   message-broker-1926055025-bsh5p          1/1       Running             0          1m
+   server-1390351625-0m7l8                  1/1       Running             0          1m
+   wdb-3285397567-zzwfg                     0/1       ContainerCreating   0          1m
+   workflow-controller-2663988704-d1q29     0/1       CrashLoopBackOff    2          1m
+   workflow-monitor-855857361-blm56         0/1       ContainerCreating   0          1m
+   yadage-alice-worker-150038894-txjq2      0/1       ContainerCreating   0          1m
+   yadage-atlas-worker-3355863567-c8gkr     0/1       ContainerCreating   0          1m
+   yadage-cms-worker-2408997969-dz6k4       0/1       ContainerCreating   0          1m
+   yadage-default-worker-3471536063-slg1j   0/1       ContainerCreating   0          1m
+   yadage-lhcb-worker-3838731947-pzkww      0/1       ContainerCreating   0          1m
+   zeromq-msg-proxy-2640677031-gggp1        0/1       ContainerCreating   0          1m
+
+In the above example, some containers are still being created. You should wait
+until all the components are in the "Running" status. The REANA cluster will be
+then ready for serving user requests.
 
 
 Get information about a deployed REANA component
@@ -154,11 +231,13 @@ to access component's API or user-interface in case component provides one.
 .. code-block:: console
 
    $ reana-cluster get reana-server
-   ...
-   external_name: None
+   [INFO] Validating REANA cluster specification file: /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml
+   [INFO] /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml is a valid REANA cluster specification.
+   [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
    internal_ip: None
-   external_ip_s: 192.168.99.100
-   ports: ['31904']
+   ports: ['31329']
+   external_ip_s: 192.168.39.115
+   external_name: None
 
 .. note::
    You can use ``get``-command if you need to configure reana-client

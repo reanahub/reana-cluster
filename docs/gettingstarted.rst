@@ -10,7 +10,8 @@ Deploy REANA cluster locally
 
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
-1. Install Minikube following `minikube installation guide <https://kubernetes.io/docs/getting-started-guides/minikube/#installation>`_.
+1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
+   and `minikube <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_.
 
 2. Start Minikube virtual machine:
 
