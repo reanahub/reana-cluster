@@ -14,7 +14,7 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:0.1.0"
+    image: "reanahub/reana-workflow-controller:latest"
     mountpoints:
       - type: hostPath
         name: reana-workflow-controller-code
@@ -28,7 +28,7 @@ components:
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:0.1.0"
+    image: "reanahub/reana-job-controller:latest"
     mountpoints:
       - type: hostPath
         name: reana-job-controller-code
@@ -41,7 +41,7 @@ components:
 
   reana-server:
     type: "docker"
-    image: "reanahub/reana-server:0.1.0"
+    image: "reanahub/reana-server:latest"
     mountpoints:
       - type: hostPath
         name: reana-server-code
@@ -53,7 +53,7 @@ components:
 
   reana-message-broker:
     type: "docker"
-    image: "reanahub/reana-message-broker:0.1.0"
+    image: "reanahub/reana-message-broker:latest"
     mountpoints:
       - type: hostPath
         name: reana-message-broker-code
@@ -64,7 +64,7 @@ components:
 
   reana-workflow-monitor:
     type: "docker"
-    image: "reanahub/reana-workflow-monitor:0.1.0"
+    image: "reanahub/reana-workflow-monitor:latest"
     mountpoints:
       - type: hostPath
         name: reana-workflow-monitor-code
@@ -77,7 +77,7 @@ components:
 
   reana-workflow-engine-yadage:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-yadage:0.1.0"
+    image: "reanahub/reana-workflow-engine-yadage:latest"
     mountpoints:
       - type: hostPath
         name: reana-workflow-engine-yadage-code
@@ -89,7 +89,7 @@ components:
 
   reana-workflow-engine-cwl:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-cwl:v0.0.1"
+    image: "reanahub/reana-workflow-engine-cwl:latest"
     mountpoints:
       - type: hostPath
         name: reana-workflow-engine-cwl-code
