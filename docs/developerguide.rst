@@ -469,5 +469,200 @@ measurements have been concluded.
    -o max_readahead=90000 \
 
 More information on SSHFS can be found, for example, from these URLs:
+
 - https://github.com/libfuse/sshfs
 - https://wiki.archlinux.org/index.php/SSHFS
+
+Managing multiple REANA clusters inside Minikube
+------------------------------------------------
+
+Creating a new cluster
+++++++++++++++++++++++
+
+Stop current cluster (``minikube``, which if you didn't change it, is the default one):
+
+.. code:: console
+
+    $ kubectl get pods
+    NAME                                     READY     STATUS    RESTARTS   AGE
+    cwl-default-worker-2333043095-9t812      1/1       Running   0          7m
+    job-controller-2899072941-5c8ph          1/1       Running   0          7m
+    message-broker-1926055025-4jjdm          1/1       Running   0          7m
+    server-1390351625-dxk52                  1/1       Running   0          7m
+    wdb-3285397567-1c8p0                     1/1       Running   0          7m
+    workflow-controller-2663988704-3cjlm     1/1       Running   4          7m
+    workflow-monitor-855857361-bzx6f         1/1       Running   0          7m
+    yadage-alice-worker-150038894-1fqwf      1/1       Running   0          7m
+    yadage-atlas-worker-3355863567-xjq3g     1/1       Running   0          7m
+    yadage-cms-worker-2408997969-qh034       1/1       Running   0          7m
+    yadage-default-worker-3471536063-0zd5r   1/1       Running   0          7m
+    yadage-lhcb-worker-3838731947-g5206      1/1       Running   0          7m
+    zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   0          7m
+    $ minikube stop
+    Stopping local Kubernetes cluster...
+    Machine stopped.
+
+Now we create a new cluster to host a new ``reana`` version (0.1.0):
+
+.. code:: console
+
+    $ minikube start --profile reana-0.1.0 --kubernetes-version="v1.6.4"
+    Starting local Kubernetes v1.6.4 cluster...
+    Starting VM...
+    Getting VM IP address...
+    Moving files into cluster...
+    Setting up certs...
+    Connecting to cluster...
+    Setting up kubeconfig...
+    Starting cluster components...
+    Kubectl is now configured to use the cluster.
+
+.. warning::
+
+   Use lower case alphanumeric characters, '-' or '.' to name your ``profile``
+   since Kubernetes specification for ``Nodes`` follows this schema. This
+   problem is hard to spot since everything looks like it is working but
+   ``pods`` are indifindefinitely pending, you have to run ``minikube logs``
+   to find out.
+
+   .. code:: console
+
+      $ minikube logs
+      ...
+      Node "reana_0.1.0" is invalid: metadata.name: Invalid value: "reana_0.1.0": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.',
+      ...
+
+
+We can now switch to use the profile (which is a new Kubernetes cluster running
+on ag new and fresh VM):
+
+.. code:: console
+
+    $ minikube profile reana-0.1.0
+    minikube profile was successfully set to reana-0.1.0
+    $ minikube status
+    minikube: Running
+    cluster: Running
+    kubectl: Correctly Configured: pointing to minikube-vm at 192.168.99.101
+
+Since we have a new cluster, there won't be any ``pod``:
+
+.. code:: console
+
+    $ kubectl get pod
+    No resources found.
+
+The ``minikube`` concept of ``--profile`` maps to Kubernetes
+``contexts``, so now we have to amend ``reana-cluster`` config
+(``reana_cluster/configuration/reana-cluster.yaml``) to use this new
+context:
+
+.. code:: diff
+
+    cluster:
+      type: "kubernetes"
+      # Can be used to specify kubeconfig configuration that reana-cluster will
+      # use to connecting to K8S cluster. If not specified, will default to
+      # '$HOME/.kube/config', which is default location of `kubectl` tool.
+      #config: "./development-kubeconfig.yaml"
+
+      # Specifies which K8S context from the kubeconfig configuration will be used.
+      # If not specified will use the value of `current-context:` key of kubeconfig.
+    - # config_context: "minikube"
+    + config_context: "reana-0.1.0"
+      version: "v1.6.4"
+      url: "http://localhost"
+
+And now you can start the cluster as ``reana-cluster`` docs say:
+
+.. code:: console
+
+    $ reana-cluster init
+    [INFO] Validating REANA cluster specification file: /Users/rodrigdi/reana/reana-cluster/reana_cluster/configurations/reana-cluster.yaml
+    [INFO] /Users/rodrigdi/reana/reana-cluster/reana_cluster/configurations/reana-cluster.yaml is a valid REANA cluster specification.
+    [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
+    [INFO] Connecting to Kubernetes at https://192.168.99.100:8443
+    Init complete
+
+Check that all components go created:
+
+.. code:: console
+
+    kubectl get pods
+    NAME                                     READY     STATUS              RESTARTS   AGE
+    cwl-default-worker-1660064223-gh53f      1/1       Running             0          14s
+    job-controller-3021378878-htkvv          1/1       Running             0          5m
+    message-broker-3641009106-c2rzx          1/1       Running             0          17m
+    server-2623620487-15pqq                  1/1       Running             0          17m
+    wdb-3285397567-cs8tv                     1/1       Running             0          17m
+    workflow-controller-3501752780-h327m     1/1       Running             0          5m
+    workflow-monitor-2073990847-g7m13        1/1       Running             1          5m
+    yadage-alice-worker-1841796507-qzc08     1/1       Running             0          5m
+    yadage-atlas-worker-650417724-rzttb      1/1       Running             4          7m
+    yadage-cms-worker-945655934-zcsjh        1/1       Running             0          5m
+    yadage-default-worker-3080166380-scq24   1/1       Running             0          5m
+    yadage-lhcb-worker-1186173656-57pmf      1/1       Running             0          5m
+    zeromq-msg-proxy-443386439-pdwjt         1/1       Running             0          17m
+
+Switching to previous cluster
++++++++++++++++++++++++++++++
+
+We can pause the cluster we have just created:
+
+.. code:: console
+
+    $ minikube stop
+    Stopping local Kubernetes cluster...
+    Machine stopped.
+    $ minikube status
+    minikube: Stopped
+    cluster:
+    kubectl:
+
+We switch to the profile which holds the previous cluster (which was the
+default one, ``minikube``:
+
+.. code:: console
+
+    $ minikube profile minikube
+    minikube profile was successfully set to minikube
+    $ minikube status
+    minikube: Stopped
+    cluster:
+    kubectl:
+
+Now we can restart the cluster:
+
+.. code:: console
+
+    $ minikube start --profile minikube --kubernetes-version="v1.6.4"
+    Starting local Kubernetes v1.6.4 cluster...
+    Starting VM...
+    Getting VM IP address...
+    Moving files into cluster...
+    Setting up certs...
+    Connecting to cluster...
+    Setting up kubeconfig...
+    Starting cluster components...
+    Kubectl is now configured to use the cluster.
+
+If we list now the pods, we can see that they are the original ones:
+
+.. code:: console
+
+    $ kubectl get pods
+    NAME                                     READY     STATUS    RESTARTS   AGE
+    cwl-default-worker-2333043095-9t812      1/1       Running   1          58m
+    job-controller-2899072941-5c8ph          1/1       Running   1          58m
+    message-broker-1926055025-4jjdm          1/1       Running   1          58m
+    server-1390351625-dxk52                  1/1       Running   1          58m
+    wdb-3285397567-1c8p0                     1/1       Running   1          58m
+    workflow-controller-2663988704-3cjlm     1/1       Running   5          58m
+    workflow-monitor-855857361-bzx6f         1/1       Running   1          58m
+    yadage-alice-worker-150038894-1fqwf      1/1       Running   1          58m
+    yadage-atlas-worker-3355863567-xjq3g     1/1       Running   1          58m
+    yadage-cms-worker-2408997969-qh034       1/1       Running   1          58m
+    yadage-default-worker-3471536063-0zd5r   1/1       Running   1          58m
+    yadage-lhcb-worker-3838731947-g5206      1/1       Running   1          58m
+    zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   1          58m
+
