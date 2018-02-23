@@ -58,7 +58,7 @@ class KubernetesBackend(ReanaBackendABC):
                  cluster_spec,
                  cluster_conf=None,
                  kubeconfig=None,
-                 context=None):
+                 kubeconfig_context=None):
         """Initialise Kubernetes specific ReanaBackend-object.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -74,21 +74,21 @@ class KubernetesBackend(ReanaBackendABC):
             used.
             Note: Might pickup a config-file defined in $KUBECONFIG as well.
 
-        :param context: set the active context. If is set to `None`,
+        :param kubeconfig_context: set the active context. If is set to `None`,
             current_context from config file will be used.
 
         """
         logging.debug('Creating a ReanaBackend object '
                       'for Kubernetes interaction.')
-# Load Kubernetes cluster configuration. If reana-cluster.yaml
+
+        # Load Kubernetes cluster configuration. If reana-cluster.yaml
         # doesn't specify this K8S Python API defaults to '$HOME/.kube/config'
-        if kubeconfig is None:
-            kubeconfig = cluster_spec['cluster'].get('config', None)
+        self.kubeconfig = kubeconfig or \
+            cluster_spec['cluster'].get('config', None)
+        self.kubeconfig_context = kubeconfig_context or \
+            cluster_spec['cluster'].get('config_context', None)
 
-        if context is None:
-            context = cluster_spec['cluster'].get('config_context', None)
-
-        k8s_config.load_kube_config(kubeconfig, context)
+        k8s_config.load_kube_config(self.kubeconfig, self.kubeconfig_context)
 
         # Instantiate clients for various Kubernetes REST APIs
         self._corev1api = k8s_client.CoreV1Api()
@@ -97,7 +97,7 @@ class KubernetesBackend(ReanaBackendABC):
 
         self.cluster_spec = cluster_spec
         self.cluster_conf = cluster_conf or \
-                            self.generate_configuration(cluster_spec)  # noqa
+            self.generate_configuration(cluster_spec)
 
     @property
     def cluster_type(self):
@@ -111,8 +111,22 @@ class KubernetesBackend(ReanaBackendABC):
 
     @property
     def current_config(self):
-        """Return Kubernetes configuration (e.g. `~/.kube/config`)."""
+        """Return configuration of Kubernetes Client(s)."""
         return configuration
+
+    @property
+    def current_kubeconfig_context(self):
+        """Return K8S kubeconfig context used to initialize K8S Client(s)."""
+        return self.kubeconfig_context
+
+    @property
+    def current_kubeconfig(self):
+        """Return K8S kubeconfig used to initialize K8S Client(s).
+
+        (e.g. `~/.kube/config`)
+
+        """
+        return self.kubeconfig
 
     @classmethod
     def generate_configuration(cls, cluster_spec):
@@ -490,7 +504,8 @@ class KubernetesBackend(ReanaBackendABC):
             # There can be many Nodes. Is this a problem?
             # (i.e. How to know which is the one should be connected to?)
             for item in nodeconf.items:
-                if item.metadata.name == 'minikube':
+                if item.metadata.name == 'minikube' or \
+                        item.metadata.name == self.kubeconfig_context:
                     # Running on minikube --> get ip-addr from status.addresses
                     for address in item.status.addresses:
                         if address.type == 'InternalIP':
