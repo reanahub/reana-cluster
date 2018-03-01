@@ -40,3 +40,6 @@ supported_backends = {
     'kubernetes': KubernetesBackend,
 }
 """Dictionary to extend REANA cluster with new cluster backend."""
+
+reana_env_exportable_info_components = ['reana-server']
+"""Components which information will be produced by ``reana-client env``."""

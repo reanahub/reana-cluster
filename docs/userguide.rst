@@ -218,32 +218,16 @@ until all the components are in the "Running" status. The REANA cluster will be
 then ready for serving user requests.
 
 
-Get information about a deployed REANA component
-------------------------------------------------
+Display commands to set up the environment for the REANA client
+---------------------------------------------------------------
 
-To print component specific information, for example URLs that can
-be used to interact with the component run
-``reana-cluster get <COMPONENT_NAME>``.
-When REANA cluster is deployed on minikube ``get``-command returns
-an IP-address+port combination. This information can be used to construct URL
-to access component's API or user-interface in case component provides one.
+You can print the list of runnable commands to configure the environment for the
+`reana-client <https://reana-client.readthedocs.io/>`_:
 
 .. code-block:: console
 
-   $ reana-cluster get reana-server
-   [INFO] Validating REANA cluster specification file: /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml
-   [INFO] /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml is a valid REANA cluster specification.
-   [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
-   internal_ip: None
-   ports: ['31329']
-   external_ip_s: 192.168.39.115
-   external_name: None
-
-.. note::
-   You can use ``get``-command if you need to configure reana-client
-   (`$REANA_SERVER_URL`) or access reana-workflow-monitor:
-   \http://``<external_ip_s>``:``<ports>``
-
+   $ reana-cluster env
+   export REANA_SERVER_URL=http://192.168.99.100:32732
 
 Delete REANA cluster deployment
 -------------------------------

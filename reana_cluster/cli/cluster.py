@@ -29,7 +29,8 @@ import os
 import click
 import yaml
 
-from ..config import generated_cluster_conf_default_path
+from ..config import (generated_cluster_conf_default_path,
+                      reana_env_exportable_info_components)
 
 
 @click.command(help='Bring REANA cluster down, i.e. delete all '
@@ -64,6 +65,34 @@ def get(ctx, component, namespace):
         for key, value in component_info.items():
             click.echo('{}: {}'.format(key, value))
 
+    except Exception as e:
+        logging.debug(str(e))
+
+
+@click.command(help='Display the commands to set up the environment for the '
+                    'REANA client.')
+@click.option(
+    '--namespace',
+    default='default',
+    help='Namespace of the components which configuration should be produced.')
+@click.pass_context
+def env(ctx, namespace):
+    """Produce shell exportable list of REANA components' urls."""
+    try:
+        export_lines = []
+        component_export_line = 'export {env_variable_name}={component_url}'
+        for component in reana_env_exportable_info_components:
+            component_info = ctx.obj.backend.get_component(
+                component, namespace)
+            export_lines.append(component_export_line.format(
+                env_variable_name='{0}_URL'.format(
+                    component.upper().replace('-', '_')),
+                component_url='{schema}://{ip}:{port}'.format(
+                    schema='http',
+                    ip=component_info['external_ip_s'][0],
+                    port=component_info['ports'][0]),
+            ))
+        click.echo('\n'.join(export_lines))
     except Exception as e:
         logging.debug(str(e))
 

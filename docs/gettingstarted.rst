@@ -44,6 +44,14 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    $ kubectl get pods
 
+7. Display the commands to set up the environment for the REANA client:
+
+.. code-block:: console
+
+   $ reana-cluster env
+   export REANA_SERVER_URL=http://192.168.99.100:32732
+
+
 The REANA cluster is now ready to serve users. Please see the `reana-client
 <https://reana-client.readthedocs.io/>`_ documentation on how to run reusable
 analysis examples on our locally-deployed cluster.

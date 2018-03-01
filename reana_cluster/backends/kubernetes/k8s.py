@@ -519,7 +519,8 @@ class KubernetesBackend(ReanaBackendABC):
             logging.debug(comp)
 
             comp_info['external_name'] = comp.spec.external_name
-            comp_info['external_ip_s'] = minikube_ip or comp.spec.external_i_ps
+            comp_info['external_ip_s'] = [minikube_ip] or \
+                comp.spec.external_i_ps
             comp_info['internal_ip'] = comp.spec.external_i_ps
 
             for port in comp.spec.ports:
