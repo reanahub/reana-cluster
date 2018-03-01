@@ -162,8 +162,10 @@ file that comes with the package:
         environment:
           - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
 
-You can use the supplied ``reana-cluster.yaml``, or create use ``-f``
-command-line option and specify your own file.
+You can use the supplied ``reana-cluster.yaml``, or create your own custom configuration.
+For instance if you wish to use a different docker image for the reana-server component,
+you can copy the default ``reana-cluster.yaml`` to a ``reana-cluster-custom.yaml`` file
+and change the image tag "reanahub/reana-server:0.1.0" accordingly.
 
 Initialize a REANA cluster
 --------------------------
@@ -179,6 +181,13 @@ running `init` with reana-cluster:
    [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
    [INFO] Connecting to Kubernetes at https://192.168.39.115:8443
    Init complete
+
+If you have created a custom configuration, you can use the ``-f``
+command-line option and specify your own file, in the following way:
+
+.. code-block:: console
+
+  $ reana-cluster -f reana-cluster-custom.yaml init
 
 Verify REANA components
 -----------------------
