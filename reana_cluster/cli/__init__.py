@@ -73,7 +73,7 @@ def cli(ctx, loglevel, skip_validation, file):
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
         stream=sys.stderr,
-        level=logging.DEBUG if loglevel == 'debug' else logging.INFO)
+        level=logging.DEBUG if loglevel == 'debug' else logging.WARNING)
 
     try:
         cluster_spec = load_spec_file(click.format_filename(file),
