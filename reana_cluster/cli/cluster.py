@@ -192,9 +192,12 @@ def verify(ctx):
 @click.pass_context
 def cli_verify_backend(ctx):
     """Verify configuration of running cluster backend."""
-    # 1. kubernetes server 1.8.0 ... OK
     logging.debug(ctx.obj.backend.cluster_spec)
-    ctx.obj.backend.verify_backend()
+    backend_compatibility = ctx.obj.backend.verify_backend()
+    click.echo('Kubernetes Server {0} ... {1}.'
+               .format(backend_compatibility['current_version'],
+                       'OK' if backend_compatibility['is_compatible']
+                       else 'ERROR'))
 
 
 @click.command('components',
@@ -204,13 +207,13 @@ def cli_verify_backend(ctx):
 @click.pass_context
 def cli_verify_components(ctx):
     """Verify configuration of components deployed in a running cluster."""
-    # 2. reana-server ... OK
-    # 3. reana-workflow-controller ... OK
-    # 3. reana-workflow-monitor ... OK
-    # 4. reana-job-controller ... OK
-    # 5. reana-message-broker ... OK
     logging.debug(ctx.obj.backend.cluster_spec)
-    ctx.obj.backend.verify_components()
+    matching_components = ctx.obj.backend.verify_components()
+    for component_name in matching_components:
+        click.echo('reana-{0} ... {1}.'
+                   .format(component_name,
+                           'OK' if matching_components[component_name]
+                           else 'ERROR'))
 
 
 verify.add_command(cli_verify_backend)

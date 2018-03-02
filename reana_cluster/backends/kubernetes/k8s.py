@@ -557,8 +557,9 @@ class KubernetesBackend(ReanaBackendABC):
         deployed component matches to docker image specified in REANA cluster
         specification file.
 
-        :return: `True` if verification of components was successful.
-        :rtype: bool
+        :return: Dictionary with component names for keys and booleans
+        for values stating if verification was successful.
+        :rtype: dict
 
         :raises ApiException: Failed to successfully interact with
             Kubernetes REST API. Reason for failure is indicated as HTTP error
@@ -569,6 +570,7 @@ class KubernetesBackend(ReanaBackendABC):
             pass
 
         try:
+            matching_components = dict()
             for manifest in self.cluster_conf:
 
                 # We are only interested in Deployment manifests since
@@ -605,7 +607,9 @@ class KubernetesBackend(ReanaBackendABC):
                                          spec_img,
                                          deployed_img))
 
+                    matching_components[component_name] = True
                     if not spec_img == deployed_img:
+                        matching_components[component_name] = False
                         logging.error('Mismatch between specified and '
                                       'deployed image of {}. \n'
                                       'Specified image: {}\n'
@@ -627,7 +631,7 @@ class KubernetesBackend(ReanaBackendABC):
 
             raise e
 
-        return True
+        return matching_components
 
     def verify_backend(self):
         """Verify that cluster backend is compatible with REANA.
@@ -655,8 +659,9 @@ class KubernetesBackend(ReanaBackendABC):
         semantic versioning style what Kubernetes uses.
         (PEP440 not fully compliant with semver)
 
-        :return: `True` if version verification was completed successfully.
-        :rtype: bool
+        :return: Dictionary containing the current version, if it is compatible
+        and the maximum compatible version.
+        :rtype: dict
 
         """
         if not self._cluster_running():
@@ -674,37 +679,46 @@ class KubernetesBackend(ReanaBackendABC):
                      'Min supported K8S version: {}'
                      .format(curr_ver, expected_ver, max_ver, min_ver))
 
+        k8s_version_compatibility = dict(current_version=curr_ver,
+                                         is_compatible=True,
+                                         max_version=max_ver)
         # Compare current K8S version to max / min
         if curr_ver > max_ver:
+            k8s_version_compatibility['is_compatible'] = False
             logging.error('Your Kubernetes version is too new: {cur} \n'
                           'Newest version REANA supports is: {max}'
                           .format(cur=curr_ver, max=max_ver))
 
         elif curr_ver < min_ver:
+            k8s_version_compatibility['is_compatible'] = False
             logging.error('Your Kubernetes version is too old: {cur} \n'
                           'Oldest version REANA supports is: {min}'
                           .format(cur=curr_ver, min=min_ver))
 
         # Compare specified version to max/min
         elif expected_ver > max_ver:
+            k8s_version_compatibility['is_compatible'] = False
             logging.error('Specified Kubernetes version is too new: {cur} \n'
                           'Newest version REANA supports is: {max}'
                           .format(cur=curr_ver, max=max_ver))
 
         elif expected_ver < min_ver:
+            k8s_version_compatibility['is_compatible'] = False
             logging.error('Specified Kubernetes version is too old: {cur} \n'
                           'Oldest version REANA supports is: {min}'
                           .format(cur=curr_ver, min=min_ver))
 
         # Compare specified version to current K8S version
         elif expected_ver < curr_ver:
+            k8s_version_compatibility['is_compatible'] = False
             logging.error('Your Kubernetes version is too new: {cur} \n'
                           'Specification expects: {expected}'
                           .format(cur=curr_ver, expected=expected_ver))
 
         elif expected_ver > curr_ver:
+            k8s_version_compatibility['is_compatible'] = False
             logging.error('Your Kubernetes version is too old: {cur} \n'
                           'Specification expects: {expected}'
                           .format(cur=curr_ver, expected=expected_ver))
 
-        return True
+        return k8s_version_compatibility

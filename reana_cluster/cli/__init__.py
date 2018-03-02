@@ -53,8 +53,8 @@ class Config(object):
     '--loglevel',
     '-l',
     help='Sets log level',
-    type=click.Choice(['debug', 'info']),
-    default='info')
+    type=click.Choice(['DEBUG', 'INFO', 'WARNING']),
+    default='WARNING')
 @click.option(
     '-f',
     '--file',
@@ -73,7 +73,7 @@ def cli(ctx, loglevel, skip_validation, file):
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
         stream=sys.stderr,
-        level=logging.DEBUG if loglevel == 'debug' else logging.WARNING)
+        level=loglevel)
 
     try:
         cluster_spec = load_spec_file(click.format_filename(file),
