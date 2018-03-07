@@ -25,6 +25,7 @@
 import errno
 import logging
 import os
+import tablib
 
 import click
 import yaml
@@ -194,10 +195,11 @@ def cli_verify_backend(ctx):
     """Verify configuration of running cluster backend."""
     logging.debug(ctx.obj.backend.cluster_spec)
     backend_compatibility = ctx.obj.backend.verify_backend()
-    click.echo('Kubernetes Server {0} ... {1}.'
-               .format(backend_compatibility['current_version'],
-                       'OK' if backend_compatibility['is_compatible']
-                       else 'ERROR'))
+    data = tablib.Dataset()
+    data.headers = ['kubernetes version', 'is compatible']
+    data.append([backend_compatibility['current_version'],
+                 backend_compatibility['is_compatible']])
+    click.echo(data)
 
 
 @click.command('components',
@@ -209,11 +211,40 @@ def cli_verify_components(ctx):
     """Verify configuration of components deployed in a running cluster."""
     logging.debug(ctx.obj.backend.cluster_spec)
     matching_components = ctx.obj.backend.verify_components()
+    data = tablib.Dataset()
+    data.headers = ['component', 'image']
     for component_name in matching_components:
-        click.echo('reana-{0} ... {1}.'
-                   .format(component_name,
-                           'OK' if matching_components[component_name]
-                           else 'ERROR'))
+        image_matches = 'match' if matching_components[component_name] \
+            else 'mismatch'
+        data.append([component_name, image_matches])
+    click.echo(data)
+
+
+@click.command(help='Display the status of each component'
+               ' and if the cluster is ready.')
+@click.option(
+    '--component',
+    default=None,
+    help='Specify for which component you want the status'
+         'e.g. job-controller.')
+@click.pass_context
+def status(ctx, component):
+    """Display the status of cluster components and if the cluster is ready."""
+    components_status = ctx.obj.backend.get_components_status(component)
+    all_running = True
+
+    data = tablib.Dataset()
+    data.headers = ['component', 'status']
+    for component_name in components_status:
+        data.append([component_name, components_status[component_name]])
+        if components_status[component_name] != 'Running':
+            all_running = False
+
+    click.echo(data)
+    if all_running and not component:
+        click.echo(click.style('REANA Cluster is ready.', fg='green'))
+    elif not component:
+        click.echo(click.style('REANA Cluster is not ready.', fg='yellow'))
 
 
 verify.add_command(cli_verify_backend)

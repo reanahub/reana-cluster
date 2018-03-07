@@ -722,3 +722,50 @@ class KubernetesBackend(ReanaBackendABC):
                           .format(cur=curr_ver, expected=expected_ver))
 
         return k8s_version_compatibility
+
+    def get_components_status(self, component=None):
+        """Return status for components in cluster.
+
+        Gets all pods in the k8s namespace and matches them with the
+        equivalent component, writing their status in a dictionary.
+
+        :return: Dictionary containing each component and its status
+        :rtype: dict
+
+        """
+        def _write_status(pod, component_name, components_status):
+            """Determine the component status."""
+            if pod.status.container_statuses[0].ready:
+                components_status[component_name] = 'Running'
+            elif pod.status.container_statuses[0].\
+                    state.waiting is not None:
+                components_status[component_name] = \
+                    pod.status.container_statuses[0].\
+                    state.waiting.reason
+            else:
+                components_status[component] = 'Unavailable'
+
+        if component and component.startswith('reana-'):
+            component = component.replace('reana-', '')
+        all_pods = self._corev1api.list_namespaced_pod('default')
+        components_status = dict()
+
+        if component:
+            for current_pod in all_pods.items:
+                if current_pod.metadata.name.startswith(component):
+                    _write_status(current_pod, component, components_status)
+                    break
+        else:
+            deployment_manifests = [m for m in self.cluster_conf
+                                    if m['kind'] == 'Deployment']
+            for manifest in deployment_manifests:
+                current_pod = None
+                for pod in all_pods.items:
+                    if pod.metadata.name.startswith(
+                            manifest['metadata']['name']):
+                        current_pod = pod
+                        break
+                if current_pod:
+                    _write_status(current_pod, manifest['metadata']['name'],
+                                  components_status)
+        return components_status

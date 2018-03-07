@@ -67,7 +67,8 @@ install_requires = [
     'Jinja2>=2.9.6',
     'jsonschema>=2.6.0',
     'kubernetes==3.0.0',
-    'PyYAML>=3.12'
+    'PyYAML>=3.12',
+    'tablib>=0.12.1',
 ]
 
 packages = find_packages()
