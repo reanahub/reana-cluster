@@ -1,0 +1,44 @@
+cluster:
+  type: "kubernetes"
+  version: "v1.6.4"
+  url: "http://localhost"
+
+components:
+  reana-workflow-controller:
+    type: "docker"
+    image: "reanahub/reana-workflow-controller:latest"
+    environment:
+      - SHARED_VOLUME_PATH: "/reana"
+      - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+
+  reana-job-controller:
+    type: "docker"
+    image: "reanahub/reana-job-controller:latest"
+    environment:
+      - REANA_STORAGE_BACKEND: "LOCAL"
+
+  reana-server:
+    type: "docker"
+    image: "reanahub/reana-server:latest"
+
+  reana-message-broker:
+    type: "docker"
+    image: "reanahub/reana-message-broker:latest"
+
+  reana-workflow-monitor:
+    type: "docker"
+    image: "reanahub/reana-workflow-monitor:latest"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
+
+  reana-workflow-engine-yadage:
+    type: "docker"
+    image: "reanahub/reana-workflow-engine-yadage:latest"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+
+  reana-workflow-engine-cwl:
+    type: "docker"
+    image: "reanahub/reana-workflow-engine-cwl:latest"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
