@@ -43,3 +43,13 @@ supported_backends = {
 
 reana_env_exportable_info_components = ['reana-server']
 """Components which information will be produced by ``reana-client env``."""
+
+reana_cluster_ready_necessary_components = ['cwl-default-worker',
+                                            'job-controller',
+                                            'message-broker',
+                                            'server',
+                                            'workflow-controller',
+                                            'workflow-monitor',
+                                            'yadage-default-worker',
+                                            'zeromq-msg-proxy']
+"""Components which must be running for the cluster status to be ready."""

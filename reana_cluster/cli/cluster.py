@@ -19,19 +19,21 @@
 # In applying this license, CERN does not waive the privileges and immunities
 # granted to it by virtue of its status as an Intergovernmental Organization or
 # submit itself to any jurisdiction.
-"""REANA cluster administration (init, restart, etc.) commands."""
 
+"""REANA cluster administration (init, restart, etc.) commands."""
 
 import errno
 import logging
 import os
+import sys
 import tablib
 
 import click
 import yaml
 
 from ..config import (generated_cluster_conf_default_path,
-                      reana_env_exportable_info_components)
+                      reana_env_exportable_info_components,
+                      reana_cluster_ready_necessary_components)
 
 
 @click.command(help='Bring REANA cluster down, i.e. delete all '
@@ -231,8 +233,9 @@ def cli_verify_components(ctx):
 def status(ctx, component):
     """Display the status of cluster components and if the cluster is ready."""
     components_status = ctx.obj.backend.get_components_status(component)
-    all_running = True
 
+    # detect if all components are in running state:
+    all_running = True
     data = tablib.Dataset()
     data.headers = ['component', 'status']
     for component_name in components_status:
@@ -240,11 +243,33 @@ def status(ctx, component):
         if components_status[component_name] != 'Running':
             all_running = False
 
+    # detect if all necessary components are present:
+    all_present = True
+    if component:
+        if component not in components_status:
+            all_present = False
+    else:
+        for component_name in reana_cluster_ready_necessary_components:
+            if component_name not in components_status:
+                all_present = False
+
+    # print component status table:
     click.echo(data)
-    if all_running and not component:
-        click.echo(click.style('REANA Cluster is ready.', fg='green'))
-    elif not component:
-        click.echo(click.style('REANA Cluster is not ready.', fg='yellow'))
+
+    # produce final report:
+    if all_running and all_present:
+        if component:
+            click.echo(click.style('REANA component {0} is ready.'
+                                   .format(component), fg='green'))
+        else:
+            click.echo(click.style('REANA cluster is ready.', fg='green'))
+    else:
+        if component:
+            click.echo(click.style('REANA component {0} is not ready.'.
+                                   format(component), fg='yellow'))
+        else:
+            click.echo(click.style('REANA cluster is not ready.', fg='yellow'))
+        sys.exit(1)
 
 
 verify.add_command(cli_verify_backend)
