@@ -11,6 +11,13 @@ system. The best way to try it out locally on your laptop is to set up `Minikube
 <https://kubernetes.io/docs/getting-started-guides/minikube/>`_. How to do this
 depends on your operating system.
 
+Versions
+~~~~~~~~
+
+For REANA v0.2.0, ``kubectl 1.9.1`` and ``minikube 0.23.0`` are known to work
+well. The later versions of Minikube were observed to lead to some networking
+troubles.
+
 Arch Linux
 ~~~~~~~~~~
 
@@ -34,26 +41,25 @@ Alternatively, if you plan to run Minikube using the KVM2 hypervisor:
 - `libvirt <https://www.archlinux.org/packages/community/x86_64/libvirt/>`_
 - `qemu <https://www.archlinux.org/packages/extra/x86_64/qemu/>`_
 
-Here is one example of well-working versions for REANA v0.1.0:
+Here is one example of well-working versions for REANA v0.2.0:
 
 .. code-block:: console
 
    $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
-   docker 1:18.02.0-1
-   docker-compose 1.18.0-2
-   docker-machine 0.13.0-2
-   docker-machine-driver-kvm2 0.25.0-1
-   docker-machine-kvm 0.7.0-2
+   docker 1:18.04.0-1
+   docker-compose 1.21.0-1
+   docker-machine 0.14.0-1
+   docker-machine-driver-kvm2 0.25.2-1
    kubectl-bin 1.9.1-1
-   libvirt 4.0.0-1
+   libvirt 4.2.0-1
    minikube 0.23.0-1
-   python-docker 2.7.0-1
-   python-docker-pycreds 0.2.1-2
+   python-docker 3.2.1-1
+   python-docker-pycreds 0.2.2-1
    python-dockerpty 0.4.1-2
-   qemu 2.11.0-4
-   virtualbox 5.2.6-2
-   virtualbox-guest-iso 5.2.7-1
-   virtualbox-host-modules-arch 5.2.6-11
+   qemu 2.11.1-2
+   virtualbox 5.2.8-1
+   virtualbox-guest-iso 5.2.8-1
+   virtualbox-host-modules-arch 5.2.8-11
 
 Start minikube
 --------------
@@ -98,10 +104,12 @@ best to test whether ``kubectl`` is indeed configured properly:
 Install ``reana-cluster`` CLI tool
 ----------------------------------
 
-``reana-cluster`` command line interface tool is easily installable from PyPI:
+``reana-cluster`` command line interface tool is easily installable from PyPI.
+You may want to install it into a new virtual environment:
 
 .. code-block:: console
 
+   $ mkvirtualenv reana-cluster
    $ pip install reana-cluster
 
 .. _configure:
@@ -109,81 +117,81 @@ Install ``reana-cluster`` CLI tool
 Configure REANA cluster
 -----------------------
 
-Main function of reana-cluster command line tool is to
-initialize a working REANA cluster, ready to run workflows
-you submit to it using reana-client.
+The main function of ``reana-cluster`` command line tool is to initialise a
+working REANA cluster, ready to run workflows that users submit via
+``reana-client``.
 
-In order to achieve this reana-cluster needs to know how
-REANA cluster should be set up; e.g. what versions of REANA
-components should be deployed and how the configuration of each
-component should be set up.
-
-``reana-cluster`` expects to get information via REANA cluster specification
-file that comes with the package:
+In order to achieve this, ``reana-cluster`` needs to know how the REANA cluster
+should be set up; e.g. what versions of REANA components should be deployed and
+how the configuration of each component should be set up. ``reana-cluster``
+expects to get this information via ``reana-cluster.yaml`` file that comes with
+the package:
 
 .. code-block:: yaml
 
-    cluster:
-      type: "kubernetes"
-      version: "v1.6.4"
-      url: "http://localhost"
+   cluster:
+     type: "kubernetes"
+     version: "v1.6.4"
+     url: "http://localhost"
 
-    components:
-      reana-workflow-controller:
-        type: "docker"
-        image: "reanahub/reana-workflow-controller:0.1.0"
-        environment:
-          - SHARED_VOLUME_PATH: "/reana"
-          - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+   components:
+     reana-workflow-controller:
+       type: "docker"
+       image: "reanahub/reana-workflow-controller:0.2.0"
+       environment:
+         - SHARED_VOLUME_PATH: "/reana"
+         - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
-      reana-job-controller:
-        type: "docker"
-        image: "reanahub/reana-job-controller:0.1.0"
-        environment:
-          - REANA_STORAGE_BACKEND: "LOCAL"
+     reana-job-controller:
+       type: "docker"
+       image: "reanahub/reana-job-controller:0.2.0"
+       environment:
+         - REANA_STORAGE_BACKEND: "LOCAL"
 
-      reana-server:
-        type: "docker"
-        image: "reanahub/reana-server:0.1.0"
+     reana-server:
+       type: "docker"
+       image: "reanahub/reana-server:0.2.0"
 
-      reana-message-broker:
-        type: "docker"
-        image: "reanahub/reana-message-broker:0.1.0"
+     reana-message-broker:
+       type: "docker"
+       image: "reanahub/reana-message-broker:0.2.0"
 
-      reana-workflow-monitor:
-        type: "docker"
-        image: "reanahub/reana-workflow-monitor:0.1.0"
-        environment:
-          - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
+     reana-workflow-monitor:
+       type: "docker"
+       image: "reanahub/reana-workflow-monitor:0.2.0"
+       environment:
+         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
 
-      reana-workflow-engine-yadage:
-        type: "docker"
-        image: "reanahub/reana-workflow-engine-yadage:0.1.0"
-        environment:
-          - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+     reana-workflow-engine-yadage:
+       type: "docker"
+       image: "reanahub/reana-workflow-engine-yadage:0.2.0"
+       environment:
+         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
 
-You can use the supplied ``reana-cluster.yaml``, or create your own custom configuration.
-For instance if you wish to use a different docker image for the reana-server component,
-you can copy the default ``reana-cluster.yaml`` to a ``reana-cluster-custom.yaml`` file
-and change the image tag "reanahub/reana-server:0.1.0" accordingly.
+     reana-workflow-engine-cwl:
+       type: "docker"
+       image: "reanahub/reana-workflow-engine-cwl:0.2.0"
+       environment:
+         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
 
-Initialize a REANA cluster
+You can use the supplied ``reana-cluster.yaml``, or create your own custom
+configuration. For instance, if you wish to use a different Docker image for the
+``reana-server`` component, you can copy the default ``reana-cluster.yaml`` to a
+``reana-cluster-custom.yaml`` file and change the image tag
+``reanahub/reana-server:0.2.0`` according to your wishes.
+
+Initialise a REANA cluster
 --------------------------
 
-After downloading the specifications file it is just a matter of
-running `init` with reana-cluster:
+Initialising a REANA cluster is just a matter of running ``init`` command:
 
 .. code-block:: console
 
    $ reana-cluster init
-   [INFO] Validating REANA cluster specification file: /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml
-   [INFO] /home/simko/.virtualenvs/reana-cluster/lib/python3.6/site-packages/reana_cluster/configurations/reana-cluster.yaml is a valid REANA cluster specification.
-   [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
-   [INFO] Connecting to Kubernetes at https://192.168.39.115:8443
-   Init complete
+   REANA cluster is initialised
 
-If you have created a custom configuration, you can use the ``-f``
-command-line option and specify your own file, in the following way:
+If you have created a custom configuration, you can use the ``-f`` command-line
+option and specify your own file in the following way:
 
 .. code-block:: console
 
@@ -192,57 +200,71 @@ command-line option and specify your own file, in the following way:
 Verify REANA components
 -----------------------
 
-You can verify that components deployed to REANA cluster are set up according
-to what is defined in REANA cluster specifications file `verify`:
+You can verify that components deployed to REANA cluster are set up according to
+what is defined in REANA cluster specifications file via the ``verify`` command:
 
 .. code-block:: console
 
    $ reana-cluster verify components
+   COMPONENT               IMAGE
+   job-controller          match
+   message-broker          match
+   server                  match
+   workflow-controller     match
+   workflow-monitor        match
+   zeromq-msg-proxy        match
+   yadage-default-worker   match
+   yadage-alice-worker     match
+   yadage-atlas-worker     match
+   yadage-cms-worker       match
+   yadage-lhcb-worker      match
+   cwl-default-worker      match
+   wdb                     match
 
 Verify REANA cluster readiness
 ------------------------------
 
 You can verify whether the REANA cluster is ready to serve the user requests by
-using the ``kubectl`` tool:
+running the ``status`` command:
 
 .. code-block:: console
 
-   $ kubectl get pods
-   NAME                                     READY     STATUS              RESTARTS   AGE
-   job-controller-3230226419-fxw6v          1/1       Running             0          1m
-   message-broker-1926055025-bsh5p          1/1       Running             0          1m
-   server-1390351625-0m7l8                  1/1       Running             0          1m
-   wdb-3285397567-zzwfg                     0/1       ContainerCreating   0          1m
-   workflow-controller-2663988704-d1q29     0/1       CrashLoopBackOff    2          1m
-   workflow-monitor-855857361-blm56         0/1       ContainerCreating   0          1m
-   yadage-alice-worker-150038894-txjq2      0/1       ContainerCreating   0          1m
-   yadage-atlas-worker-3355863567-c8gkr     0/1       ContainerCreating   0          1m
-   yadage-cms-worker-2408997969-dz6k4       0/1       ContainerCreating   0          1m
-   yadage-default-worker-3471536063-slg1j   0/1       ContainerCreating   0          1m
-   yadage-lhcb-worker-3838731947-pzkww      0/1       ContainerCreating   0          1m
-   zeromq-msg-proxy-2640677031-gggp1        0/1       ContainerCreating   0          1m
+   $ reana-cluster status
+   COMPONENT               STATUS
+   job-controller          Running
+   message-broker          Running
+   server                  Running
+   workflow-controller     Running
+   workflow-monitor        Running
+   zeromq-msg-proxy        Running
+   yadage-default-worker   Running
+   yadage-alice-worker     Running
+   yadage-atlas-worker     Running
+   yadage-cms-worker       Running
+   yadage-lhcb-worker      Running
+   cwl-default-worker      Running
+   wdb                     Running
+   REANA cluster is ready.
 
-In the above example, some containers are still being created. You should wait
-until all the components are in the "Running" status. The REANA cluster will be
-then ready for serving user requests.
-
+In the above example, everything is running and the REANA cluster is ready for
+serving user requests.
 
 Display commands to set up the environment for the REANA client
 ---------------------------------------------------------------
 
-You can print the list of runnable commands to configure the environment for the
+You can print the list of commands to configure the environment for the
 `reana-client <https://reana-client.readthedocs.io/>`_:
 
 .. code-block:: console
 
    $ reana-cluster env
-   export REANA_SERVER_URL=http://192.168.99.100:32732
+   export REANA_SERVER_URL=http://192.168.39.247:31106
 
 Delete REANA cluster deployment
 -------------------------------
 
 To bring the cluster deployment down, i.e. delete all REANA components that
-were deployed during `init`, you run:
+were deployed during ``init``, you can run:
 
 .. code-block:: console
 

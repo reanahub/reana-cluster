@@ -164,7 +164,7 @@ def init(ctx, skip_initialization, output):
                 with click.open_file(filepath, mode='w+') as output_file:
                     yaml.dump(manifest, output_file, default_flow_style=False)
 
-        click.echo(click.style("Init complete", fg='green'))
+        click.echo(click.style("REANA cluster is initialised", fg='green'))
 
     except Exception as e:
         logging.exception(str(e))

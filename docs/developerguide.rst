@@ -3,6 +3,21 @@
 Developer guide
 ===============
 
+Using Docker with Minikube
+--------------------------
+
+When you are developing you will probably want to connect your shell session to
+talk to the Docker daemon inside the Minikube. You can achieve this by
+running:
+
+.. code-block:: console
+
+   $ eval "$(minikube docker-env)"
+
+In this way you can build Docker images of REANA cluster components directly
+inside your Minikube virtual machine and deploy them very quickly without having
+to pull images from remote registries.
+
 Deploying specific component versions
 -------------------------------------
 
@@ -16,7 +31,10 @@ Deploying latest ``master`` branch versions
 -------------------------------------------
 
 If you want to use latest ``master`` branch of REANA components and have the
-code directly editable within pods, you can use ``reana-cluster-dev.yaml``.
+code directly editable within pods, you can use ``reana-cluster-latest.yaml``
+(in production-like conditions) or ``reana-cluster-dev.yaml`` (in
+development-like conditions with the debugger and live editing of component
+sources).
 
 1. Clone the REANA component under ``$HOME/reana/sources`` directory on your laptop.
 
@@ -578,17 +596,13 @@ And now you can start the cluster as ``reana-cluster`` docs say:
 .. code:: console
 
     $ reana-cluster init
-    [INFO] Validating REANA cluster specification file: /Users/rodrigdi/reana/reana-cluster/reana_cluster/configurations/reana-cluster.yaml
-    [INFO] /Users/rodrigdi/reana/reana-cluster/reana_cluster/configurations/reana-cluster.yaml is a valid REANA cluster specification.
-    [INFO] Cluster type specified in cluster specifications file is 'kubernetes'
-    [INFO] Connecting to Kubernetes at https://192.168.99.100:8443
-    Init complete
+    REANA cluster is initialised
 
-Check that all components go created:
+Check that all components are created:
 
 .. code:: console
 
-    kubectl get pods
+    $ kubectl get pods
     NAME                                     READY     STATUS              RESTARTS   AGE
     cwl-default-worker-1660064223-gh53f      1/1       Running             0          14s
     job-controller-3021378878-htkvv          1/1       Running             0          5m
@@ -665,4 +679,3 @@ If we list now the pods, we can see that they are the original ones:
     yadage-default-worker-3471536063-0zd5r   1/1       Running   1          58m
     yadage-lhcb-worker-3838731947-g5206      1/1       Running   1          58m
     zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   1          58m
-

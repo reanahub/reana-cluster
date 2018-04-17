@@ -11,58 +11,60 @@ Deploy REANA cluster locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   and `minikube <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_.
+   (e.g. version 1.9.1) and `minikube
+   <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
+   0.23.0):
+
+   .. code-block:: console
+
+      $ sudo dpkg -i kubectl*.deb minikube*.deb
 
 2. Start Minikube virtual machine:
 
-.. code-block:: console
+   .. code-block:: console
 
-   $ minikube start --kubernetes-version="v1.6.4"
+      $ minikube start --kubernetes-version="v1.6.4"
 
 3. Install REANA-Cluster sources. You probably want to use a virtual environment:
 
-.. code-block:: console
+   .. code-block:: console
 
-   $ mkvirtualenv reana-cluster
-   $ pip install reana-cluster
+      $ mkvirtualenv reana-cluster
+      $ pip install reana-cluster
 
 4. Start REANA cluster instance on Minikube:
 
-.. code-block:: console
+   .. code-block:: console
 
-   $ reana-cluster init
+      $ reana-cluster init
 
-5. Check the status of deployed REANA cluster components:
+5. Check the status of the REANA cluster deployment. (Note that it may take
+   several minutes to pull the REANA component images for the first time.)
 
-.. code-block:: console
+   .. code-block:: console
 
-   $ reana-cluster verify components
+      $ reana-cluster status
+      ...
+      REANA cluster is ready.
 
-6. Check whether all the pods are running:
+6. Display the commands to set up the environment for the user clients:
 
-.. code-block:: console
+   .. code-block:: console
 
-   $ kubectl get pods
+      $ reana-cluster env
+      export REANA_SERVER_URL=http://192.168.99.100:32732
 
-7. Display the commands to set up the environment for the REANA client:
+   Please see the `reana-client <https://reana-client.readthedocs.io/>`_
+   documentation on how to run reusable analysis examples on your
+   locally-deployed cluster.
 
-.. code-block:: console
+7. Note that after you finish testing REANA, you can delete the locally-deployed
+   cluster and the Minikube virtual machine as follows:
 
-   $ reana-cluster env
-   export REANA_SERVER_URL=http://192.168.99.100:32732
+   .. code-block:: console
 
-
-The REANA cluster is now ready to serve users. Please see the `reana-client
-<https://reana-client.readthedocs.io/>`_ documentation on how to run reusable
-analysis examples on our locally-deployed cluster.
-
-Note that after you finish testing REANA, you can delete the locally-deployed
-cluster and the Minikube virtual machine as follows:
-
-.. code-block:: console
-
-  $ reana-cluster down
-  $ minikube stop
+      $ reana-cluster down
+      $ minikube stop
 
 Next steps
 ----------
