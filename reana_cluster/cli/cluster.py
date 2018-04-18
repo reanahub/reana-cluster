@@ -26,7 +26,6 @@ import errno
 import logging
 import os
 import sys
-import tablib
 
 import click
 import yaml
@@ -34,6 +33,7 @@ import yaml
 from ..config import (generated_cluster_conf_default_path,
                       reana_env_exportable_info_components,
                       reana_cluster_ready_necessary_components)
+from ..utils import cli_printer
 
 
 @click.command(help='Bring REANA cluster down, i.e. delete all '
@@ -164,7 +164,7 @@ def init(ctx, skip_initialization, output):
                 with click.open_file(filepath, mode='w+') as output_file:
                     yaml.dump(manifest, output_file, default_flow_style=False)
 
-        click.echo("Init complete")
+        click.echo(click.style("Init complete", fg='green'))
 
     except Exception as e:
         logging.exception(str(e))
@@ -197,11 +197,11 @@ def cli_verify_backend(ctx):
     """Verify configuration of running cluster backend."""
     logging.debug(ctx.obj.backend.cluster_spec)
     backend_compatibility = ctx.obj.backend.verify_backend()
-    data = tablib.Dataset()
-    data.headers = ['kubernetes version', 'is compatible']
-    data.append([backend_compatibility['current_version'],
-                 backend_compatibility['is_compatible']])
-    click.echo(data)
+    data = []
+    headers = ['kubernetes version', 'is compatible']
+    data.append(list(map(str, [backend_compatibility['current_version'],
+                               backend_compatibility['is_compatible']])))
+    cli_printer(headers, [], data)
 
 
 @click.command('components',
@@ -213,13 +213,13 @@ def cli_verify_components(ctx):
     """Verify configuration of components deployed in a running cluster."""
     logging.debug(ctx.obj.backend.cluster_spec)
     matching_components = ctx.obj.backend.verify_components()
-    data = tablib.Dataset()
-    data.headers = ['component', 'image']
+    data = []
+    headers = ['component', 'image']
     for component_name in matching_components:
         image_matches = 'match' if matching_components[component_name] \
             else 'mismatch'
-        data.append([component_name, image_matches])
-    click.echo(data)
+        data.append(list(map(str, [component_name, image_matches])))
+    cli_printer(headers, [], data)
 
 
 @click.command(help='Display the status of each component'
@@ -236,10 +236,11 @@ def status(ctx, component):
 
     # detect if all components are in running state:
     all_running = True
-    data = tablib.Dataset()
-    data.headers = ['component', 'status']
+    data = []
+    headers = ['component', 'status']
     for component_name in components_status:
-        data.append([component_name, components_status[component_name]])
+        data.append(list(map(str, [component_name,
+                                   components_status[component_name]])))
         if components_status[component_name] != 'Running':
             all_running = False
 
@@ -254,7 +255,7 @@ def status(ctx, component):
                 all_present = False
 
     # print component status table:
-    click.echo(data)
+    cli_printer(headers, [], data)
 
     # produce final report:
     if all_running and all_present:

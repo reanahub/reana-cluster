@@ -24,6 +24,7 @@
 import json
 import logging
 
+import click
 import yaml
 from jsonschema import ValidationError, validate
 
@@ -88,3 +89,25 @@ def _validate_cluster_spec(cluster_spec):
         raise e
 
     return True
+
+
+def cli_printer(headers, _filter, data):
+    """Print a response in a tabulated format."""
+    _filter = [h.lower() for h in _filter] + [h.upper() for h in _filter]
+    headers = [h for h in headers if not _filter or h in _filter]
+    # Maximum header width
+    header_widths = [len(h) for h in headers]
+
+    for row in data:
+        for idx in range(len(headers)):
+            # If a row contains an element which is wider update maximum width
+            if header_widths[idx] < len(str(row[idx])):
+                header_widths[idx] = len(str(row[idx]))
+    # Prepare the format string with the maximum widths
+    formatted_output_parts = ['{{:<{0}}}'.format(hw)
+                              for hw in header_widths]
+    formatted_output = '   '.join(formatted_output_parts)
+    # Print the table with the headers capitalized
+    click.echo(formatted_output.format(*[h.upper() for h in headers]))
+    for row in data:
+        click.echo(formatted_output.format(*row))
