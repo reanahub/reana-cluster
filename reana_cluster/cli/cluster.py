@@ -33,7 +33,7 @@ import yaml
 from ..config import (generated_cluster_conf_default_path,
                       reana_env_exportable_info_components,
                       reana_cluster_ready_necessary_components)
-from ..utils import cli_printer
+from reana_commons.utils import click_table_printer
 
 
 @click.command(help='Bring REANA cluster down, i.e. delete all '
@@ -201,7 +201,7 @@ def cli_verify_backend(ctx):
     headers = ['kubernetes version', 'is compatible']
     data.append(list(map(str, [backend_compatibility['current_version'],
                                backend_compatibility['is_compatible']])))
-    cli_printer(headers, [], data)
+    click_table_printer(headers, [], data)
 
 
 @click.command('components',
@@ -219,7 +219,7 @@ def cli_verify_components(ctx):
         image_matches = 'match' if matching_components[component_name] \
             else 'mismatch'
         data.append(list(map(str, [component_name, image_matches])))
-    cli_printer(headers, [], data)
+    click_table_printer(headers, [], data)
 
 
 @click.command(help='Display the status of each component'
@@ -255,7 +255,7 @@ def status(ctx, component):
                 all_present = False
 
     # print component status table:
-    cli_printer(headers, [], data)
+    click_table_printer(headers, [], data)
 
     # produce final report:
     if all_running and all_present:

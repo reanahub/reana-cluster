@@ -69,6 +69,7 @@ install_requires = [
     'kubernetes==3.0.0',
     'PyYAML>=3.12',
     'tablib>=0.12.1',
+    'reana-commons'
 ]
 
 packages = find_packages()
