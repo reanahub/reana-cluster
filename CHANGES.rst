@@ -1,6 +1,15 @@
 Changes
 =======
 
+Version 0.2.0 (2018-04-19)
+--------------------------
+
+- Adds support for Common Workflow Language workflows.
+- Adds new ``status`` command to display health status of the cluster.
+- Adds new ``env`` command to help setting client environments.
+- Reduces verbosity level for commands.
+- Enriches documentation about KVM2 hypervisors or running multiple clusters.
+
 Version 0.1.1 (2018-01-31)
 --------------------------
 
