@@ -30,6 +30,7 @@ import sys
 import click
 import yaml
 
+from reana_commons.database import init_db
 from ..config import (generated_cluster_conf_default_path,
                       reana_env_exportable_info_components,
                       reana_cluster_ready_necessary_components)
@@ -134,6 +135,9 @@ def init(ctx, skip_initialization, output):
     """Initialize REANA cluster."""
     try:
         backend = ctx.obj.backend
+
+        init_db()
+        click.echo(click.style('DB Created.', fg='green'))
 
         if not skip_initialization:
             logging.info('Connecting to {cluster} at {url}'
