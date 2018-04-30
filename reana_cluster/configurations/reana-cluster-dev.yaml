@@ -7,9 +7,11 @@ cluster:
 
   # Specifies which K8S context from the kubeconfig configuration will be used.
   # If not specified will use the value of `current-context:` key of kubeconfig.
-  #config_context: "minikube"
+  config_context: "reana-dev"
   version: "v1.6.4"
   url: "http://localhost"
+  db_config: &db_base_config
+    - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@reana-db:5432/reana"
 
 components:
   reana-workflow-controller:
@@ -20,6 +22,7 @@ components:
         name: reana-workflow-controller-code
         path: "/code/reana-workflow-controller:/code"
     environment:
+      - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
       - WDB_SOCKET_SERVER: "wdb"
@@ -83,6 +86,7 @@ components:
         name: reana-workflow-engine-yadage-code
         path: "/code/reana-workflow-engine-yadage:/code"
     environment:
+      - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
@@ -95,6 +99,7 @@ components:
         name: reana-workflow-engine-cwl-code
         path: "/code/reana-workflow-engine-cwl:/code"
     environment:
+      - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"

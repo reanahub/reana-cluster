@@ -2,12 +2,15 @@ cluster:
   type: "kubernetes"
   version: "v1.6.4"
   url: "http://localhost"
+  db_config: &db_base_config
+    - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@reana-db:5432/reana"
 
 components:
   reana-workflow-controller:
     type: "docker"
     image: "reanahub/reana-workflow-controller:latest"
     environment:
+      - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
@@ -35,10 +38,12 @@ components:
     type: "docker"
     image: "reanahub/reana-workflow-engine-yadage:latest"
     environment:
+      - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
 
   reana-workflow-engine-cwl:
     type: "docker"
     image: "reanahub/reana-workflow-engine-cwl:latest"
     environment:
+      - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
