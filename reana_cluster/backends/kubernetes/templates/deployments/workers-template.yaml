@@ -20,8 +20,8 @@ spec:
           value: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-queue
         - name: REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT
           value: {{worker.EXPERIMENT}}
-        - name: SHARED_VOLUME
-          value: {{worker.SHARED_VOLUME.MOUNT_POINT}}
+        - name: SHARED_VOLUME_PATH
+          value: {{worker.SHARED_VOLUME_PATH.MOUNT_POINT}}
         {% set environment=RWEYADAGE_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
@@ -31,7 +31,7 @@ spec:
         {% endfor %}
         volumeMounts:
         - name: {{worker.EXPERIMENT}}-shared-volume
-          mountPath: {{worker.SHARED_VOLUME.MOUNT_POINT}}
+          mountPath: {{worker.SHARED_VOLUME_PATH.MOUNT_POINT}}
         {% set mountpoints=RWEYADAGE_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
@@ -40,9 +40,9 @@ spec:
       volumes:
       - name: {{worker.EXPERIMENT}}-shared-volume
         {%- if DEPLOYMENT == 'prod' %}
-          {% set shared_volume=worker.SHARED_VOLUME.PROD %}
+          {% set shared_volume=worker.SHARED_VOLUME_PATH.PROD %}
         {% else %}
-          {% set shared_volume=worker.SHARED_VOLUME.LOCAL %}
+          {% set shared_volume=worker.SHARED_VOLUME_PATH.LOCAL %}
         {% endif -%}
         {% if shared_volume.TYPE == 'cephfs' %}
         cephfs:

@@ -84,7 +84,7 @@ WORKERS:
  - EXPERIMENT: default
    WORKFLOW_ENGINE: *yadage
    REPLICAS: 1
-   SHARED_VOLUME:
+   SHARED_VOLUME_PATH:
      MOUNT_POINT: "/data"
      LOCAL:
        TYPE: hostpath
@@ -103,7 +103,7 @@ WORKERS:
  - EXPERIMENT: alice
    WORKFLOW_ENGINE: *yadage
    REPLICAS: 1
-   SHARED_VOLUME:
+   SHARED_VOLUME_PATH:
      MOUNT_POINT: "/data"
      LOCAL:
        TYPE: hostpath
@@ -122,7 +122,7 @@ WORKERS:
  - EXPERIMENT: atlas
    WORKFLOW_ENGINE: *yadage
    REPLICAS: 1
-   SHARED_VOLUME:
+   SHARED_VOLUME_PATH:
      MOUNT_POINT: "/data"
      LOCAL:
        TYPE: hostpath
@@ -141,7 +141,7 @@ WORKERS:
  - EXPERIMENT: cms
    WORKFLOW_ENGINE: *yadage
    REPLICAS: 1
-   SHARED_VOLUME:
+   SHARED_VOLUME_PATH:
      MOUNT_POINT: "/data"
      LOCAL:
        TYPE: hostpath
@@ -160,7 +160,7 @@ WORKERS:
  - EXPERIMENT: lhcb
    WORKFLOW_ENGINE: *yadage
    REPLICAS: 1
-   SHARED_VOLUME:
+   SHARED_VOLUME_PATH:
      MOUNT_POINT: "/data"
      LOCAL:
        TYPE: hostpath

@@ -19,7 +19,7 @@ spec:
           value: cwl-default-queue
         - name: REANA_WORKFLOW_ENGINE_EXPERIMENT
           value: default
-        - name: SHARED_VOLUME
+        - name: SHARED_VOLUME_PATH
           value: /data
         {% set environment=RWECWL_ENVIRONMENT %}
         {% for envvar in environment %}
