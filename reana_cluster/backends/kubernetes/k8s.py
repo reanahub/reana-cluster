@@ -173,6 +173,8 @@ class KubernetesBackend(ReanaBackendABC):
                     'reana-workflow-engine-yadage']['image']
                 rwecwl_img = components[
                     'reana-workflow-engine-cwl']['image']
+                rweserial_img = components[
+                    'reana-workflow-engine-serial']['image']
 
                 rs_environment = components['reana-server']\
                     .get('environment', [])
@@ -189,6 +191,9 @@ class KubernetesBackend(ReanaBackendABC):
                     .get('environment', [])
                 rwecwl_environment = components[
                     'reana-workflow-engine-cwl'] \
+                    .get('environment', [])
+                rweserial_environment = components[
+                    'reana-workflow-engine-serial'] \
                     .get('environment', [])
 
                 rs_mountpoints = components['reana-server']\
@@ -207,6 +212,9 @@ class KubernetesBackend(ReanaBackendABC):
                 rwecwl_mountpoints = components[
                     'reana-workflow-engine-cwl'] \
                     .get('mountpoints', [])
+                rweserial_mountpoints = components[
+                    'reana-workflow-engine-serial'] \
+                    .get('mountpoints', [])
 
                 # Render the template using given backend config parameters
                 cluster_conf = template.\
@@ -218,6 +226,7 @@ class KubernetesBackend(ReanaBackendABC):
                            MESSAGE_BROKER_IMAGE=rmb_img,
                            WORKFLOW_ENGINE_YADAGE_IMAGE=rweyadage_img,
                            WORKFLOW_ENGINE_CWL_IMAGE=rwecwl_img,
+                           WORKFLOW_ENGINE_SERIAL_IMAGE=rweserial_img,
                            RS_MOUNTPOINTS=rs_mountpoints,
                            RJC_MOUNTPOINTS=rjc_mountpoints,
                            RWFC_MOUNTPOINTS=rwfc_mountpoints,
@@ -225,6 +234,7 @@ class KubernetesBackend(ReanaBackendABC):
                            RMB_MOUNTPOINTS=rmb_mountpoints,
                            RWEYADAGE_MOUNTPOINTS=rweyadage_mountpoints,
                            RWECWL_MOUNTPOINTS=rwecwl_mountpoints,
+                           RWESERIAL_MOUNTPOINTS=rweserial_mountpoints,
                            RS_ENVIRONMENT=rs_environment,
                            RJC_ENVIRONMENT=rjc_environment,
                            RWFC_ENVIRONMENT=rwfc_environment,
@@ -232,6 +242,7 @@ class KubernetesBackend(ReanaBackendABC):
                            RMB_ENVIRONMENT=rmb_environment,
                            RWEYADAGE_ENVIRONMENT=rweyadage_environment,
                            RWECWL_ENVIRONMENT=rwecwl_environment,
+                           RWESERIAL_ENVIRONMENT=rweserial_environment,
                            )
 
                 # Strip empty lines for improved readability

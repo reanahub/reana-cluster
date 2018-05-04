@@ -48,3 +48,9 @@ components:
     environment:
       - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+
+  reana-workflow-engine-serial:
+    type: "docker"
+    image: "reanahub/reana-workflow-engine-serial:latest"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"

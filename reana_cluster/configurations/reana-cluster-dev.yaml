@@ -103,3 +103,17 @@ components:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
+
+  reana-workflow-engine-serial:
+    type: "docker"
+    image: "reanahub/reana-workflow-engine-serial:latest"
+    mountpoints:
+      - type: hostPath
+        name: reana-workflow-engine-serial-code
+        path: "/code/reana-workflow-engine-serial:/code"
+    environment:
+      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+      - WDB_SOCKET_SERVER: "wdb"
+      - WDB_NO_BROWSER_AUTO_OPEN: "True"
+
+
