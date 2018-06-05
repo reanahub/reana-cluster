@@ -17,3 +17,5 @@
 {% include 'services/workflow-monitor-template.yaml' %}
 {% include 'services/wdb-template.yaml' %}
 {% include 'services/zeromq-msg-proxy-template.yaml' %}
+{% include 'clusterrole/service-reader.yaml' %}
+{% include 'clusterrolebinding/service-reader.yaml' %}

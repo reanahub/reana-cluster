@@ -99,6 +99,7 @@ class KubernetesBackend(ReanaBackendABC):
         self._corev1api = k8s_client.CoreV1Api()
         self._versionapi = k8s_client.VersionApi()
         self._extbetav1api = k8s_client.ExtensionsV1beta1Api()
+        self._rbacauthorizationv1api = k8s_client.RbacAuthorizationV1Api()
 
         self.k8s_api_client_config = k8s_api_client_config
 
@@ -342,6 +343,17 @@ class KubernetesBackend(ReanaBackendABC):
                         body=manifest,
                         namespace=manifest['metadata'].get('namespace',
                                                            'default'))
+                elif manifest['kind'] == 'ClusterRole':
+                    self._rbacauthorizationv1api.create_namespaced_role(
+                        body=manifest,
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
+                elif manifest['kind'] == 'ClusterRoleBinding':
+                    self._rbacauthorizationv1api.\
+                        create_namespaced_role_binding(
+                            body=manifest,
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
 
             except ApiException as e:  # Handle K8S API errors
 
