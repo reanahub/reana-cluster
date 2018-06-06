@@ -17,6 +17,7 @@ components:
     type: "docker"
     image: "reanahub/reana-job-controller:latest"
     environment:
+      - <<: *db_base_config
       - REANA_STORAGE_BACKEND: "LOCAL"
 
   reana-server:
