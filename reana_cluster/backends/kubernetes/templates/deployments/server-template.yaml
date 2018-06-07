@@ -15,6 +15,8 @@ spec:
         image: {{SERVER_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
+        - mountPath: "/reana"
+          name: reana-shared-volume
         {% set mountpoints=RS_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
@@ -32,6 +34,27 @@ spec:
         {% endfor %}
         {% endfor %}
       volumes:
+      - name: reana-shared-volume
+        {% if DEPLOYMENT == 'prod' %}
+          {% set shared_volume=ROOT_SHARED_VOLUME.PROD %}
+        {% else %}
+          {% set shared_volume=ROOT_SHARED_VOLUME.LOCAL %}
+        {% endif %}
+        {% if shared_volume.TYPE == 'cephfs' %}
+        cephfs:
+          monitors:
+          {% for monitor in shared_volume.MONITORS  %}
+           - {{monitor}}
+          {% endfor %}
+          path: {{shared_volume.PATH}}
+          user: {{shared_volume.USER}}
+          secretRef:
+            name: {{shared_volume.SECRET_NAME}}
+          readOnly: {{shared_volume.READONLY}}
+        {% elif shared_volume.TYPE == 'hostpath' %}
+        hostPath:
+          path: {{shared_volume.PATH}}
+        {% endif %}
         {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:
