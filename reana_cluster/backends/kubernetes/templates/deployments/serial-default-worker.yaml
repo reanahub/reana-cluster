@@ -37,9 +37,22 @@ spec:
           name: {{mount['name']}}
         {% endfor %}
       volumes:
-      - hostPath:
-          path: /reana/default
-        name: default-shared-volume
+      - name: default-shared-volume
+        {%- if DEPLOYMENT == 'prod' %}
+        cephfs:
+          monitors:
+          {% for monitor in CEPHFS_MONITORS  %}
+           - {{monitor}}
+          {% endfor %}
+          path: "{{ROOT_PATH}}/default"
+          user: {{CEPHFS_USER}}
+          secretRef:
+            name: {{CEPHFS_SECRET_NAME}}
+          readOnly: {{CEPHFS_READONLY}}
+        {% else %}
+        hostPath:
+            path: "{{ROOT_PATH}}/default"
+        {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:

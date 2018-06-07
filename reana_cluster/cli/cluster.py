@@ -135,20 +135,20 @@ def init(ctx, skip_initialization, output):
     """Initialize REANA cluster."""
     try:
         backend = ctx.obj.backend
-
-        init_db()
-        click.echo(click.style('DB Created.', fg='green'))
-
         if not skip_initialization:
+            init_db()
+            click.echo(click.style('DB Created.', fg='green'))
             logging.info('Connecting to {cluster} at {url}'
                          .format(cluster=backend.cluster_type,
                                  url=backend.cluster_url))
             backend.init()
+            click.echo(click.style("REANA cluster is initialised.", fg='green'))
 
         if output:
             path = click.format_filename(output)
-            logging.info('Writing deployable REANA cluster configuration '
-                         'to {0}'.format(path))
+            click.echo(click.style(
+                'Writing deployable REANA cluster configuration '
+                'to {0}.'.format(path), fg='green'))
 
             for manifest in backend.cluster_conf:
 
@@ -167,8 +167,6 @@ def init(ctx, skip_initialization, output):
 
                 with click.open_file(filepath, mode='w+') as output_file:
                     yaml.dump(manifest, output_file, default_flow_style=False)
-
-        click.echo(click.style("REANA cluster is initialised", fg='green'))
 
     except Exception as e:
         logging.exception(str(e))

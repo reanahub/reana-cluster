@@ -1,27 +1,26 @@
-{% for worker in WORKERS %}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
+  name: yadage-default-worker
 spec:
-  replicas: {{worker.REPLICAS}}
+  replicas: 1
   template:
     metadata:
       labels:
-        app: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
+        app: yadage-default-worker
     spec:
       containers:
-      - name: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-worker
+      - name: yadage-default-worker
         image: {{WORKFLOW_ENGINE_YADAGE_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         env:
         - name: QUEUE_ENV
-          value: {{worker.WORKFLOW_ENGINE.NAME}}-{{worker.EXPERIMENT}}-queue
+          value: yadage-default-queue
         - name: REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT
-          value: {{worker.EXPERIMENT}}
+          value: default
         - name: SHARED_VOLUME_PATH
-          value: {{worker.SHARED_VOLUME_PATH.MOUNT_POINT}}
+          value: /data
         {% set environment=RWEYADAGE_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
@@ -30,38 +29,32 @@ spec:
         {% endfor %}
         {% endfor %}
         volumeMounts:
-        - name: {{worker.EXPERIMENT}}-shared-volume
-          mountPath: {{worker.SHARED_VOLUME_PATH.MOUNT_POINT}}
+        - name: default-shared-volume
+          mountPath: /data
         {% set mountpoints=RWEYADAGE_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
           name: {{mount['name']}}
         {% endfor %}
       volumes:
-      - name: {{worker.EXPERIMENT}}-shared-volume
+      - name: default-shared-volume
         {%- if DEPLOYMENT == 'prod' %}
-          {% set shared_volume=worker.SHARED_VOLUME_PATH.PROD %}
-        {% else %}
-          {% set shared_volume=worker.SHARED_VOLUME_PATH.LOCAL %}
-        {% endif -%}
-        {% if shared_volume.TYPE == 'cephfs' %}
         cephfs:
           monitors:
-          {% for monitor in shared_volume.MONITORS  %}
+          {% for monitor in CEPHFS_MONITORS  %}
            - {{monitor}}
           {% endfor %}
-          path: {{shared_volume.PATH}}
-          user: {{shared_volume.USER}}
+          path: "{{ROOT_PATH}}/default"
+          user: {{CEPHFS_USER}}
           secretRef:
-            name: {{shared_volume.SECRET_NAME}}
-          readOnly: {{shared_volume.READONLY}}
-        {% elif shared_volume.TYPE == 'hostpath' %}
+            name: {{CEPHFS_SECRET_NAME}}
+          readOnly: {{CEPHFS_READONLY}}
+        {% else %}
         hostPath:
-            path: {{shared_volume.PATH}}
+            path: "{{ROOT_PATH}}/default"
         {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:
           path: {{mount['path'].split(':')[0]}}
       {% endfor %}
-{% endfor %}

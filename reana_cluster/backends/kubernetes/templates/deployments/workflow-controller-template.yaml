@@ -36,24 +36,19 @@ spec:
       volumes:
       - name: reana-shared-volume
         {% if DEPLOYMENT == 'prod' %}
-          {% set shared_volume=ROOT_SHARED_VOLUME.PROD %}
-        {% else %}
-          {% set shared_volume=ROOT_SHARED_VOLUME.LOCAL %}
-        {% endif %}
-        {% if shared_volume.TYPE == 'cephfs' %}
         cephfs:
           monitors:
-          {% for monitor in shared_volume.MONITORS  %}
+          {% for monitor in CEPHFS_MONITORS  %}
            - {{monitor}}
           {% endfor %}
-          path: {{shared_volume.PATH}}
-          user: {{shared_volume.USER}}
+          path: {{ROOT_PATH}}
+          user: {{CEPHFS_USER}}
           secretRef:
-            name: {{shared_volume.SECRET_NAME}}
-          readOnly: {{shared_volume.READONLY}}
-        {% elif shared_volume.TYPE == 'hostpath' %}
+            name: {{CEPHFS_SECRET_NAME}}
+          readOnly: {{CEPHFS_READONLY}}
+        {% else %}
         hostPath:
-          path: {{shared_volume.PATH}}
+          path: {{ROOT_PATH}}
         {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}

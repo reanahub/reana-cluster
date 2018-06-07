@@ -58,7 +58,8 @@ class KubernetesBackend(ReanaBackendABC):
                  cluster_spec,
                  cluster_conf=None,
                  kubeconfig=None,
-                 kubeconfig_context=None):
+                 kubeconfig_context=None,
+                 production=False):
         """Initialise Kubernetes specific ReanaBackend-object.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -76,6 +77,8 @@ class KubernetesBackend(ReanaBackendABC):
 
         :param kubeconfig_context: set the active context. If is set to `None`,
             current_context from config file will be used.
+        :param production: Boolean which represents whether REANA is
+            is configured with production setup (using CEPH) or not.
 
         """
         logging.debug('Creating a ReanaBackend object '
@@ -105,7 +108,7 @@ class KubernetesBackend(ReanaBackendABC):
 
         self.cluster_spec = cluster_spec
         self.cluster_conf = cluster_conf or \
-            self.generate_configuration(cluster_spec)
+            self.generate_configuration(cluster_spec, production=production)
 
     @property
     def cluster_type(self):
@@ -137,11 +140,13 @@ class KubernetesBackend(ReanaBackendABC):
         return self.kubeconfig
 
     @classmethod
-    def generate_configuration(cls, cluster_spec):
+    def generate_configuration(cls, cluster_spec, production=False):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
             cluster spec file.
+        :param production: Boolean which represents whether REANA is
+            deployed with production setup (using CEPH) or not.
 
         :return: A generator/iterable of generated Kubernetes YAML manifests
             as Python objects.
@@ -161,6 +166,9 @@ class KubernetesBackend(ReanaBackendABC):
 
                 # Load backend conf params
                 backend_conf_parameters = yaml.load(f.read())
+                # change type of deployment (prod|local) if requested
+                if production or cluster_spec['cluster'].get('production'):
+                    backend_conf_parameters['DEPLOYMENT'] = 'prod'
 
                 # Would it be better to combine templates or populated
                 # templates in Python code for improved extensibility?

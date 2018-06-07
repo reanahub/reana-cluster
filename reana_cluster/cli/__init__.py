@@ -67,8 +67,12 @@ class Config(object):
     '--skip-validation', is_flag=True,
     help='If set, specifications file is not validated before '
          'starting the initialization.')
+@click.option(
+    '--prod', is_flag=True,
+    help='If set, REANA will use a production setup. For now it only affects '
+         ' the storage backend, CEPH if production otherwise local storage.')
 @click.pass_context
-def cli(ctx, loglevel, skip_validation, file):
+def cli(ctx, loglevel, skip_validation, file, prod):
     """Command line application for managing a REANA cluster."""
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
@@ -86,7 +90,8 @@ def cli(ctx, loglevel, skip_validation, file):
         logging.info("Cluster type specified in cluster "
                      "specifications file is '{}'"
                      .format(cluster_type))
-        ctx.obj.backend = supported_backends[cluster_type](cluster_spec)
+        ctx.obj.backend = supported_backends[cluster_type](cluster_spec,
+                                                           production=prod)
 
     # This might be unnecessary since validation of cluster specifications
     # file is done against schema and schema should include the supported
