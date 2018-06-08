@@ -491,8 +491,24 @@ class KubernetesBackend(ReanaBackendABC):
                 elif manifest['kind'] == 'Service':
                     self._corev1api.delete_namespaced_service(
                         name=manifest['metadata']['name'],
+                        body=k8s_client.V1DeleteOptions(),
                         namespace=manifest['metadata'].get('namespace',
                                                            'default'))
+
+                elif manifest['kind'] == 'ClusterRole':
+                    self._rbacauthorizationv1api.delete_namespaced_role(
+                        name=manifest['metadata']['name'],
+                        body=k8s_client.V1DeleteOptions(),
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
+
+                elif manifest['kind'] == 'ClusterRoleBinding':
+                    self._rbacauthorizationv1api.\
+                        delete_namespaced_role_binding(
+                            name=manifest['metadata']['name'],
+                            body=k8s_client.V1DeleteOptions(),
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
 
             except ApiException as e:  # Handle K8S API errors
 
