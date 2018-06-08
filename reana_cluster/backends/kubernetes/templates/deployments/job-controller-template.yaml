@@ -26,6 +26,8 @@ spec:
           name: {{mount['name']}}
         {% endfor %}
         env:
+        - name: SHARED_VOLUME_PATH_ROOT
+          value: "{{ROOT_PATH}}"
         - name: REANA_STORAGE_BACKEND
           value: {% if DEPLOYMENT == 'prod' %}CEPHFS{% else %}LOCAL{% endif %}
         {% set environment=RJC_ENVIRONMENT %}

@@ -142,7 +142,8 @@ def init(ctx, skip_initialization, output):
                          .format(cluster=backend.cluster_type,
                                  url=backend.cluster_url))
             backend.init()
-            click.echo(click.style("REANA cluster is initialised.", fg='green'))
+            click.echo(
+                click.style("REANA cluster is initialised.", fg='green'))
 
         if output:
             path = click.format_filename(output)
