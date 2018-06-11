@@ -51,7 +51,7 @@ spec:
           readOnly: {{CEPHFS_READONLY}}
         {% else %}
         hostPath:
-            path: "{{ROOT_PATH}}/latest"
+            path: "{{ROOT_PATH}}/default"
         {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
