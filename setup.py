@@ -63,13 +63,13 @@ setup_requires = [
 
 install_requires = [
     'click>=6.7',
-    'Flask>=0.11',
     'Jinja2>=2.9.6',
     'jsonschema>=2.6.0',
     'kubernetes>=6.0.0',
     'PyYAML>=3.12',
-    'tablib>=0.12.1',
     'reana-commons',
+    'tablib>=0.12.1',
+    'urllib3==1.22',
 ]
 
 packages = find_packages()
