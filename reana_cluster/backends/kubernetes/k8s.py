@@ -170,6 +170,10 @@ class KubernetesBackend(ReanaBackendABC):
                 if production or cluster_spec['cluster'].get('production'):
                     backend_conf_parameters['DEPLOYMENT'] = 'prod'
 
+                if cluster_spec['cluster'].get('root_path'):
+                    backend_conf_parameters['ROOT_PATH'] = \
+                        cluster_spec['cluster'].get('root_path')
+
                 # Would it be better to combine templates or populated
                 # templates in Python code for improved extensibility?
                 # Just drop a .yaml template and add necessary to config.yaml
