@@ -17,3 +17,4 @@
 {% include 'services/zeromq-msg-proxy-template.yaml' %}
 {% include 'clusterrole/service-reader.yaml' %}
 {% include 'clusterrolebinding/service-reader.yaml' %}
+{% include 'ingress/reana-ingress.yaml' %}

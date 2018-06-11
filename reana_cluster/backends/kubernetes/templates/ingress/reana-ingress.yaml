@@ -1,0 +1,14 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend
+spec:
+  rules:
+  - host: {{REANA_URL}}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: server
+          servicePort: 80

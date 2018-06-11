@@ -254,6 +254,9 @@ class KubernetesBackend(ReanaBackendABC):
                 # Render the template using given backend config parameters
                 cluster_conf = template.\
                     render(backend_conf_parameters,
+                           REANA_URL=cluster_spec['cluster'].get(
+                               'reana_url',
+                               'reana.cern.ch'),
                            SERVER_IMAGE=rs_img,
                            JOB_CONTROLLER_IMAGE=rjc_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
@@ -367,6 +370,12 @@ class KubernetesBackend(ReanaBackendABC):
                 elif manifest['kind'] == 'ClusterRoleBinding':
                     self._rbacauthorizationv1api.\
                         create_namespaced_role_binding(
+                            body=manifest,
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
+
+                elif manifest['kind'] == 'Ingress':
+                    self._extbetav1api.create_namespaced_ingress(
                             body=manifest,
                             namespace=manifest['metadata'].get('namespace',
                                                                'default'))
@@ -513,6 +522,13 @@ class KubernetesBackend(ReanaBackendABC):
                 elif manifest['kind'] == 'ClusterRoleBinding':
                     self._rbacauthorizationv1api.\
                         delete_namespaced_role_binding(
+                            name=manifest['metadata']['name'],
+                            body=k8s_client.V1DeleteOptions(),
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
+
+                elif manifest['kind'] == 'Ingress':
+                    self._extbetav1api.delete_namespaced_ingress(
                             name=manifest['metadata']['name'],
                             body=k8s_client.V1DeleteOptions(),
                             namespace=manifest['metadata'].get('namespace',

@@ -146,7 +146,7 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      $ curl http://test-reana.cern.ch/ping
+      (reana) $ curl http://test-reana.cern.ch/api/ping
       {"message": "OK", "status": "200"}
 
 
