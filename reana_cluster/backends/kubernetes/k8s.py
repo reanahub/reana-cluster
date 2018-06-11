@@ -174,6 +174,10 @@ class KubernetesBackend(ReanaBackendABC):
                     backend_conf_parameters['ROOT_PATH'] = \
                         cluster_spec['cluster'].get('root_path')
 
+                if cluster_spec['cluster'].get('cephfs_monitors'):
+                    backend_conf_parameters['CEPHFS_MONITORS'] = \
+                        cluster_spec['cluster'].get('cephfs_monitors')
+
                 # Would it be better to combine templates or populated
                 # templates in Python code for improved extensibility?
                 # Just drop a .yaml template and add necessary to config.yaml

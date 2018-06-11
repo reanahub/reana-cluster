@@ -5,8 +5,8 @@ Getting started
 
 This tutorial explains how to quick-start with REANA-Cluster.
 
-Deploy REANA cluster locally
-----------------------------
+Deploy locally
+--------------
 
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
@@ -65,6 +65,90 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
       $ reana-cluster down
       $ minikube stop
+
+Deploy on CERN infrastructure
+-----------------------------
+
+1. Log into `lxplus-cloud`
+   (CC7 subset of lxplus with recent OpenStack clients) and create a working
+   directory for reana:
+
+   .. code-block:: console
+
+      $ ssh lxplus-cloud.cern.ch
+      $ mkdir reana && cd reana
+
+2. `Setup your OpenStack account <https://clouddocs.web.cern.ch/clouddocs/tutorial/create_your_openstack_profile.html>`_
+   and create a Kubernetes cluster following the
+   `official documentation <https://clouddocs.web.cern.ch/clouddocs/containers/quickstart.html#kubernetes>`_.
+
+.. note::
+
+   For now, you will have to create the cluster with Kubernetes version
+   1.9.3 since 1.10.1 introduces a
+   `bug with backoff limit <https://github.com/kubernetes/kubernetes/issues/54870>`_.
+
+   .. code-block:: console
+
+      $ openstack coe cluster create reana-cloud --keypair mykey
+          --node-count 1
+          --cluster-template kubernetes
+          --master-flavor m2.medium
+          --flavor m2.medium
+          --labels influx_grafana_dashboard_enabled=true
+          --labels kube_tag="v1.9.3"
+          --labels cvmfs_tag=qa
+          --labels flannel_backend=vxlan
+          --labels container_infra_prefix=gitlab-registry.cern.ch/cloud/atomic-system-containers/
+          --labels ingress_controller=traefik
+
+3. Load the configuration to connect to the Kubernetes cluster and wait for
+   the pods to be created:
+
+   .. code-block:: console
+
+      $ $(openstack coe cluster config reana-cloud)
+      $ kubectl get pods -w
+
+4. Set one of the nodes (``kubectl get nodes``) to be an ingress controller
+   and create a landb alias:
+
+   .. code-block:: console
+
+      $ kubectl label node <node-name> role=ingress
+      $ openstack server set --property landb-alias=reana <ingress-node>
+
+5. Since Python3 does not come by default we have to use the `slc` command to
+   activate it and we create a virtual environment for REANA:
+
+   .. code-block:: console
+
+      $ scl enable rh-python36 bash
+      $ virtualenv reana
+      $ source reana/bin/activate
+
+6. Install `reana-cluster` (since `reana-commons` is not yet released we have to
+   install it manually):
+
+   .. code-block:: console
+
+      (reana) $ pip install git+git://github.com/reanahub/reana-commons.git@master#egg=reana-commons
+      (reana) $ pip install git+git://github.com/reanahub/reana-cluster.git@master#egg=reana-cluster
+
+7.  Set the database URI and instantiate REANA cluster:
+
+   .. code-block:: console
+
+      (reana) $ export REANA_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://reana:reana@<db-server>:5432/reana
+      (reana) $ reana-cluster init
+
+8. Make REANA accessible from outside:
+
+   .. code-block:: console
+
+      $ curl http://test-reana.cern.ch/ping
+      {"message": "OK", "status": "200"}
+
 
 Next steps
 ----------
