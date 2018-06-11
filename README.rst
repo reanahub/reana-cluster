@@ -1,6 +1,6 @@
-=============
-REANA Cluster
-=============
+===============
+ REANA-Cluster
+===============
 
 .. image:: https://img.shields.io/travis/reanahub/reana-cluster.svg
    :target: https://travis-ci.org/reanahub/reana-server
@@ -23,9 +23,9 @@ REANA Cluster
 About
 -----
 
-REANA-Cluster is a component of the `REANA <http://reanahub.io/>`_ reusable
-analysis platform. It takes care of deploying and managing cluster components on
-Kubernetes.
+REANA-Cluster is a component of the `REANA <http://www.reana.io/>`_ reusable and
+reproducible research data analysis platform. REANA-Cluster takes care of
+deploying and managing cluster services on Kubernetes.
 
 Features
 --------
@@ -43,4 +43,5 @@ Useful links
 - `source code <https://github.com/reanahub/reana-cluster>`_
 
 For more information about the REANA reusable analysis platform, please see the
-general `REANA documentation <http://reana.readthedocs.io/>`_.
+`REANA project <http://www.reana.io>`_ home page and the general `REANA
+documentation <http://reana.readthedocs.io/>`_ pages.
