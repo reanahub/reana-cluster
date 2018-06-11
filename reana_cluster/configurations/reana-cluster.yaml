@@ -7,7 +7,7 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:0.2.0"
+    image: "reanahub/reana-workflow-controller:0.3.0.dev20180503"
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
@@ -15,14 +15,14 @@ components:
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:0.2.0"
+    image: "reanahub/reana-job-controller:0.3.0.dev20180503"
     environment:
       - <<: *db_base_config
       - REANA_STORAGE_BACKEND: "LOCAL"
 
   reana-server:
     type: "docker"
-    image: "reanahub/reana-server:0.2.0"
+    image: "reanahub/reana-server:0.3.0.dev20180503"
 
   reana-message-broker:
     type: "docker"
@@ -36,7 +36,7 @@ components:
 
   reana-workflow-engine-yadage:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-yadage:0.2.0"
+    image: "reanahub/reana-workflow-engine-yadage:0.3.0.dev20180503"
     environment:
       - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
@@ -50,6 +50,6 @@ components:
 
   reana-workflow-engine-serial:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-serial:latest"
+    image: "reanahub/reana-workflow-engine-serial:0.3.0.dev20180418"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
