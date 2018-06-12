@@ -118,7 +118,17 @@ Deploy on CERN infrastructure
       $ kubectl label node <node-name> role=ingress
       $ openstack server set --property landb-alias=reana <ingress-node>
 
-5. Since Python3 does not come by default we have to use the `slc` command to
+5. Create or add ssl secrets:
+
+   .. code-block:: console
+
+      $ openssl req -x509 -nodes -days 365 -newkey rsa:2048
+            -keyout /tmp/tls.key -out /tmp/tls.crt
+            -subj "/CN=reana.cern.ch"
+      $ kubectl create secret tls reana-ssl-secrets
+            --key /tmp/tls.key --cert /tmp/tls.crt
+
+6. Since Python3 does not come by default we have to use the `slc` command to
    activate it and we create a virtual environment for REANA:
 
    .. code-block:: console
@@ -127,7 +137,7 @@ Deploy on CERN infrastructure
       $ virtualenv reana
       $ source reana/bin/activate
 
-6. Install `reana-cluster` (since `reana-commons` is not yet released we have to
+7. Install `reana-cluster` (since `reana-commons` is not yet released we have to
    install it manually):
 
    .. code-block:: console
@@ -135,14 +145,14 @@ Deploy on CERN infrastructure
       (reana) $ pip install git+git://github.com/reanahub/reana-commons.git@master#egg=reana-commons
       (reana) $ pip install git+git://github.com/reanahub/reana-cluster.git@master#egg=reana-cluster
 
-7.  Set the database URI and instantiate REANA cluster:
+8.  Set the database URI and instantiate REANA cluster:
 
    .. code-block:: console
 
       (reana) $ export REANA_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://reana:reana@<db-server>:5432/reana
       (reana) $ reana-cluster init
 
-8. Make REANA accessible from outside:
+9. Make REANA accessible from outside:
 
    .. code-block:: console
 
