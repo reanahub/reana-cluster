@@ -102,6 +102,22 @@ Deploy on CERN infrastructure
           --labels container_infra_prefix=gitlab-registry.cern.ch/cloud/atomic-system-containers/
           --labels ingress_controller=traefik
 
+.. note::
+
+   For now, the traefik ingress needs to be amended so permissions are set
+   correctly (once fixed in OpenStack this will come automatically.
+
+   .. code-bloack:: console
+
+      $ kubectl -n kube-system edit ds/ingress-traefik
+      # add: `serviceAccountName: ingress-traefik` under
+      # `spec.template.spec`.
+      # Restart the Ingress controller so it uses the correct permissions.
+      $ get pods -n kube-system  | grep ingress
+      ingress-traefik-666ee                   1/1       Running   0          2m
+      $ kubectl delete ingress-traefik-666ee -n kube-system
+
+
 3. Load the configuration to connect to the Kubernetes cluster and wait for
    the pods to be created:
 
