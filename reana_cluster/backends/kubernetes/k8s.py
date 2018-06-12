@@ -363,16 +363,11 @@ class KubernetesBackend(ReanaBackendABC):
                         namespace=manifest['metadata'].get('namespace',
                                                            'default'))
                 elif manifest['kind'] == 'ClusterRole':
-                    self._rbacauthorizationv1api.create_namespaced_role(
-                        body=manifest,
-                        namespace=manifest['metadata'].get('namespace',
-                                                           'default'))
+                    self._rbacauthorizationv1api.create_cluster_role(
+                        body=manifest)
                 elif manifest['kind'] == 'ClusterRoleBinding':
                     self._rbacauthorizationv1api.\
-                        create_namespaced_role_binding(
-                            body=manifest,
-                            namespace=manifest['metadata'].get('namespace',
-                                                               'default'))
+                        create_cluster_role_binding(body=manifest)
 
                 elif manifest['kind'] == 'Ingress':
                     self._extbetav1api.create_namespaced_ingress(
@@ -383,7 +378,11 @@ class KubernetesBackend(ReanaBackendABC):
             except ApiException as e:  # Handle K8S API errors
 
                 if e.status == 409:
-                    pass
+                    logging.info(
+                        '{0} {1} already exists, continuing ...'.format(
+                            manifest['kind'],
+                            manifest['metadata'].get('name')))
+                    continue
 
                 if e.status == 400:
                     pass
@@ -513,19 +512,15 @@ class KubernetesBackend(ReanaBackendABC):
                                                            'default'))
 
                 elif manifest['kind'] == 'ClusterRole':
-                    self._rbacauthorizationv1api.delete_namespaced_role(
+                    self._rbacauthorizationv1api.delete_cluster_role(
                         name=manifest['metadata']['name'],
-                        body=k8s_client.V1DeleteOptions(),
-                        namespace=manifest['metadata'].get('namespace',
-                                                           'default'))
+                        body=k8s_client.V1DeleteOptions())
 
                 elif manifest['kind'] == 'ClusterRoleBinding':
                     self._rbacauthorizationv1api.\
-                        delete_namespaced_role_binding(
+                        delete_cluster_role_binding(
                             name=manifest['metadata']['name'],
-                            body=k8s_client.V1DeleteOptions(),
-                            namespace=manifest['metadata'].get('namespace',
-                                                               'default'))
+                            body=k8s_client.V1DeleteOptions())
 
                 elif manifest['kind'] == 'Ingress':
                     self._extbetav1api.delete_namespaced_ingress(
