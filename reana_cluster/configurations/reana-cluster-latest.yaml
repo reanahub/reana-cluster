@@ -23,6 +23,8 @@ components:
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:latest"
+    environment:
+      - <<: *db_base_config
 
   reana-message-broker:
     type: "docker"
