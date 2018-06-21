@@ -2,7 +2,7 @@ cluster:
   type: "kubernetes"
   version: "v1.9.4"
   db_config: &db_base_config
-    - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@reana-db:5432/reana"
+    - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
 
 components:
   reana-workflow-controller:

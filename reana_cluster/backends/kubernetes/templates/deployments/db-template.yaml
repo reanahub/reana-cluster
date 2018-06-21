@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: postgres:9.6.2
+        ports:
+        - containerPort: 5432
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: POSTGRES_USER
+          value: reana
+        - name: POSTGRES_DB
+          value: reana
+        - name: POSTGRESQL_PASSWORD
+          value: reana
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: data
+          emptyDir: {}
