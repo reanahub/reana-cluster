@@ -11,7 +11,7 @@ spec:
         app: workflow-controller
     spec:
       containers:
-      - name: workflow-controller
+      - name: rest
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
@@ -25,6 +25,18 @@ spec:
         ports:
         - containerPort: 5000
           name: http
+        env:
+        {% set environment=RWFC_ENVIRONMENT %}
+        {% for envvar in environment %}
+        {% for key, value in envvar.items() %}
+        - name: {{key}}
+          value: "{{value}}"
+        {% endfor %}
+        {% endfor %}
+      - name: job-status-consumer
+        image: {{WORKFLOW_CONTROLLER_IMAGE}}
+        command: ["flask", "consume-job-queue"]
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
         env:
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
