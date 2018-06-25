@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: wdb
-        image: kozea/wdb-server
+        image: kozea/wdb
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 1984
