@@ -36,6 +36,7 @@ components:
         path: "/code/reana-job-controller:/code"
     environment:
       - <<: *db_base_config
+      - SHARED_VOLUME_PATH: "/reana"
       - REANA_STORAGE_BACKEND: "LOCAL"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"

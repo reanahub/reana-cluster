@@ -45,6 +45,14 @@ spec:
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
         command: ["flask", "consume-job-queue"]
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        volumeMounts:
+        - mountPath: "/reana"
+          name: reana-shared-volume
+        {% set mountpoints=RWFC_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         env:
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
