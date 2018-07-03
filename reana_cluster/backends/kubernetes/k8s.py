@@ -23,6 +23,7 @@
 
 import json
 import logging
+import subprocess
 
 import pkg_resources
 import yaml
@@ -590,10 +591,11 @@ class KubernetesBackend(ReanaBackendABC):
             for item in nodeconf.items:
                 if item.metadata.name == 'minikube' or \
                         item.metadata.name == self.kubeconfig_context:
-                    # Running on minikube --> get ip-addr from status.addresses
-                    for address in item.status.addresses:
-                        if address.type == 'InternalIP':
-                            minikube_ip = address.address
+
+                    # Running on minikube --> get ip-addr
+                    minikube_ip = subprocess.check_output(['minikube', 'ip'])
+                    minikube_ip = minikube_ip.decode("utf-8")
+                    minikube_ip = minikube_ip.replace('\n', '')
 
             # Get ip-addresses and ports of the component (K8S service)
             comp = self._corev1api.read_namespaced_service(
