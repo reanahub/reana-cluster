@@ -107,7 +107,7 @@ Deploy on CERN infrastructure
    For now, the traefik ingress needs to be amended so permissions are set
    correctly (once fixed in OpenStack this will come automatically.
 
-   .. code-bloack:: console
+   .. code-block:: console
 
       $ kubectl -n kube-system edit ds/ingress-traefik
       # add: `serviceAccountName: ingress-traefik` under
