@@ -14,6 +14,10 @@ spec:
       - name: yadage-default-worker
         image: {{WORKFLOW_ENGINE_YADAGE_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        {%- if DEPLOYMENT != 'prod' %}
+        tty: true
+        stdin: true
+        {% endif %}
         env:
         - name: QUEUE_ENV
           value: yadage-default-queue

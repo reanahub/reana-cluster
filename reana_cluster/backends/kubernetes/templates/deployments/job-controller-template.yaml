@@ -14,6 +14,10 @@ spec:
       - name: job-controller
         image: {{JOB_CONTROLLER_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        {%- if DEPLOYMENT != 'prod' %}
+        tty: true
+        stdin: true
+        {% endif %}
         ports:
         - containerPort: 5000
           name: http
