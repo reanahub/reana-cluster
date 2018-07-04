@@ -3,10 +3,10 @@
 ===============
 
 .. image:: https://img.shields.io/travis/reanahub/reana-cluster.svg
-   :target: https://travis-ci.org/reanahub/reana-server
+   :target: https://travis-ci.org/reanahub/reana-cluster
 
 .. image:: https://img.shields.io/coveralls/reanahub/reana-cluster.svg
-   :target: https://coveralls.io/r/reanahub/reana-server
+   :target: https://coveralls.io/r/reanahub/reana-cluster
 
 .. image:: https://readthedocs.org/projects/docs/badge/?version=latest
    :target: https://reana-cluster.readthedocs.io/en/latest/?badge=latest
