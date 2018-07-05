@@ -13,6 +13,10 @@ spec:
       containers:
       - name: rest
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
+        {% if DEPLOYMENT != 'prod' %}
+        command: ["/bin/sh","-c"]
+        args: ["flask run --host=0.0.0.0"]
+        {% endif %}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         {%- if DEPLOYMENT != 'prod' %}
         tty: true

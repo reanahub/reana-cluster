@@ -13,6 +13,10 @@ spec:
       containers:
       - name: server
         image: {{SERVER_IMAGE}}
+        {% if DEPLOYMENT != 'prod' %}
+        command: ["/bin/sh","-c"]
+        args: ["flask db init; flask users create info@reana.io; flask run --host=0.0.0.0"]
+        {% endif %}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         {%- if DEPLOYMENT != 'prod' %}
         tty: true
