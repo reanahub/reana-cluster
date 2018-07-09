@@ -11,9 +11,9 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.9.1) and `minikube
+   (e.g. version 1.10.1) and `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   0.27.0):
+   0.28.0):
 
    .. code-block:: console
 
@@ -53,10 +53,10 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
       $ reana-cluster env
       export REANA_SERVER_URL=http://192.168.99.100:32732
+      $ eval $(reana-cluster env)
 
-   Please see the `reana-client <https://reana-client.readthedocs.io/>`_
-   documentation on how to run reusable analysis examples on your
-   locally-deployed cluster.
+7. You can now run REANA examples on the locally-deployed cluster using
+   `reana-client <https://reana-client.readthedocs.io/>`_.
 
 7. Note that after you finish testing REANA, you can delete the locally-deployed
    cluster and the Minikube virtual machine as follows:

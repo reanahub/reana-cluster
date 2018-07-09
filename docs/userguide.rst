@@ -14,9 +14,8 @@ depends on your operating system.
 Versions
 ~~~~~~~~
 
-For REANA v0.2.0, ``kubectl 1.9.1`` and ``minikube 0.23.0`` are known to work
-well. The later versions of Minikube were observed to lead to some networking
-troubles.
+For REANA v0.3.0, ``kubectl 1.9.4`` and ``minikube 0.28.0`` are known to work
+well.
 
 Arch Linux
 ~~~~~~~~~~
@@ -46,20 +45,20 @@ Here is one example of well-working versions for REANA v0.2.0:
 .. code-block:: console
 
    $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
-   docker 1:18.04.0-1
-   docker-compose 1.21.0-1
+   docker 1:18.05.0-2
+   docker-compose 1.21.2-1
    docker-machine 0.14.0-1
-   docker-machine-driver-kvm2 0.25.2-1
-   kubectl-bin 1.9.1-1
-   libvirt 4.2.0-1
-   minikube 0.23.0-1
-   python-docker 3.2.1-1
-   python-docker-pycreds 0.2.2-1
+   docker-machine-driver-kvm2 0.27.0-1
+   kubectl-bin 1.10.3-1
+   libvirt 4.4.0-3
+   minikube 0.28.0-1
+   python-docker 3.4.1-1
+   python-docker-pycreds 0.3.0-1
    python-dockerpty 0.4.1-2
-   qemu 2.11.1-2
-   virtualbox 5.2.8-1
-   virtualbox-guest-iso 5.2.8-1
-   virtualbox-host-modules-arch 5.2.8-11
+   qemu 2.12.0-1
+   virtualbox 5.2.14-1
+   virtualbox-guest-iso 5.2.14-1
+   virtualbox-host-modules-arch 5.2.14-1
 
 Start minikube
 --------------
@@ -69,19 +68,19 @@ running:
 
 .. code-block:: console
 
-   $ minikube start --kubernetes-version="v1.6.4"
+   $ minikube start --kubernetes-version="v1.9.4"
 
 or, in case of KVM2 hypervisor:
 
 .. code-block:: console
 
-   $ minikube start --kubernetes-version="v1.6.4" --vm-driver=kvm2
+   $ minikube start --kubernetes-version="v1.9.4" --vm-driver=kvm2
 
 You will see an output like:
 
 .. code-block:: console
 
-   Starting local Kubernetes v1.6.4 cluster...
+   Starting local Kubernetes v1.9.4 cluster...
    Starting VM...
    Getting VM IP address...
    Moving files into cluster...
@@ -90,6 +89,7 @@ You will see an output like:
    Setting up kubeconfig...
    Starting cluster components...
    Kubectl is now configured to use the cluster.
+   Loading cached images from config file.
 
 As seen from the output, Minikube startup routines already configured
 ``kubectl`` to interact with the newly created Kubernetes deployment, but it
@@ -127,52 +127,8 @@ how the configuration of each component should be set up. ``reana-cluster``
 expects to get this information via ``reana-cluster.yaml`` file that comes with
 the package:
 
-.. code-block:: yaml
-
-   cluster:
-     type: "kubernetes"
-     version: "v1.6.4"
-     url: "http://localhost"
-
-   components:
-     reana-workflow-controller:
-       type: "docker"
-       image: "reanahub/reana-workflow-controller:0.2.0"
-       environment:
-         - SHARED_VOLUME_PATH: "/reana"
-         - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
-
-     reana-job-controller:
-       type: "docker"
-       image: "reanahub/reana-job-controller:0.2.0"
-       environment:
-         - REANA_STORAGE_BACKEND: "LOCAL"
-
-     reana-server:
-       type: "docker"
-       image: "reanahub/reana-server:0.2.0"
-
-     reana-message-broker:
-       type: "docker"
-       image: "reanahub/reana-message-broker:0.2.0"
-
-     reana-workflow-monitor:
-       type: "docker"
-       image: "reanahub/reana-workflow-monitor:0.2.0"
-       environment:
-         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
-
-     reana-workflow-engine-yadage:
-       type: "docker"
-       image: "reanahub/reana-workflow-engine-yadage:0.2.0"
-       environment:
-         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
-
-     reana-workflow-engine-cwl:
-       type: "docker"
-       image: "reanahub/reana-workflow-engine-cwl:0.2.0"
-       environment:
-         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+.. literalinclude:: ../reana_cluster/configurations/reana-cluster.yaml
+   :language: yaml
 
 You can use the supplied ``reana-cluster.yaml``, or create your own custom
 configuration. For instance, if you wish to use a different Docker image for the
@@ -188,7 +144,7 @@ Initialising a REANA cluster is just a matter of running ``init`` command:
 .. code-block:: console
 
    $ reana-cluster init
-   REANA cluster is initialised
+   REANA cluster is initialised.
 
 If you have created a custom configuration, you can use the ``-f`` command-line
 option and specify your own file in the following way:
@@ -214,12 +170,10 @@ what is defined in REANA cluster specifications file via the ``verify`` command:
    workflow-monitor        match
    zeromq-msg-proxy        match
    yadage-default-worker   match
-   yadage-alice-worker     match
-   yadage-atlas-worker     match
-   yadage-cms-worker       match
-   yadage-lhcb-worker      match
    cwl-default-worker      match
+   serial-default-worker   match
    wdb                     match
+   db                      match
 
 Verify REANA cluster readiness
 ------------------------------
@@ -230,7 +184,6 @@ running the ``status`` command:
 .. code-block:: console
 
    $ reana-cluster status
-   COMPONENT               STATUS
    job-controller          Running
    message-broker          Running
    server                  Running
@@ -238,12 +191,10 @@ running the ``status`` command:
    workflow-monitor        Running
    zeromq-msg-proxy        Running
    yadage-default-worker   Running
-   yadage-alice-worker     Running
-   yadage-atlas-worker     Running
-   yadage-cms-worker       Running
-   yadage-lhcb-worker      Running
    cwl-default-worker      Running
+   serial-default-worker   Running
    wdb                     Running
+   db                      Running
    REANA cluster is ready.
 
 In the above example, everything is running and the REANA cluster is ready for
@@ -259,6 +210,12 @@ You can print the list of commands to configure the environment for the
 
    $ reana-cluster env
    export REANA_SERVER_URL=http://192.168.39.247:31106
+
+You can execute the displayed command easily as follows:
+
+.. code-block:: console
+
+   $ eval $(reana-cluster env)
 
 Delete REANA cluster deployment
 -------------------------------
