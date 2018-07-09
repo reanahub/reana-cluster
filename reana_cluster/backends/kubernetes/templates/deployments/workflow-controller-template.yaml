@@ -11,7 +11,7 @@ spec:
         app: workflow-controller
     spec:
       containers:
-      - name: rest
+      - name: rest-api-server
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
         {% if DEPLOYMENT != 'prod' %}
         command: ["/bin/sh","-c"]
