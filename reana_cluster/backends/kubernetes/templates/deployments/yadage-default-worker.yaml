@@ -48,14 +48,14 @@ spec:
           {% for monitor in CEPHFS_MONITORS  %}
            - {{monitor}}
           {% endfor %}
-          path: "{{ROOT_PATH}}/default"
+          path: "{{ROOT_PATH}}"
           user: {{CEPHFS_USER}}
           secretRef:
             name: {{CEPHFS_SECRET_NAME}}
           readOnly: {{CEPHFS_READONLY}}
         {% else %}
         hostPath:
-            path: "{{ROOT_PATH}}/default"
+            path: "{{ROOT_PATH}}"
         {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
