@@ -24,7 +24,7 @@ spec:
         - name: REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT
           value: default
         - name: SHARED_VOLUME_PATH
-          value: /data
+          value: /reana
         {% set environment=RWEYADAGE_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
@@ -34,7 +34,7 @@ spec:
         {% endfor %}
         volumeMounts:
         - name: default-shared-volume
-          mountPath: /data
+          mountPath: /reana
         {% set mountpoints=RWEYADAGE_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
