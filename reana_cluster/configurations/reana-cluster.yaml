@@ -19,6 +19,7 @@ components:
     image: "reanahub/reana-job-controller:0.3.0.dev20180625"
     environment:
       - <<: *db_base_config
+      - SHARED_VOLUME_PATH: "/reana"
       - REANA_STORAGE_BACKEND: "LOCAL"
 
   reana-server:
