@@ -859,3 +859,35 @@ class KubernetesBackend(ReanaBackendABC):
                     _write_status(current_pod, manifest['metadata']['name'],
                                   components_status)
         return components_status
+
+    def exec_into_component(self, component_name, command):
+        """Execute a command inside a component.
+
+        :param component_name: Name of the component where the command will be
+            executed.
+        :param command: String which represents the command to execute inside
+            the component.
+        :return: Returns a string which represents the output of the command.
+        """
+        available_components = [manifest['metadata']['name'] for manifest in
+                                self.cluster_conf
+                                if manifest['kind'] == 'Deployment']
+
+        if component_name not in available_components:
+            raise Exception('{0} does not exist.'.format(component_name))
+
+        component_pod_name = subprocess.check_output([
+            'kubectl', 'get', 'pods',
+            '-l=app={component_name}'.format(component_name=component_name),
+            '-o', 'jsonpath="{.items[0].metadata.name}"'
+        ]).decode('UTF-8').replace('"', '')
+
+        component_shell = [
+            'kubectl', 'exec', '-t', component_pod_name, '--']
+
+        command_inside_component = []
+        command_inside_component.extend(component_shell)
+        command_inside_component.extend(command)
+
+        output = subprocess.check_output(command_inside_component)
+        return output.decode('UTF-8')

@@ -26,6 +26,7 @@ import errno
 import logging
 import os
 import sys
+import traceback
 
 import click
 import yaml
@@ -78,26 +79,51 @@ def get(ctx, component, namespace):
     '--namespace',
     default='default',
     help='Namespace of the components which configuration should be produced.')
+@click.option(
+    '--all', 'all_',
+    is_flag=True,
+    help='Additional environment variables, such as REANA_ACCESS_TOKEN, will '
+         'be set.')
 @click.pass_context
-def env(ctx, namespace):
+def env(ctx, namespace, all_):
     """Produce shell exportable list of REANA components' urls."""
     try:
         export_lines = []
-        component_export_line = 'export {env_variable_name}={component_url}'
+        component_export_line = 'export {env_var_name}={env_var_value}'
         for component in reana_env_exportable_info_components:
             component_info = ctx.obj.backend.get_component(
                 component, namespace)
             export_lines.append(component_export_line.format(
-                env_variable_name='{0}_URL'.format(
+                env_var_name='{0}_URL'.format(
                     component.upper().replace('-', '_')),
-                component_url='{schema}://{ip}:{port}'.format(
+                env_var_value='{schema}://{ip}:{port}'.format(
                     schema='http',
                     ip=component_info['external_ip_s'][0],
                     port=component_info['ports'][0]),
             ))
+
+        if all_:
+            get_admin_token_sql_query_cmd = [
+                'psql', '-U', 'reana', 'reana', '-c',
+                'SELECT access_token FROM user_']
+            sql_query_result = \
+                ctx.obj.backend.exec_into_component(
+                    'db',
+                    get_admin_token_sql_query_cmd)
+            # We get the token from the SQL query result
+            admin_access_token = sql_query_result.splitlines()[2].strip()
+            export_lines.append(component_export_line.format(
+                env_var_name='REANA_ACCESS_TOKEN',
+                env_var_value=admin_access_token))
+
         click.echo('\n'.join(export_lines))
     except Exception as e:
+        logging.debug(traceback.format_exc())
         logging.debug(str(e))
+        click.echo(
+            click.style('Environment variables could not be generated: \n{}'
+                        .format(str(e)), fg='red'),
+            err=True)
 
 
 @click.command(help='NOT IMPLEMENTED.\n'
