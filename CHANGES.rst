@@ -1,6 +1,13 @@
 Changes
 =======
 
+Version 0.3.0 (2018-08-10)
+--------------------------
+
+- Adds REANA Workflow Engine Serial component.
+- Upgrades to latest Kubernetes version.
+- Allows ``ipdb`` debugging on components running inside the cluster.
+
 Version 0.2.0 (2018-04-19)
 --------------------------
 
