@@ -11,7 +11,7 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.10.1) and `minikube
+   (e.g. version 1.11.2) and `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
    0.28.0):
 
@@ -53,7 +53,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
       $ reana-cluster env
       export REANA_SERVER_URL=http://192.168.99.100:32732
-      $ eval $(reana-cluster env)
+      $ eval $(reana-cluster env --all)
 
 7. You can now run REANA examples on the locally-deployed cluster using
    `reana-client <https://reana-client.readthedocs.io/>`_.
@@ -153,19 +153,16 @@ Deploy on CERN infrastructure
       $ virtualenv reana
       $ source reana/bin/activate
 
-7. Install `reana-cluster` (since `reana-commons` is not yet released we have to
-   install it manually):
+7. Install `reana-cluster`:
 
    .. code-block:: console
 
-      (reana) $ pip install git+git://github.com/reanahub/reana-commons.git@master#egg=reana-commons
-      (reana) $ pip install git+git://github.com/reanahub/reana-cluster.git@master#egg=reana-cluster
+      (reana) $ pip install reana-cluster
 
 8.  Set the database URI and instantiate REANA cluster:
 
    .. code-block:: console
 
-      (reana) $ export REANA_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://reana:reana@<db-server>:5432/reana
       (reana) $ reana-cluster init
 
 9. Make REANA accessible from outside:
