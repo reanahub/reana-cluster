@@ -62,13 +62,13 @@ setup_requires = [
 ]
 
 install_requires = [
-    'click>=6.7',
-    'Jinja2>=2.9.6',
-    'jsonschema>=2.6.0',
-    'kubernetes>=6.0.0',
-    'PyYAML>=3.12',
+    'click>=6.7,<6.8',
+    'Jinja2>=2.9.6,<2.11',
+    'jsonschema>=2.6.0,<2.7',
+    'kubernetes>=6.0.0,<7.1',
+    'PyYAML>=3.12,<3.14',
     'reana-commons>=0.3.1,<0.4',
-    'tablib>=0.12.1',
+    'tablib>=0.12.1,<0.13',
     'urllib3==1.22',
 ]
 
