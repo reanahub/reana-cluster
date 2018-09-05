@@ -53,7 +53,9 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
       $ reana-cluster env
       export REANA_SERVER_URL=http://192.168.99.100:32732
-      $ eval $(reana-cluster env --all)
+      $ eval $(reana-cluster env --include-admin-token)
+
+
 
 7. You can now run REANA examples on the locally-deployed cluster using
    `reana-client <https://reana-client.readthedocs.io/>`_.

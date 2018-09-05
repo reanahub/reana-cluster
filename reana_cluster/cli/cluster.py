@@ -80,12 +80,13 @@ def get(ctx, component, namespace):
     default='default',
     help='Namespace of the components which configuration should be produced.')
 @click.option(
-    '--all', 'all_',
+    '--include-admin-token',
     is_flag=True,
-    help='Additional environment variables, such as REANA_ACCESS_TOKEN, will '
-         'be set.')
+    help='Display also commands how to set REANA_ACCESS_TOKEN for '
+         'administrator access. Use with care! Do no share with regular '
+         'users.')
 @click.pass_context
-def env(ctx, namespace, all_):
+def env(ctx, namespace, include_admin_token):
     """Produce shell exportable list of REANA components' urls."""
     try:
         export_lines = []
@@ -102,7 +103,7 @@ def env(ctx, namespace, all_):
                     port=component_info['ports'][0]),
             ))
 
-        if all_:
+        if include_admin_token:
             get_admin_token_sql_query_cmd = [
                 'psql', '-U', 'reana', 'reana', '-c',
                 'SELECT access_token FROM user_']
