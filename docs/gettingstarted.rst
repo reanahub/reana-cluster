@@ -55,6 +55,19 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
       export REANA_SERVER_URL=http://192.168.99.100:32732
       $ eval $(reana-cluster env --include-admin-token)
 
+   If you need to create more users you can:
+
+   .. code-block:: console
+
+      $ kubectl exec \
+            -ti $(kubectl get pods -l=app=server -o jsonpath='{.items[0].metadata.name}') \
+            -- flask users create \
+                  -e jane.doe@example.org \
+                  --admin-access-token $REANA_ACCESS_TOKEN
+      User was successfully created.
+      ID                                     EMAIL                  ACCESS_TOKEN
+      09259d12-b06c-4a13-a696-ae8e57f1f0c9   jane.doe@example.org   dHYXgh5AXmukZrdWccZaSg
+
 
 
 7. You can now run REANA examples on the locally-deployed cluster using
