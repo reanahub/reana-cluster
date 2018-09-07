@@ -13,7 +13,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
    (e.g. version 1.11.2) and `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   0.28.0):
+   0.28.2):
 
    .. code-block:: console
 
@@ -23,7 +23,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ minikube start --kubernetes-version="v1.9.4"
+      $ minikube start --kubernetes-version="v1.11.2"
 
 3. Install REANA-Cluster sources. You probably want to use a virtual environment:
 
@@ -96,26 +96,6 @@ Deploy on CERN infrastructure
 2. `Setup your OpenStack account <https://clouddocs.web.cern.ch/clouddocs/tutorial/create_your_openstack_profile.html>`_
    and create a Kubernetes cluster following the
    `official documentation <https://clouddocs.web.cern.ch/clouddocs/containers/quickstart.html#kubernetes>`_.
-
-.. note::
-
-   For now, you will have to create the cluster with Kubernetes version
-   1.9.3 since 1.10.1 introduces a
-   `bug with backoff limit <https://github.com/kubernetes/kubernetes/issues/54870>`_.
-
-   .. code-block:: console
-
-      $ openstack coe cluster create reana-cloud --keypair mykey
-          --node-count 1
-          --cluster-template kubernetes
-          --master-flavor m2.medium
-          --flavor m2.medium
-          --labels influx_grafana_dashboard_enabled=true
-          --labels kube_tag="v1.9.3"
-          --labels cvmfs_tag=qa
-          --labels flannel_backend=vxlan
-          --labels container_infra_prefix=gitlab-registry.cern.ch/cloud/atomic-system-containers/
-          --labels ingress_controller=traefik
 
 .. note::
 
