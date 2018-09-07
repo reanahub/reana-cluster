@@ -14,7 +14,7 @@ depends on your operating system.
 Versions
 ~~~~~~~~
 
-For REANA v0.3.0, ``kubectl 1.11.2`` and ``minikube 0.28.2`` are known to work
+For REANA v0.3, ``kubectl 1.11.2`` and ``minikube 0.28.2`` are known to work
 well.
 
 Arch Linux
@@ -48,7 +48,7 @@ Here is one example of well-working versions for REANA v0.2.0:
    docker 1:18.06.0-1
    docker-compose 1.22.0-2
    docker-machine 0.15.0-1
-   docker-machine-driver-kvm2 0.27.0-1
+   docker-machine-driver-kvm2 0.28.2-1
    kubectl-bin 1.11.2-1
    libvirt 4.6.0-3
    minikube 0.28.2-1

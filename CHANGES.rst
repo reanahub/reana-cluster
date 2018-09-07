@@ -1,6 +1,14 @@
 Changes
 =======
 
+Version 0.3.1 (2018-09-07)
+--------------------------
+
+- Upgrades to Kubernetes 1.11.2 and Minikube 0.28.2.
+- Renames ``reana-cluster env --all`` to ``reana-cluster env --include-admin-token`` for additional safety.
+- Pins REANA-Commons and third-party dependencies such as Click and Jinja2.
+- Adds support for Python 3.7.
+
 Version 0.3.0 (2018-08-10)
 --------------------------
 
