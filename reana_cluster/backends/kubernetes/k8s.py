@@ -825,15 +825,16 @@ class KubernetesBackend(ReanaBackendABC):
         """
         def _write_status(pod, component_name, components_status):
             """Determine the component status."""
-            if pod.status.container_statuses[0].ready:
-                components_status[component_name] = 'Running'
-            elif pod.status.container_statuses[0].\
-                    state.waiting is not None:
-                components_status[component_name] = \
-                    pod.status.container_statuses[0].\
-                    state.waiting.reason
-            else:
-                components_status[component] = 'Unavailable'
+            if pod.status.container_statuses:
+                if pod.status.container_statuses[0].ready:
+                    components_status[component_name] = 'Running'
+                elif pod.status.container_statuses[0].\
+                        state.waiting is not None:
+                    components_status[component_name] = \
+                        pod.status.container_statuses[0].\
+                        state.waiting.reason
+                else:
+                    components_status[component] = 'Unavailable'
 
         if component and component.startswith('reana-'):
             component = component.replace('reana-', '')
