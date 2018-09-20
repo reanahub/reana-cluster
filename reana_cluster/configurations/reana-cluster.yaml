@@ -4,6 +4,10 @@ cluster:
   db_config: &db_base_config
     - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
   root_path: "/reana"
+  #  cephfs_monitors:
+  #    - 188.184.86.25:6790
+  #    - 188.184.94.56:6790
+  #    - 188.185.66.208:6790
   db_persistence_path: "/reanadb"
 
 components:
@@ -17,16 +21,17 @@ components:
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:0.3.1"
+    image: "reanahub/reana-job-controller:0.3.2"
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
-      - REANA_STORAGE_BACKEND: "LOCAL"
+      - REANA_STORAGE_BACKEND: "CEPHFS"
 
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:0.3.1"
     environment:
+      - SHARED_VOLUME_PATH: "/reana"
       - <<: *db_base_config
 
   reana-message-broker:
@@ -45,6 +50,7 @@ components:
     environment:
       - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+      - SHARED_VOLUME_PATH: "/reana"
 
   reana-workflow-engine-cwl:
     type: "docker"
@@ -52,9 +58,11 @@ components:
     environment:
       - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+      - SHARED_VOLUME_PATH: "/reana"
 
   reana-workflow-engine-serial:
     type: "docker"
     image: "reanahub/reana-workflow-engine-serial:0.3.2"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
+      - SHARED_VOLUME_PATH: "/reana"

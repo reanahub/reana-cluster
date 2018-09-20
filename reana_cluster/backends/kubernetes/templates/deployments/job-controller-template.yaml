@@ -28,8 +28,8 @@ spec:
         volumeMounts:
         - name: svaccount
           mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
-        - mountPath: "/reana"
-          name: reana-shared-volume
+        - name: reana-shared-volume
+          mountPath: "/reana"
         {% set mountpoints=RJC_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
@@ -48,25 +48,18 @@ spec:
         {% endfor %}
         {% endfor %}
       volumes:
-      - name: svaccount
-        secret:
-          secretName: {{K8S_APISERVER_SECRET}}
       - name: reana-shared-volume
         {% if DEPLOYMENT == 'prod' %}
-        cephfs:
-          monitors:
-          {% for monitor in CEPHFS_MONITORS  %}
-           - {{monitor}}
-          {% endfor %}
-          path: {{ROOT_PATH}}
-          user: {{CEPHFS_USER}}
-          secretRef:
-            name: {{CEPHFS_SECRET_NAME}}
-          readOnly: {{CEPHFS_READONLY}}
+        persistentVolumeClaim:
+          claimName: manila-cephfs-pvc
+          readOnly: false
         {% else %}
         hostPath:
           path: {{ROOT_PATH}}
         {% endif %}
+      - name: svaccount
+        secret:
+          secretName: {{K8S_APISERVER_SECRET}}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:

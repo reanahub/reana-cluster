@@ -43,16 +43,9 @@ spec:
       volumes:
       - name: default-shared-volume
         {%- if DEPLOYMENT == 'prod' %}
-        cephfs:
-          monitors:
-          {% for monitor in CEPHFS_MONITORS  %}
-           - {{monitor}}
-          {% endfor %}
-          path: "{{ROOT_PATH}}"
-          user: {{CEPHFS_USER}}
-          secretRef:
-            name: {{CEPHFS_SECRET_NAME}}
-          readOnly: {{CEPHFS_READONLY}}
+        persistentVolumeClaim:
+          claimName: manila-cephfs-pvc
+          readOnly: false
         {% else %}
         hostPath:
             path: "{{ROOT_PATH}}"

@@ -73,7 +73,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 7. You can now run REANA examples on the locally-deployed cluster using
    `reana-client <https://reana-client.readthedocs.io/>`_.
 
-7. Note that after you finish testing REANA, you can delete the locally-deployed
+   Note that after you finish testing REANA, you can delete the locally-deployed
    cluster and the Minikube virtual machine as follows:
 
    .. code-block:: console
@@ -99,6 +99,19 @@ Deploy on CERN infrastructure
 
 .. note::
 
+   Make sure that the csi related components [csi-attacher, csi-provisioner, manila-provisioner, csi-cephfsplugin]
+   are deployed in version 0.3.0 or higher:
+
+   .. code-block:: console
+
+      $ kubectl get pods -n kube-system
+   
+   Find the names for the pods and check for each one the deployed image with:
+
+   .. code-block:: console
+
+      $ kubectl describe pod -n kube-system csi-attacher-0
+
    For now, the traefik ingress needs to be amended so permissions are set
    correctly (once fixed in OpenStack this will come automatically.
 
@@ -121,13 +134,13 @@ Deploy on CERN infrastructure
       $ $(openstack coe cluster config reana-cloud)
       $ kubectl get pods -w
 
-4. Set one of the nodes (``kubectl get nodes``) to be an ingress controller
+4. Set one of the nodes to be an ingress controller
    and create a landb alias:
 
    .. code-block:: console
 
       $ kubectl label node <node-name> role=ingress
-      $ openstack server set --property landb-alias=reana <ingress-node>
+      $ openstack server set --property landb-alias=<your-subdomain> <ingress-node>
 
 5. Create or add ssl secrets:
 
@@ -135,11 +148,45 @@ Deploy on CERN infrastructure
 
       $ openssl req -x509 -nodes -days 365 -newkey rsa:2048
             -keyout /tmp/tls.key -out /tmp/tls.crt
-            -subj "/CN=reana.cern.ch"
+            -subj "/CN=<your-subdomain>.cern.ch"
       $ kubectl create secret tls reana-ssl-secrets
             --key /tmp/tls.key --cert /tmp/tls.crt
+6. Create the shared volume:
 
-6. Since Python3 does not come by default we have to use the `slc` command to
+   .. code-block:: console
+
+      $ manila create --share-type "Geneva CephFS Testing"
+            --name reana cephfs 10
+      $ # wait until gets created
+      $ manila access-allow reana cephx reana-user
+      $ manila share-export-location-list reana-dev
+      +--------------------------------------+------------------------------------------------------------------------------------------------------------------+-----------+
+      | ID                                   | Path                                                                                                             | Preferred |
+      +--------------------------------------+------------------------------------------------------------------------------------------------------------------+-----------+
+      | 455rc38d-c1d2-4837-abba-76c25505bc02 | 142.143.144.45:5565,142.143.144.46:5565,142.143.144.47:5565/<shared_volume/path>                                 | False     |
+      +--------------------------------------+------------------------------------------------------------------------------------------------------------------+-----------+
+      $ manila access-list reana-dev
+      +--------------------------------------+-------------+------------+--------------+--------+------------------------------------------+----------------------------+----------------------------+
+      | id                                   | access_type | access_to  | access_level | state  | access_key                               | created_at                 | updated_at                 |
+      +--------------------------------------+-------------+------------+--------------+--------+------------------------------------------+----------------------------+----------------------------+
+      | bf2b1e34-abba-4096-9e4e-1aa4aacdc6d0 | cephx       | user       | rw           | active | ABBAffyBbad7fdsaAfepl4MFKabbse2/UFOR1A== | 2018-06-12T22:22:15.000000 | 2018-06-12T22:22:17.000000 |
+      +--------------------------------------+-------------+------------+--------------+--------+------------------------------------------+----------------------------+----------------------------+
+
+   Create the secret which allows access to the manila share using the provided script
+   from the ``kubernetes/cloud-provider-openstack`` repository
+
+   .. code-block:: console
+
+      $ git clone https://github.com/kubernetes/cloud-provider-openstack
+      $ cd cloud-provider-openstack/examples/manila-provisioner
+      $ ./generate-secrets.sh -n my-manila-secrets | ./filter-secrets.sh > ceph-secret.yaml
+      $ kubectl create -f ceph-secret.yaml
+      secret "ceph-secret" created
+
+   Set the ``root_path`` variable in storageclasses/ceph.yaml
+   to the created ``<share_volume/path>``.
+
+7. Since Python3 does not come by default we have to use the `slc` command to
    activate it and we create a virtual environment for REANA:
 
    .. code-block:: console
@@ -148,23 +195,26 @@ Deploy on CERN infrastructure
       $ virtualenv reana
       $ source reana/bin/activate
 
-7. Install `reana-cluster`:
+8. Install `reana-cluster`:
 
    .. code-block:: console
 
       (reana) $ pip install reana-cluster
 
-8.  Set the database URI and instantiate REANA cluster:
+9. Instantiate REANA cluster:
+
+   Edit ``reana-cluster.yaml`` adding the ``cephfs_monitors`` obtained
+   in the step 5 and instatiate the cluster.
 
    .. code-block:: console
 
-      (reana) $ reana-cluster init
+      (reana) $ reana-cluster -f reana-cluster.yaml --prod init
 
 9. Make REANA accessible from outside:
 
    .. code-block:: console
 
-      (reana) $ curl http://test-reana.cern.ch/api/ping
+      (reana) $ curl http://reana.cern.ch/api/ping
       {"message": "OK", "status": "200"}
 
 

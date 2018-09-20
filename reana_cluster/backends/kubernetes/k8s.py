@@ -27,7 +27,8 @@ import subprocess
 
 import pkg_resources
 import yaml
-from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound, \
+    TemplateSyntaxError
 from kubernetes import client as k8s_client
 from kubernetes import config as k8s_config
 from kubernetes.client import Configuration
@@ -104,6 +105,7 @@ class KubernetesBackend(ReanaBackendABC):
         self._versionapi = k8s_client.VersionApi()
         self._extbetav1api = k8s_client.ExtensionsV1beta1Api()
         self._rbacauthorizationv1api = k8s_client.RbacAuthorizationV1Api()
+        self._storagev1api = k8s_client.StorageV1Api()
 
         self.k8s_api_client_config = k8s_api_client_config
 
@@ -306,7 +308,14 @@ class KubernetesBackend(ReanaBackendABC):
                     filepath=cls._conf['templates_folder'],
                     error=e.strerror))
             raise e
-
+        except TemplateSyntaxError as e:
+            logging.info(
+                'Something went wrong when parsing K8S template from '
+                '{filepath} : \n'
+                '{error}'.format(
+                    filepath=e.filename,
+                    error=e.strerror))
+            raise e
         except IOError as e:
             logging.info(
                 'Something wrong when reading K8S config parameters-file from '
@@ -379,6 +388,15 @@ class KubernetesBackend(ReanaBackendABC):
                             body=manifest,
                             namespace=manifest['metadata'].get('namespace',
                                                                'default'))
+
+                elif manifest['kind'] == 'StorageClass':
+                    self._storagev1api.create_storage_class(body=manifest)
+
+                elif manifest['kind'] == 'PersistentVolumeClaim':
+                    self._corev1api.create_namespaced_persistent_volume_claim(
+                        body=manifest,
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
 
             except ApiException as e:  # Handle K8S API errors
 
@@ -529,6 +547,19 @@ class KubernetesBackend(ReanaBackendABC):
 
                 elif manifest['kind'] == 'Ingress':
                     self._extbetav1api.delete_namespaced_ingress(
+                            name=manifest['metadata']['name'],
+                            body=k8s_client.V1DeleteOptions(),
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
+
+                elif manifest['kind'] == 'StorageClass':
+                    self._storagev1api.delete_storage_class(
+                            name=manifest['metadata']['name'],
+                            body=k8s_client.V1DeleteOptions())
+
+                elif manifest['kind'] == 'PersistentVolumeClaim':
+                    self._corev1api.\
+                        delete_namespaced_persistent_volume_claim(
                             name=manifest['metadata']['name'],
                             body=k8s_client.V1DeleteOptions(),
                             namespace=manifest['metadata'].get('namespace',

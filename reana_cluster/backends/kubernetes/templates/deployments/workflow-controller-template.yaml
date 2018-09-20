@@ -48,11 +48,6 @@ spec:
         volumeMounts:
         - mountPath: "/reana"
           name: reana-shared-volume
-        {% set mountpoints=RWFC_MOUNTPOINTS %}
-        {% for mount in mountpoints %}
-        - mountPath: {{mount['path'].split(':')[1]}}
-          name: {{mount['name']}}
-        {% endfor %}
         env:
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
@@ -64,16 +59,9 @@ spec:
       volumes:
       - name: reana-shared-volume
         {% if DEPLOYMENT == 'prod' %}
-        cephfs:
-          monitors:
-          {% for monitor in CEPHFS_MONITORS  %}
-           - {{monitor}}
-          {% endfor %}
-          path: {{ROOT_PATH}}
-          user: {{CEPHFS_USER}}
-          secretRef:
-            name: {{CEPHFS_SECRET_NAME}}
-          readOnly: {{CEPHFS_READONLY}}
+        persistentVolumeClaim:
+          claimName: manila-cephfs-pvc
+          readOnly: false
         {% else %}
         hostPath:
           path: {{ROOT_PATH}}

@@ -20,3 +20,9 @@
 {% include 'clusterrole/service-reader.yaml' %}
 {% include 'clusterrolebinding/service-reader.yaml' %}
 {% include 'ingress/reana-ingress.yaml' %}
+{%- if DEPLOYMENT == 'prod' %}
+{% include 'storageclasses/ceph.yaml' %}
+{% include 'persistentvolumeclaims/ceph.yaml' %}
+{%- else %}
+{% include 'deployments/wdb-template.yaml' %}
+{%- endif %}
