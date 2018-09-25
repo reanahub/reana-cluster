@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 0.3.2 (2018-09-25)
+--------------------------
+
+- Bug fix in ``reana-cluster status`` command.
+
 Version 0.3.1 (2018-09-07)
 --------------------------
 
