@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 0.3.3 (2018-09-27)
+--------------------------
+
+- Adds configuration and cluster component templates for mounting CephFS volumes.
+
 Version 0.3.2 (2018-09-25)
 --------------------------
 
