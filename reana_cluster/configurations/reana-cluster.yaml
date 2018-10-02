@@ -25,7 +25,7 @@ components:
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
-      - REANA_STORAGE_BACKEND: "CEPHFS"
+      - REANA_STORAGE_BACKEND: "LOCAL"
 
   reana-server:
     type: "docker"
