@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 0.3.4 (2018-10-10)
+--------------------------
+
+- Fixes default storage method to use Local instead of CephFS.
+
 Version 0.3.3 (2018-09-27)
 --------------------------
 
