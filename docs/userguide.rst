@@ -109,7 +109,10 @@ You may want to install it into a new virtual environment:
 
 .. code-block:: console
 
-   $ mkvirtualenv reana-cluster
+   $ # create new virtual environment
+   $ virtualenv ~/.virtualenvs/myreana
+   $ source ~/.virtualenvs/myreana/bin/activate
+   $ # install reana-cluster utility
    $ pip install reana-cluster
 
 .. _configure:

@@ -29,7 +29,10 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ mkvirtualenv reana-cluster
+      $ # create new virtual environment
+      $ virtualenv ~/.virtualenvs/myreana
+      $ source ~/.virtualenvs/myreana/bin/activate
+      $ # install reana-cluster utility
       $ pip install reana-cluster
 
 4. Start REANA cluster instance on Minikube:
