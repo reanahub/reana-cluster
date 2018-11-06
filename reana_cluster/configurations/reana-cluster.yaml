@@ -13,7 +13,7 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:0.3.2"
+    image: "reanahub/reana-workflow-controller:0.4.0"
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
@@ -21,7 +21,7 @@ components:
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:0.3.2"
+    image: "reanahub/reana-job-controller:0.4.0"
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
@@ -29,24 +29,24 @@ components:
 
   reana-server:
     type: "docker"
-    image: "reanahub/reana-server:0.3.1"
+    image: "reanahub/reana-server:0.4.0"
     environment:
       - SHARED_VOLUME_PATH: "/reana"
       - <<: *db_base_config
 
   reana-message-broker:
     type: "docker"
-    image: "reanahub/reana-message-broker:0.2.0"
+    image: "reanahub/reana-message-broker:0.4.0"
 
   reana-workflow-monitor:
     type: "docker"
-    image: "reanahub/reana-workflow-monitor:0.2.0"
+    image: "reanahub/reana-workflow-monitor:0.4.0"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"
 
   reana-workflow-engine-yadage:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-yadage:0.3.1"
+    image: "reanahub/reana-workflow-engine-yadage:0.4.0"
     environment:
       - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
@@ -54,7 +54,7 @@ components:
 
   reana-workflow-engine-cwl:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-cwl:0.3.2"
+    image: "reanahub/reana-workflow-engine-cwl:0.4.0"
     environment:
       - <<: *db_base_config
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
@@ -62,7 +62,7 @@ components:
 
   reana-workflow-engine-serial:
     type: "docker"
-    image: "reanahub/reana-workflow-engine-serial:0.3.2"
+    image: "reanahub/reana-workflow-engine-serial:0.4.0"
     environment:
       - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
       - SHARED_VOLUME_PATH: "/reana"

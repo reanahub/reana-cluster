@@ -14,7 +14,7 @@ depends on your operating system.
 Versions
 ~~~~~~~~
 
-For REANA v0.3, ``kubectl 1.11.2`` and ``minikube 0.28.2`` are known to work
+For REANA v0.4, ``kubectl 1.11.2`` and ``minikube 0.28.2`` are known to work
 well.
 
 Arch Linux

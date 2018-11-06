@@ -1,6 +1,13 @@
 Changes
 =======
 
+Version 0.4.0 (2018-11-07)
+--------------------------
+
+- Improves AMQP re-connection handling. Switches from ``pika`` to ``kombu``.
+- Enhances test suite and increases code coverage.
+- Changes license to MIT.
+
 Version 0.3.4 (2018-10-10)
 --------------------------
 
