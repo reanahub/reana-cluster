@@ -1,0 +1,26 @@
+# The # should be replaced with the
+# manila share ID and share access ID
+# obtained when creating them
+# following the instructions in:
+# https://clouddocs.web.cern.ch/clouddocs/containers/tutorials/cephfs.html
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: manila-csicephfs-share
+provisioner: manila-provisioner
+parameters:
+  type: "Geneva CephFS Testing"
+  zones: nova
+  osSecretName: ceph-secret
+  osSecretNamespace: default
+  protocol: CEPHFS
+  backend: csi-cephfs
+  csi-driver: csi-cephfsplugin
+  os-shareID: 00c3578f-b893-4fe8-9f2e-2fba835916b5
+  os-shareAccessID: 22ca6028-0120-4ed5-a055-8f1f012cab57
+  # monitors: {{ CEPHFS_MONITORS|join(',') }}
+  provisionVolume: "false"
+  rootPath: /volumes/_nogroup/625fa319-2ca0-4fa2-9354-ceb2a7331424
+reclaimPolicy: Delete
