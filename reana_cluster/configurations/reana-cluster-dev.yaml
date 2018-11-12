@@ -26,7 +26,7 @@ components:
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
-      - FLASK_DEBUG: "1"
+      - FLASK_ENV:  "development"
 
   reana-job-controller:
     type: "docker"
@@ -41,7 +41,7 @@ components:
       - REANA_STORAGE_BACKEND: "LOCAL"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
-      - FLASK_DEBUG:  "1"
+      - FLASK_ENV:  "development"
 
   reana-server:
     type: "docker"
@@ -55,7 +55,7 @@ components:
       - SHARED_VOLUME_PATH: "/reana"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
-      - FLASK_DEBUG: "1"
+      - FLASK_ENV:  "development"
 
   reana-message-broker:
     type: "docker"
@@ -79,7 +79,7 @@ components:
       - ZMQ_PROXY_CONNECT: tcp://zeromq-msg-proxy.default.svc.cluster.local:8667
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
-      - FLASK_DEBUG: "1"
+      - FLASK_ENV:  "development"
 
   reana-workflow-engine-yadage:
     type: "docker"
