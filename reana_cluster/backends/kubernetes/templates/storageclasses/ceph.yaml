@@ -13,14 +13,8 @@ provisioner: manila-provisioner
 parameters:
   type: "Geneva CephFS Testing"
   zones: nova
-  osSecretName: ceph-secret
-  osSecretNamespace: default
+  osSecretName: os-trustee
+  osSecretNamespace: kube-system
   protocol: CEPHFS
   backend: csi-cephfs
   csi-driver: csi-cephfsplugin
-  os-shareID: #
-  os-shareAccessID: #
-  # monitors: {{ CEPHFS_MONITORS|join(',') }}
-  provisionVolume: "false"
-  rootPath: # /volumes/_nogroup/<uuid>
-reclaimPolicy: Delete

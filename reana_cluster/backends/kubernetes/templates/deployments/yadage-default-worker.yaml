@@ -2,43 +2,36 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: workflow-monitor
+  name: yadage-default-worker
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: workflow-monitor
+        app: yadage-default-worker
     spec:
       containers:
-      - name: workflow-monitor
-        image: {{WORKFLOW_MONITOR_IMAGE}}
+      - name: yadage-default-worker
+        image: {{WORKFLOW_ENGINE_YADAGE_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         {%- if DEPLOYMENT != 'prod' %}
         tty: true
         stdin: true
         {% endif %}
-        volumeMounts:
-        {% set mountpoints=RWM_MOUNTPOINTS %}
-        {% for mount in mountpoints %}
-        - mountPath: {{mount['path'].split(':')[1]}}
-          name: {{mount['name']}}
-        {% endfor %}
-        command:
-        - sh
-        - "-c"
-        - cd server; python app.py
         env:
-        {% set environment=RWM_MOUNTPOINTS %}
+        - name: QUEUE_ENV
+          value: yadage-default-queue
+        - name: REANA_WORKFLOW_ENGINE_YADAGE_EXPERIMENT
+          value: default
+        - name: SHARED_VOLUME_PATH
+          value: /reana
+        {% set environment=RWEYADAGE_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
         - name: {{key}}
           value: "{{value}}"
         {% endfor %}
         {% endfor %}
-        ports:
-        - containerPort: 5000
-          name: tcp
         volumeMounts:
         - name: default-shared-volume
           mountPath: /reana
@@ -52,7 +45,7 @@ spec:
         - name: lhcb-cvmfs-volume
           mountPath: /cvmfs/lhcb.cern.ch
         {% endif %}
-        {% set mountpoints=RWECWL_MOUNTPOINTS %}
+        {% set mountpoints=RWEYADAGE_MOUNTPOINTS %}
         {% for mount in mountpoints %}
         - mountPath: {{mount['path'].split(':')[1]}}
           name: {{mount['name']}}

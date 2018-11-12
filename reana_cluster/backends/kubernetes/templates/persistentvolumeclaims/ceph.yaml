@@ -8,7 +8,7 @@ spec:
   - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 200Gi
   storageClassName: manila-csicephfs-share
   mountOptions:
     - nonempty

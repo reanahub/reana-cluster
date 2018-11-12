@@ -50,6 +50,16 @@ spec:
         volumeMounts:
         - mountPath: "/reana"
           name: reana-shared-volume
+        {%- if DEPLOYMENT == 'prod' %}
+        - name: cms-cvmfs-volume
+          mountPath: /cvmfs/cms.cern.ch
+        - name: atlas-cvmfs-volume
+          mountPath: /cvmfs/atlas.cern.ch
+        - name: alice-cvmfs-volume
+          mountPath: /cvmfs/alice.cern.ch
+        - name: lhcb-cvmfs-volume
+          mountPath: /cvmfs/lhcb.cern.ch
+        {% endif %}
         env:
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
@@ -64,6 +74,22 @@ spec:
         persistentVolumeClaim:
           claimName: manila-cephfs-pvc
           readOnly: false
+      - name: cms-cvmfs-volume
+        persistentVolumeClaim:
+          claimName: csi-cvmfs-cms-pvc
+          readOnly: true
+      - name: atlas-cvmfs-volume
+        persistentVolumeClaim:
+          claimName: csi-cvmfs-atlas-pvc
+          readOnly: true
+      - name: lhcb-cvmfs-volume
+        persistentVolumeClaim:
+          claimName: csi-cvmfs-lhcb-pvc
+          readOnly: true
+      - name: alice-cvmfs-volume
+        persistentVolumeClaim:
+          claimName: csi-cvmfs-alice-pvc
+          readOnly: true
         {% else %}
         hostPath:
           path: {{ROOT_PATH}}
