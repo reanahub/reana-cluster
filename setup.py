@@ -54,7 +54,7 @@ install_requires = [
     'jsonschema>=2.6.0,<2.7',
     'kubernetes>=6.0.0,<7.1',
     'PyYAML>=3.12,<3.14',
-    'reana-commons>=0.4.0,<0.5',
+    'reana-commons>=0.5.0.dev20181116,<0.6.0',
     'tablib>=0.12.1,<0.13',
     'urllib3==1.22',
 ]
