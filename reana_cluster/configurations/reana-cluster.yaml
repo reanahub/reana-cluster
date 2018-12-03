@@ -4,11 +4,12 @@ cluster:
   db_config: &db_base_config
     - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
   root_path: "/reana"
+  reana_url: "reana-qa.cern.ch"
   #  cephfs_monitors:
   #    - 188.184.86.25:6790
   #    - 188.184.94.56:6790
   #    - 188.185.66.208:6790
-  db_persistence_path: "/reanadb"
+  db_persistence_path: "/tmp/reanadb"
 
 components:
   reana-workflow-controller:
@@ -25,7 +26,7 @@ components:
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/reana"
-      - REANA_STORAGE_BACKEND: "LOCAL"
+      - REANA_STORAGE_BACKEND: "CEPHFS"
 
   reana-server:
     type: "docker"
