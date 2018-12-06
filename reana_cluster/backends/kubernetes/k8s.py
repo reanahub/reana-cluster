@@ -341,8 +341,12 @@ class KubernetesBackend(ReanaBackendABC):
 
                     # REANA Job Controller needs access to K8S-cluster's
                     # service-account-token in order to create new Pods.
-                    if manifest['metadata']['name'] == 'job-controller':
-                        manifest = self._add_service_acc_key_to_jc(manifest)
+
+                    components_k8s_token = \
+                        ['job-controller', 'workflow-controller']
+                    if manifest['metadata']['name'] in components_k8s_token:
+                        manifest = self._add_service_acc_key_to_component(
+                            manifest)
 
                     self._extbetav1api.create_namespaced_deployment(
                         body=manifest,
@@ -400,19 +404,19 @@ class KubernetesBackend(ReanaBackendABC):
 
         return True
 
-    def _add_service_acc_key_to_jc(self, rjc_manifest):
-        """Add K8S service account credentials to REANA Job Controller.
+    def _add_service_acc_key_to_component(self, component_manifest):
+        """Add K8S service account credentials to a component.
 
         In order to interact (e.g. create Pods to run workflows) with
         Kubernetes cluster REANA Job Controller needs to have access to
         API credentials of Kubernetes service account.
 
-        :param rjc_manifest: Python object representing Kubernetes Deployment-
-            manifest file of REANA Job Controller generated with
+        :param component_manifest: Python object representing Kubernetes
+            Deployment manifest file of a REANA component generated with
             `generate_configuration()`.
 
         :return: Python object representing Kubernetes Deployment-
-            manifest file of REANA Job Controller with service account
+            manifest file of the given component with service account
             credentials of the Kubernetes instance `reana-cluster`
             if configured to interact with.
         """
@@ -432,11 +436,11 @@ class KubernetesBackend(ReanaBackendABC):
 
                 # Search for appropriate place to place the token
                 # in job-controller deployment manifest
-                for i in rjc_manifest['spec']['template']['spec']['volumes']:
+                for i in component_manifest['spec']['template']['spec']['volumes']:
                     if i['name'] == 'svaccount':
                         i['secret']['secretName'] = srv_acc_token
 
-        return rjc_manifest
+        return component_manifest
 
     def _cluster_running(self):
         """Verify that interaction with cluster backend is possible.
