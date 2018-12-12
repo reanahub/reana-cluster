@@ -173,9 +173,6 @@ what is defined in REANA cluster specifications file via the ``verify`` command:
    workflow-controller     match
    workflow-monitor        match
    zeromq-msg-proxy        match
-   yadage-default-worker   match
-   cwl-default-worker      match
-   serial-default-worker   match
    wdb                     match
    db                      match
 
@@ -194,9 +191,6 @@ running the ``status`` command:
    workflow-controller     Running
    workflow-monitor        Running
    zeromq-msg-proxy        Running
-   yadage-default-worker   Running
-   cwl-default-worker      Running
-   serial-default-worker   Running
    wdb                     Running
    db                      Running
    REANA cluster is ready.

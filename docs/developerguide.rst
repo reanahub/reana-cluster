@@ -49,8 +49,6 @@ sources).
    reana-message-broker
    reana-server
    reana-workflow-controller
-   reana-workflow-engine-cwl
-   reana-workflow-engine-yadage
    reana-workflow-monitor
    $ minikube mount $HOME/reana/sources:/code
 
@@ -223,18 +221,6 @@ After running ``minikube start`` on the remote host.
          - WDB_SOCKET_SERVER: "wdb"
          - WDB_NO_BROWSER_AUTO_OPEN: "True"
          - FLASK_DEBUG: "1"
-
-     reana-workflow-engine-yadage:
-       type: "docker"
-       image: "reanahub/reana-workflow-engine-yadage:0.1.0"
-       mountpoints:
-         - type: hostPath
-           name: reana-workflow-engine-yadage-code
-           path: "/code/reana-workflow-engine-yadage:/code"
-       environment:
-         - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8666"
-         - WDB_SOCKET_SERVER: "wdb"
-         - WDB_NO_BROWSER_AUTO_OPEN: "True"
 
 .. code-block:: yaml
 
@@ -503,18 +489,12 @@ Stop current cluster (``minikube``, which if you didn't change it, is the defaul
 
     $ kubectl get pods
     NAME                                     READY     STATUS    RESTARTS   AGE
-    cwl-default-worker-2333043095-9t812      1/1       Running   0          7m
     job-controller-2899072941-5c8ph          1/1       Running   0          7m
     message-broker-1926055025-4jjdm          1/1       Running   0          7m
     server-1390351625-dxk52                  1/1       Running   0          7m
     wdb-3285397567-1c8p0                     1/1       Running   0          7m
     workflow-controller-2663988704-3cjlm     1/1       Running   4          7m
     workflow-monitor-855857361-bzx6f         1/1       Running   0          7m
-    yadage-alice-worker-150038894-1fqwf      1/1       Running   0          7m
-    yadage-atlas-worker-3355863567-xjq3g     1/1       Running   0          7m
-    yadage-cms-worker-2408997969-qh034       1/1       Running   0          7m
-    yadage-default-worker-3471536063-0zd5r   1/1       Running   0          7m
-    yadage-lhcb-worker-3838731947-g5206      1/1       Running   0          7m
     zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   0          7m
     $ minikube stop
     Stopping local Kubernetes cluster...
@@ -604,18 +584,12 @@ Check that all components are created:
 
     $ kubectl get pods
     NAME                                     READY     STATUS              RESTARTS   AGE
-    cwl-default-worker-1660064223-gh53f      1/1       Running             0          14s
     job-controller-3021378878-htkvv          1/1       Running             0          5m
     message-broker-3641009106-c2rzx          1/1       Running             0          17m
     server-2623620487-15pqq                  1/1       Running             0          17m
     wdb-3285397567-cs8tv                     1/1       Running             0          17m
     workflow-controller-3501752780-h327m     1/1       Running             0          5m
     workflow-monitor-2073990847-g7m13        1/1       Running             1          5m
-    yadage-alice-worker-1841796507-qzc08     1/1       Running             0          5m
-    yadage-atlas-worker-650417724-rzttb      1/1       Running             4          7m
-    yadage-cms-worker-945655934-zcsjh        1/1       Running             0          5m
-    yadage-default-worker-3080166380-scq24   1/1       Running             0          5m
-    yadage-lhcb-worker-1186173656-57pmf      1/1       Running             0          5m
     zeromq-msg-proxy-443386439-pdwjt         1/1       Running             0          17m
 
 Switching to previous cluster
@@ -666,16 +640,10 @@ If we list now the pods, we can see that they are the original ones:
 
     $ kubectl get pods
     NAME                                     READY     STATUS    RESTARTS   AGE
-    cwl-default-worker-2333043095-9t812      1/1       Running   1          58m
     job-controller-2899072941-5c8ph          1/1       Running   1          58m
     message-broker-1926055025-4jjdm          1/1       Running   1          58m
     server-1390351625-dxk52                  1/1       Running   1          58m
     wdb-3285397567-1c8p0                     1/1       Running   1          58m
     workflow-controller-2663988704-3cjlm     1/1       Running   5          58m
     workflow-monitor-855857361-bzx6f         1/1       Running   1          58m
-    yadage-alice-worker-150038894-1fqwf      1/1       Running   1          58m
-    yadage-atlas-worker-3355863567-xjq3g     1/1       Running   1          58m
-    yadage-cms-worker-2408997969-qh034       1/1       Running   1          58m
-    yadage-default-worker-3471536063-0zd5r   1/1       Running   1          58m
-    yadage-lhcb-worker-3838731947-g5206      1/1       Running   1          58m
     zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   1          58m
