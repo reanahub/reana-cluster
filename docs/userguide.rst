@@ -68,6 +68,7 @@ running:
 
 .. code-block:: console
 
+   $ minikube config set memory 4096
    $ minikube start --kubernetes-version="v1.11.2"
 
 or, in case of KVM2 hypervisor:
