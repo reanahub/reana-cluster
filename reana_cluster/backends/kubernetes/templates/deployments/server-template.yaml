@@ -43,7 +43,7 @@ spec:
         {% endfor %}
       - name: scheduler
         image: {{SERVER_IMAGE}}
-        command: ["flask", "start_scheduler"]
+        command: ["flask", "start-scheduler"]
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
         - mountPath: "/reana"

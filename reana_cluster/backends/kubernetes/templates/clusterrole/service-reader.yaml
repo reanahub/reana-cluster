@@ -6,7 +6,7 @@ metadata:
   name: service-reader
 rules:
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["pods", "pods/log"]
+  resources: ["nodes", "nodes/status", "pods", "pods/log"]
   verbs: ["get", "list"]
 - apiGroups: ["batch", "extensions"]
   resources: ["jobs"]

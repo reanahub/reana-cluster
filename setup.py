@@ -56,7 +56,7 @@ install_requires = [
     'PyYAML>=3.12,<3.14',
     'reana-commons>=0.5.0.dev20181116,<0.6.0',
     'tablib>=0.12.1,<0.13',
-    'urllib3==1.22',
+    'urllib3==1.24.1',
 ]
 
 packages = find_packages()
