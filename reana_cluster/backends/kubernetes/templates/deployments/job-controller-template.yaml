@@ -13,14 +13,13 @@ spec:
       containers:
       - name: job-controller
         image: {{JOB_CONTROLLER_IMAGE}}
-        {% if DEPLOYMENT != 'prod' %}
-        command: ["flask", "run", "-h", "0.0.0.0"]
-        {% endif %}
-        imagePullPolicy: {{IMAGE_PULL_POLICY}}
-        {%- if DEPLOYMENT != 'prod' %}
+        {% if DEBUG %}
+        command: ["/bin/sh","-c"]
+        args: ["python reana_job_controller/app.py"]
         tty: true
         stdin: true
         {% endif %}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
         ports:
         - containerPort: 5000
           name: http
@@ -29,7 +28,7 @@ spec:
           mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
         - name: reana-shared-volume
           mountPath: "/reana"
-        {%- if DEPLOYMENT == 'prod' %}
+        {%- if CVMFS %}
         - name: cms-cvmfs-volume
           mountPath: /cvmfs/cms.cern.ch
         - name: atlas-cvmfs-volume
@@ -48,7 +47,7 @@ spec:
         - name: SHARED_VOLUME_PATH_ROOT
           value: "{{ROOT_PATH}}"
         - name: REANA_STORAGE_BACKEND
-          value: {% if DEPLOYMENT == 'prod' %}CEPHFS{% else %}LOCAL{% endif %}
+          value: {% if CEPHFS %}CEPHFS{% else %}LOCAL{% endif %}
         {% set environment=RJC_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
@@ -58,10 +57,15 @@ spec:
         {% endfor %}
       volumes:
       - name: reana-shared-volume
-        {% if DEPLOYMENT == 'prod' %}
+        {% if CEPHFS %}
         persistentVolumeClaim:
           claimName: manila-cephfs-pvc
           readOnly: false
+        {% else %}
+        hostPath:
+          path: {{ROOT_PATH}}
+        {% endif %}
+        {% if CVMFS %}
       - name: cms-cvmfs-volume
         persistentVolumeClaim:
           claimName: csi-cvmfs-cms-pvc
@@ -78,9 +82,6 @@ spec:
         persistentVolumeClaim:
           claimName: csi-cvmfs-alice-pvc
           readOnly: true
-        {% else %}
-        hostPath:
-          path: {{ROOT_PATH}}
         {% endif %}
       - name: svaccount
         secret:

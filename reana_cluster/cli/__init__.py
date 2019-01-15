@@ -54,11 +54,16 @@ class Config(object):
     help='If set, specifications file is not validated before '
          'starting the initialization.')
 @click.option(
-    '--prod', is_flag=True,
-    help='If set, REANA will use a production setup. For now it only affects '
-         ' the storage backend, CEPH if production otherwise local storage.')
+    '--cvmfs', is_flag=True,
+    help='Specify cvmfs mounts for the pods in the cluster and jobs.')
+@click.option(
+    '--cephfs', is_flag=True,
+    help='Set cephfs volume for cluster storage.')
+@click.option(
+    '--debug', is_flag=True,
+    help='If set, deploy REANA in debug mode.')
 @click.pass_context
-def cli(ctx, loglevel, skip_validation, file, prod):
+def cli(ctx, loglevel, skip_validation, file, cvmfs, cephfs, debug):
     """Command line application for managing a REANA cluster."""
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
@@ -77,7 +82,9 @@ def cli(ctx, loglevel, skip_validation, file, prod):
                      "specifications file is '{}'"
                      .format(cluster_type))
         ctx.obj.backend = supported_backends[cluster_type](cluster_spec,
-                                                           production=prod)
+                                                           cvmfs=cvmfs,
+                                                           cephfs=cephfs,
+                                                           debug=debug)
 
     # This might be unnecessary since validation of cluster specifications
     # file is done against schema and schema should include the supported

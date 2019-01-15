@@ -47,7 +47,9 @@ class KubernetesBackend(ReanaBackendABC):
                  cluster_conf=None,
                  kubeconfig=None,
                  kubeconfig_context=None,
-                 production=False):
+                 cephfs=False,
+                 cvmfs=False,
+                 debug=False):
         """Initialise Kubernetes specific ReanaBackend-object.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -65,8 +67,11 @@ class KubernetesBackend(ReanaBackendABC):
 
         :param kubeconfig_context: set the active context. If is set to `None`,
             current_context from config file will be used.
-        :param production: Boolean which represents whether REANA is
-            is configured with production setup (using CEPH) or not.
+        :param cephfs: Boolean flag toggling the usage of a cephfs volume as
+            storage backend.
+        :param cvmfs: Boolean flag toggling the mounting of cvmfs volumes in
+            the cluster pods.
+        :param debug: Boolean flag setting debug mode.
 
         """
         logging.debug('Creating a ReanaBackend object '
@@ -97,7 +102,10 @@ class KubernetesBackend(ReanaBackendABC):
 
         self.cluster_spec = cluster_spec
         self.cluster_conf = cluster_conf or \
-            self.generate_configuration(cluster_spec, production=production)
+            self.generate_configuration(cluster_spec,
+                                        cvmfs=cvmfs,
+                                        cephfs=cephfs,
+                                        debug=debug)
 
     @property
     def cluster_type(self):
@@ -129,13 +137,18 @@ class KubernetesBackend(ReanaBackendABC):
         return self.kubeconfig
 
     @classmethod
-    def generate_configuration(cls, cluster_spec, production=False):
+    def generate_configuration(cls, cluster_spec, cvmfs=False,
+                               cephfs=False, debug=False):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
             cluster spec file.
-        :param production: Boolean which represents whether REANA is
-            deployed with production setup (using CEPH) or not.
+        :param cephfs: Boolean which represents whether REANA is
+            deployed with CEPH or not.
+        :param cvmfs: Boolean which represents whether REANA is
+            deployed with CVMFS or not.
+        :param debug: Boolean which represents whether REANA is
+            deployed in debug mode or not.
 
         :return: A generator/iterable of generated Kubernetes YAML manifests
             as Python objects.
@@ -155,17 +168,23 @@ class KubernetesBackend(ReanaBackendABC):
 
                 # Load backend conf params
                 backend_conf_parameters = yaml.load(f.read())
-                # change type of deployment (prod|local) if requested
-                if production or cluster_spec['cluster'].get('production'):
-                    backend_conf_parameters['DEPLOYMENT'] = 'prod'
+                # change type of deployment (cephfs|cvmfs|hostpath)
+                if cvmfs or cluster_spec['cluster'].get('cvmfs'):
+                    backend_conf_parameters['CVMFS'] = True
 
-                if cluster_spec['cluster'].get('root_path'):
-                    backend_conf_parameters['ROOT_PATH'] = \
-                        cluster_spec['cluster'].get('root_path')
+                if cephfs or cluster_spec['cluster'].get('cephfs'):
+                    backend_conf_parameters['CEPHFS'] = True
+
+                if debug or cluster_spec['cluster'].get('debug'):
+                    backend_conf_parameters['DEBUG'] = True
 
                 if cluster_spec['cluster'].get('cephfs_monitors'):
                     backend_conf_parameters['CEPHFS_MONITORS'] = \
                         cluster_spec['cluster'].get('cephfs_monitors')
+
+                if cluster_spec['cluster'].get('root_path'):
+                    backend_conf_parameters['ROOT_PATH'] = \
+                        cluster_spec['cluster'].get('root_path')
 
                 if cluster_spec['cluster'].get('db_persistence_path'):
                     backend_conf_parameters['DB_PERSISTENCE_PATH'] = \

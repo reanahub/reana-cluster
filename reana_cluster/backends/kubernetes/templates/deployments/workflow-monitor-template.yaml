@@ -14,7 +14,7 @@ spec:
       - name: workflow-monitor
         image: {{WORKFLOW_MONITOR_IMAGE}}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
-        {%- if DEPLOYMENT != 'prod' %}
+        {%- if DEBUG %}
         tty: true
         stdin: true
         {% endif %}
@@ -42,7 +42,7 @@ spec:
         volumeMounts:
         - name: default-shared-volume
           mountPath: /reana
-        {%- if DEPLOYMENT == 'prod' %}
+        {%- if CVMFS %}
         - name: cms-cvmfs-volume
           mountPath: /cvmfs/cms.cern.ch
         - name: atlas-cvmfs-volume
@@ -59,10 +59,15 @@ spec:
         {% endfor %}
       volumes:
       - name: default-shared-volume
-        {%- if DEPLOYMENT == 'prod' %}
+        {%- if CEPHFS %}
         persistentVolumeClaim:
           claimName: manila-cephfs-pvc
           readOnly: false
+        {% else %}
+        hostPath:
+            path: "{{ROOT_PATH}}"
+        {% endif %}
+        {% if CVMFS %}
       - name: cms-cvmfs-volume
         persistentVolumeClaim:
           claimName: csi-cvmfs-cms-pvc
@@ -79,9 +84,6 @@ spec:
         persistentVolumeClaim:
           claimName: csi-cvmfs-alice-pvc
           readOnly: true
-        {% else %}
-        hostPath:
-            path: "{{ROOT_PATH}}"
         {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}

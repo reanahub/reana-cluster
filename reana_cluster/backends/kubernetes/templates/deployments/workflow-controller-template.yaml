@@ -13,15 +13,13 @@ spec:
       containers:
       - name: rest-api-server
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
-        {% if DEPLOYMENT != 'prod' %}
+        {% if DEBUG %}
         command: ["/bin/sh","-c"]
         args: ["flask run --host=0.0.0.0"]
-        {% endif %}
-        imagePullPolicy: {{IMAGE_PULL_POLICY}}
-        {%- if DEPLOYMENT != 'prod' %}
         tty: true
         stdin: true
         {% endif %}
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
         - mountPath: "/reana"
           name: reana-shared-volume
@@ -50,7 +48,7 @@ spec:
         volumeMounts:
         - mountPath: "/reana"
           name: reana-shared-volume
-        {%- if DEPLOYMENT == 'prod' %}
+        {%- if CVMFS %}
         - name: cms-cvmfs-volume
           mountPath: /cvmfs/cms.cern.ch
         - name: atlas-cvmfs-volume
@@ -70,10 +68,15 @@ spec:
         {% endfor %}
       volumes:
       - name: reana-shared-volume
-        {% if DEPLOYMENT == 'prod' %}
+        {% if CEPHFS %}
         persistentVolumeClaim:
           claimName: manila-cephfs-pvc
           readOnly: false
+        {% else %}
+        hostPath:
+          path: {{ROOT_PATH}}
+        {% endif %}
+        {% if CVMFS %}
       - name: cms-cvmfs-volume
         persistentVolumeClaim:
           claimName: csi-cvmfs-cms-pvc
@@ -90,9 +93,6 @@ spec:
         persistentVolumeClaim:
           claimName: csi-cvmfs-alice-pvc
           readOnly: true
-        {% else %}
-        hostPath:
-          path: {{ROOT_PATH}}
         {% endif %}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
