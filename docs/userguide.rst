@@ -14,7 +14,7 @@ depends on your operating system.
 Versions
 ~~~~~~~~
 
-For REANA v0.4, ``kubectl 1.11.2`` and ``minikube 0.28.2`` are known to work
+For REANA v0.5, ``kubectl 1.13.1`` and ``minikube 0.32.0`` are known to work
 well.
 
 Arch Linux
@@ -40,25 +40,25 @@ Alternatively, if you plan to run Minikube using the KVM2 hypervisor:
 - `libvirt <https://www.archlinux.org/packages/community/x86_64/libvirt/>`_
 - `qemu <https://www.archlinux.org/packages/extra/x86_64/qemu/>`_
 
-Here is one example of well-working versions for REANA v0.2.0:
+Here is one example of well-working versions for REANA v0.5.0:
 
 .. code-block:: console
 
    $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
-   docker 1:18.06.0-1
-   docker-compose 1.22.0-2
-   docker-machine 0.15.0-1
-   docker-machine-driver-kvm2 0.28.2-1
-   kubectl-bin 1.11.2-1
-   libvirt 4.6.0-3
-   minikube 0.28.2-1
-   python-docker 3.5.0-1
-   python-docker-pycreds 0.3.0-2
+   docker 1:18.09.1-1
+   docker-compose 1.23.2-1
+   docker-machine 0.16.1-1
+   docker-machine-driver-kvm2 0.32.0-1
+   kubectl-bin 1.13.1-1
+   libvirt 4.9.0-2
+   minikube 0.32.0-1
+   python-docker 3.7.0-1
+   python-docker-pycreds 0.4.0-1
    python-dockerpty 0.4.1-3
-   qemu 3.0.0-1
-   virtualbox 5.2.18-1
-   virtualbox-guest-iso 5.2.18-1
-   virtualbox-host-modules-arch 5.2.18-7
+   qemu 3.1.0-1
+   virtualbox 6.0.2-1
+   virtualbox-guest-iso 6.0.2-1
+   virtualbox-host-modules-arch 6.0.2-2
 
 Start minikube
 --------------
@@ -69,19 +69,19 @@ running:
 .. code-block:: console
 
    $ minikube config set memory 4096
-   $ minikube start --kubernetes-version="v1.11.2"
+   $ minikube start --kubernetes-version="v1.12.1" --feature-gates="TTLAfterFinished=true"
 
 or, in case of KVM2 hypervisor:
 
 .. code-block:: console
 
-   $ minikube start --kubernetes-version="v1.11.2" --vm-driver=kvm2
+   $ minikube start --kubernetes-version="v1.12.1" --vm-driver=kvm2 --feature-gates="TTLAfterFinished=true"
 
 You will see an output like:
 
 .. code-block:: console
 
-   Starting local Kubernetes v1.11.2 cluster...
+   Starting local Kubernetes v1.12.1 cluster...
    Starting VM...
    Getting VM IP address...
    Moving files into cluster...

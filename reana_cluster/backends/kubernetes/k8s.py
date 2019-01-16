@@ -38,8 +38,8 @@ class KubernetesBackend(ReanaBackendABC):
     _conf = {
         'templates_folder': pkg_resources.resource_filename(
             __name__, '/templates'),
-        'min_version': 'v1.11.2',
-        'max_version': 'v1.11.2',
+        'min_version': 'v1.12.1',
+        'max_version': 'v1.12.1',
     }
 
     def __init__(self,

@@ -11,9 +11,9 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.11.2) and `minikube
+   (e.g. version 1.13.1) and `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   0.28.2):
+   0.32.0):
 
    .. code-block:: console
 
@@ -23,7 +23,8 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ minikube start --kubernetes-version="v1.11.2"
+      $ minikube start --kubernetes-version="v1.12.1" \
+        --feature-gates="TTLAfterFinished=true"
 
 3. Install REANA-Cluster sources. You probably want to use a virtual environment:
 
@@ -108,7 +109,7 @@ Deploy on CERN infrastructure
    .. code-block:: console
 
       $ kubectl get pods -n kube-system
-   
+
    Find the names for the pods and check for each one the deployed image with:
 
    .. code-block:: console
