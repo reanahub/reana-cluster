@@ -14,7 +14,6 @@ DEPLOYMENT: local
 # Base system config:
 # Variables used to configure the base system.
 IMAGE_PULL_POLICY: IfNotPresent
-ROOT_PATH: "/reana"
 CEPHFS_MONITORS:
   - 128.142.36.227:6790
   - 128.142.39.77:6790

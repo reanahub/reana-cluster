@@ -3,12 +3,12 @@ cluster:
   version: "v1.12.1"
   db_config: &db_base_config
     - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
-  root_path: "/reana"
+  root_path: "/var/reana"
   #  cephfs_monitors:
   #    - 188.184.86.25:6790
   #    - 188.184.94.56:6790
   #    - 188.185.66.208:6790
-  db_persistence_path: "/reanadb"
+  db_persistence_path: "/var/reana/db"
 
 components:
   reana-workflow-controller:
@@ -16,7 +16,7 @@ components:
     image: "reanahub/reana-workflow-controller:0.4.0"
     environment:
       - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/reana"
+      - SHARED_VOLUME_PATH: "/var/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
   reana-job-controller:
@@ -24,15 +24,14 @@ components:
     image: "reanahub/reana-job-controller:0.4.0"
     environment:
       - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/reana"
-      - REANA_STORAGE_BACKEND: "LOCAL"
+      - SHARED_VOLUME_PATH: "/var/reana"
 
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:0.4.0"
     environment:
-      - SHARED_VOLUME_PATH: "/reana"
       - <<: *db_base_config
+      - SHARED_VOLUME_PATH: "/var/reana"
 
   reana-message-broker:
     type: "docker"
