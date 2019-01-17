@@ -23,8 +23,6 @@ spec:
           value: serial-default-queue
         - name: REANA_WORKFLOW_ENGINE_EXPERIMENT
           value: default
-        - name: SHARED_VOLUME_PATH
-          value: /reana
         {% set environment=RWESERIAL_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
@@ -34,7 +32,7 @@ spec:
         {% endfor %}
         volumeMounts:
         - name: default-shared-volume
-          mountPath: /reana
+          mountPath: {{SHARED_VOLUME_PATH}}
         {%- if CVMFS %}
         - name: cms-cvmfs-volume
           mountPath: /cvmfs/cms.cern.ch

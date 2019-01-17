@@ -27,7 +27,7 @@ spec:
         - name: svaccount
           mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
         - name: reana-shared-volume
-          mountPath: "/reana"
+          mountPath: "{{SHARED_VOLUME_PATH}}"
         {%- if CVMFS %}
         - name: cms-cvmfs-volume
           mountPath: /cvmfs/cms.cern.ch
