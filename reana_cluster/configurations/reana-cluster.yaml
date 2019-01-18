@@ -4,6 +4,8 @@ cluster:
   db_config: &db_base_config
     - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
   root_path: "/var/reana"
+  shared_volume_path: "/var/reana"
+  reana_url: "reana-dev.cern.ch"
   #  cephfs_monitors:
   #    - 188.184.86.25:6790
   #    - 188.184.94.56:6790
@@ -13,25 +15,22 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:0.4.0"
+    image: "dinossimpson/reana-workflow-controller:cvmfs-3"
     environment:
       - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/var/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:0.4.0"
+    image: "dinossimpson/reana-job-controller:cvmfs-3"
     environment:
       - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/var/reana"
 
   reana-server:
     type: "docker"
-    image: "reanahub/reana-server:0.4.0"
+    image: "dinossimpson/reana-server:cvmfs-3"
     environment:
       - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/var/reana"
 
   reana-message-broker:
     type: "docker"

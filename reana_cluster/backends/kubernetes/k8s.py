@@ -185,6 +185,10 @@ class KubernetesBackend(ReanaBackendABC):
                 if cluster_spec['cluster'].get('root_path'):
                     backend_conf_parameters['ROOT_PATH'] = \
                         cluster_spec['cluster'].get('root_path')
+                
+                if cluster_spec['cluster'].get('shared_volume_path'):
+                    backend_conf_parameters['SHARED_VOLUME_PATH'] = \
+                        cluster_spec['cluster'].get('shared_volume_path')
 
                 if cluster_spec['cluster'].get('db_persistence_path'):
                     backend_conf_parameters['DB_PERSISTENCE_PATH'] = \
