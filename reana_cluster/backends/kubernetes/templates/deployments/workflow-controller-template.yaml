@@ -34,6 +34,14 @@ spec:
         env:
         - name: REANA_DEPLOYMENT_TYPE
           value: {{DEPLOYMENT}}
+        {% if CVMFS %}
+        - name: REANA_MOUNT_CVMFS
+          value: true
+        {% endif %}
+        {% if CEPHFS %}
+        - name: REANA_STORAGE_BACKEND
+          value: cephfs
+        {% endif %}
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
