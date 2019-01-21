@@ -7,5 +7,5 @@ spec:
   - ReadOnlyMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 1G
   storageClassName: csi-cvmfs-atlas

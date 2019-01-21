@@ -14,8 +14,7 @@ spec:
       - name: job-controller
         image: {{JOB_CONTROLLER_IMAGE}}
         {% if DEBUG %}
-        command: ["/bin/sh","-c"]
-        args: ["python reana_job_controller/app.py"]
+        command: ["flask", "run", "-h", "0.0.0.0"]
         tty: true
         stdin: true
         {% endif %}

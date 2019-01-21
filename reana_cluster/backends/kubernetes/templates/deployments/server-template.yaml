@@ -54,7 +54,7 @@ spec:
         command: ["flask", "start-scheduler"]
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
-        - mountPath: "/reana"
+        - mountPath: {{SHARED_VOLUME_PATH}}
           name: reana-shared-volume
         {% set mountpoints=RS_MOUNTPOINTS %}
         {% for mount in mountpoints %}

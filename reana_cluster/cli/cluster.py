@@ -9,7 +9,6 @@
 """REANA cluster administration (init, restart, etc.) commands."""
 
 import errno
-import json
 import logging
 import os
 import sys

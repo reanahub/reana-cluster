@@ -39,53 +39,8 @@ spec:
         ports:
         - containerPort: 5000
           name: tcp
-        volumeMounts:
-        - name: default-shared-volume
-          mountPath: /reana
-        {%- if CVMFS %}
-        - name: cms-cvmfs-volume
-          mountPath: /cvmfs/cms.cern.ch
-        - name: atlas-cvmfs-volume
-          mountPath: /cvmfs/atlas.cern.ch
-        - name: alice-cvmfs-volume
-          mountPath: /cvmfs/alice.cern.ch
-        - name: lhcb-cvmfs-volume
-          mountPath: /cvmfs/lhcb.cern.ch
-        {% endif %}
-        {% set mountpoints=RWECWL_MOUNTPOINTS %}
-        {% for mount in mountpoints %}
-        - mountPath: {{mount['path'].split(':')[1]}}
-          name: {{mount['name']}}
-        {% endfor %}
       volumes:
-      - name: default-shared-volume
-        {%- if CEPHFS %}
-        persistentVolumeClaim:
-          claimName: manila-cephfs-pvc
-          readOnly: false
-        {% else %}
-        hostPath:
-            path: "{{ROOT_PATH}}"
-        {% endif %}
-        {% if CVMFS %}
-      - name: cms-cvmfs-volume
-        persistentVolumeClaim:
-          claimName: csi-cvmfs-cms-pvc
-          readOnly: true
-      - name: atlas-cvmfs-volume
-        persistentVolumeClaim:
-          claimName: csi-cvmfs-atlas-pvc
-          readOnly: true
-      - name: lhcb-cvmfs-volume
-        persistentVolumeClaim:
-          claimName: csi-cvmfs-lhcb-pvc
-          readOnly: true
-      - name: alice-cvmfs-volume
-        persistentVolumeClaim:
-          claimName: csi-cvmfs-alice-pvc
-          readOnly: true
-        {% endif %}
-      {% for mount in mountpoints %}
+        {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:
           path: {{mount['path'].split(':')[0]}}
