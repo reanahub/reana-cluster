@@ -13,6 +13,7 @@ cluster:
   root_path: "/var/reana"
   shared_volume_path: "/var/reana"
   db_persistence_path: "/var/reana/db"
+  debug: true
 
 components:
   reana-workflow-controller:
