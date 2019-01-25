@@ -21,6 +21,8 @@ spec:
         {% endif %}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
+        - name: svaccount
+          mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
         - mountPath: {{SHARED_VOLUME_PATH}}
           name: reana-shared-volume
         {% set mountpoints=RWFC_MOUNTPOINTS %}
@@ -102,6 +104,9 @@ spec:
           claimName: csi-cvmfs-alice-pvc
           readOnly: true
         {% endif %}
+      - name: svaccount
+        secret:
+          secretName: {{K8S_APISERVER_SECRET}}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:
