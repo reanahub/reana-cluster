@@ -15,17 +15,17 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:0.4.0-34-ge4646d4"
+    image: "reanahub/reana-workflow-controller:0.4.0-35-g3d7f3e5"
     environment:
       - <<: *db_base_config
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
-      - CWL_WORKFLOW_ENGINE_VERSION: "0.4.0-16-g3fb7d6c"
-      - YADAGE_WORKFLOW_ENGINE_VERSION: "0.4.0-12-g9c9d5ef"
-      - SERIAL_WORKFLOW_ENGINE_VERSION: "0.4.0-12-gfbb4aa2"
+      - CWL_WORKFLOW_ENGINE_VERSION: "0.4.0-17-g57ff1d8"
+      - YADAGE_WORKFLOW_ENGINE_VERSION: "0.4.0-13-gb1767e3"
+      - SERIAL_WORKFLOW_ENGINE_VERSION: "0.4.0-13-gdf5b2cf"
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:0.4.0-12-g77c5ff4"
+    image: "reanahub/reana-job-controller:0.4.0-13-gcfb14fe"
     environment:
       - <<: *db_base_config
 
