@@ -17,7 +17,7 @@
 {% include 'clusterrole/service-reader.yaml' %}
 {% include 'clusterrolebinding/service-reader.yaml' %}
 {% include 'ingress/reana-ingress.yaml' %}
-{%- if DEPLOYMENT == 'prod' %}
+{%- if not DEBUG %}
 {% include 'storageclasses/ceph.yaml' %}
 {% include 'storageclasses/cvmfs-cms.yaml' %}
 {% include 'storageclasses/cvmfs-atlas.yaml' %}

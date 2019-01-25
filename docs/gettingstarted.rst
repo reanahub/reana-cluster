@@ -212,7 +212,7 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster.yaml --prod init
+      (reana) $ reana-cluster -f reana-cluster.yaml --cephfs init
 
 9. Make REANA accessible from outside:
 
