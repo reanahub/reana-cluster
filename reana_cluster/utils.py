@@ -28,7 +28,7 @@ def load_spec_file(filepath, skip_validation=False):
     """
     try:
         with open(filepath) as f:
-            cluster_spec = yaml.load(f.read())
+            cluster_spec = yaml.load(f.read(), Loader=yaml.FullLoader)
 
         if not (skip_validation):
             logging.info('Validating REANA cluster specification file: {0}'

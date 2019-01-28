@@ -175,7 +175,8 @@ class KubernetesBackend(ReanaBackendABC):
             with open(be_conf_params_fp) as f:
 
                 # Load backend conf params
-                backend_conf_parameters = yaml.load(f.read())
+                backend_conf_parameters = yaml.load(f.read(),
+                                                    Loader=yaml.FullLoader)
                 # change type of deployment (cephfs|cvmfs|hostpath)
                 if cephfs or cluster_spec['cluster'].get('cephfs'):
                     backend_conf_parameters['CEPHFS'] = True
@@ -276,7 +277,8 @@ class KubernetesBackend(ReanaBackendABC):
                 # Should print the whole configuration in a loop
                 # Now prints just memory address of generator object
                 logging.debug('Loaded K8S config successfully: \n {}'
-                              .format(yaml.load_all(cluster_conf)))
+                              .format(yaml.load_all(cluster_conf,
+                                                    Loader=yaml.FullLoader)))
 
         except TemplateNotFound as e:
             logging.info(
@@ -305,7 +307,7 @@ class KubernetesBackend(ReanaBackendABC):
         # As Jinja rendered string is basically multiple YAML documents in one
         # string parse it with YAML-library and return a generator containing
         # independent YAML documents (split from `---`) as Python objects.
-        return yaml.load_all(cluster_conf)
+        return yaml.load_all(cluster_conf, Loader=yaml.FullLoader)
 
     def init(self):
         """Initialize REANA cluster, i.e. deploy REANA components to backend.
