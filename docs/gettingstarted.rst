@@ -101,35 +101,6 @@ Deploy on CERN infrastructure
    and create a Kubernetes cluster following the
    `official documentation <https://clouddocs.web.cern.ch/clouddocs/containers/quickstart.html#kubernetes>`_.
 
-.. note::
-
-   Make sure that the csi related components [csi-attacher, csi-provisioner, manila-provisioner, csi-cephfsplugin]
-   are deployed in version 0.3.0 or higher:
-
-   .. code-block:: console
-
-      $ kubectl get pods -n kube-system
-
-   Find the names for the pods and check for each one the deployed image with:
-
-   .. code-block:: console
-
-      $ kubectl describe pod -n kube-system csi-attacher-0
-
-   For now, the traefik ingress needs to be amended so permissions are set
-   correctly (once fixed in OpenStack this will come automatically.
-
-   .. code-block:: console
-
-      $ kubectl -n kube-system edit ds/ingress-traefik
-      # add: `serviceAccountName: ingress-traefik` under
-      # `spec.template.spec`.
-      # Restart the Ingress controller so it uses the correct permissions.
-      $ get pods -n kube-system  | grep ingress
-      ingress-traefik-666ee                   1/1       Running   0          2m
-      $ kubectl delete ingress-traefik-666ee -n kube-system
-
-
 3. Load the configuration to connect to the Kubernetes cluster and wait for
    the pods to be created:
 
@@ -155,40 +126,25 @@ Deploy on CERN infrastructure
             -subj "/CN=<your-subdomain>.cern.ch"
       $ kubectl create secret tls reana-ssl-secrets
             --key /tmp/tls.key --cert /tmp/tls.crt
-6. Create the shared volume:
+
+.. note::
+
+   This is important to set even if HTTPS is not desired, otherwise the
+   Traefik controller will not redirect the traffic.
+
+6. As we are using the alpha feature gate `TTLAfterFinished
+   <https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/>`_
+   we need to manually activate it:
 
    .. code-block:: console
 
-      $ manila create --share-type "Geneva CephFS Testing"
-            --name reana cephfs 10
-      $ # wait until gets created
-      $ manila access-allow reana cephx reana-user
-      $ manila share-export-location-list reana-dev
-      +--------------------------------------+------------------------------------------------------------------------------------------------------------------+-----------+
-      | ID                                   | Path                                                                                                             | Preferred |
-      +--------------------------------------+------------------------------------------------------------------------------------------------------------------+-----------+
-      | 455rc38d-c1d2-4837-abba-76c25505bc02 | 142.143.144.45:5565,142.143.144.46:5565,142.143.144.47:5565/<shared_volume/path>                                 | False     |
-      +--------------------------------------+------------------------------------------------------------------------------------------------------------------+-----------+
-      $ manila access-list reana-dev
-      +--------------------------------------+-------------+------------+--------------+--------+------------------------------------------+----------------------------+----------------------------+
-      | id                                   | access_type | access_to  | access_level | state  | access_key                               | created_at                 | updated_at                 |
-      +--------------------------------------+-------------+------------+--------------+--------+------------------------------------------+----------------------------+----------------------------+
-      | bf2b1e34-abba-4096-9e4e-1aa4aacdc6d0 | cephx       | user       | rw           | active | ABBAffyBbad7fdsaAfepl4MFKabbse2/UFOR1A== | 2018-06-12T22:22:15.000000 | 2018-06-12T22:22:17.000000 |
-      +--------------------------------------+-------------+------------+--------------+--------+------------------------------------------+----------------------------+----------------------------+
-
-   Create the secret which allows access to the manila share using the provided script
-   from the ``kubernetes/cloud-provider-openstack`` repository
-
-   .. code-block:: console
-
-      $ git clone https://github.com/kubernetes/cloud-provider-openstack
-      $ cd cloud-provider-openstack/examples/manila-provisioner
-      $ ./generate-secrets.sh -n my-manila-secrets | ./filter-secrets.sh > ceph-secret.yaml
-      $ kubectl create -f ceph-secret.yaml
-      secret "ceph-secret" created
-
-   Set the ``root_path`` variable in storageclasses/ceph.yaml
-   to the created ``<share_volume/path>``.
+      # Get the Kube master name and connect to it
+      $ openstack server list | grep -E reana-.*-master
+      $ ssh -i <ssh-key> fedora@<master-node>
+      # Add to the `--feature-gates` the `TTLAfterFinished=true` flag
+      > sudo vi /etc/kubernetes/apiserver
+      # Finally restart the API server
+      > sudo systemctl restart kube-apiserver
 
 7. Since Python3 does not come by default we have to use the `slc` command to
    activate it and we create a virtual environment for REANA:
@@ -205,16 +161,17 @@ Deploy on CERN infrastructure
 
       (reana) $ pip install reana-cluster
 
-9. Instantiate REANA cluster:
+9. Instantiate REANA cluster using CVMFS and CEPHFS:
 
-   Edit ``reana-cluster.yaml`` adding the ``cephfs_monitors`` obtained
-   in the step 5 and instatiate the cluster.
+   Edit ``reana_cluster/backends/kubernetes/templates/persistentvolumeclaims/ceph.yaml``
+   and set ``spec.recources.requests.storage`` to the size you want the
+   CEPHFS shared volume to be.
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster.yaml --cephfs init
+      (reana) $ reana-cluster -f reana-cluster.yaml --cvmfs --cephfs init
 
-9. Make REANA accessible from outside:
+10. Test that REANA can be accessed by its domain name:
 
    .. code-block:: console
 
