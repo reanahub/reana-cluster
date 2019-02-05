@@ -1,0 +1,14 @@
+---
+rbac:
+  enabled: true
+dashboard:
+  enabled: true
+kubernetes:
+  namespaces:
+    - default
+    - kube-system
+serviceType: NodePort
+service:
+  nodePorts:
+    http: 30080
+    https: 30443

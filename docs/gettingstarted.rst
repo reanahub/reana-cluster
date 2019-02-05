@@ -11,22 +11,56 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.13.1) and `minikube
+   (e.g. version 1.13.1), `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   0.32.0):
+   0.32.0) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
+   version 2.12.2):
 
    .. code-block:: console
 
-      $ sudo dpkg -i kubectl*.deb minikube*.deb
+      $ sudo dpkg -i kubectl*.deb minikube*.deb kubernetes-helm*.deb
 
-2. Start Minikube virtual machine:
+2. Start Minikube virtual machine and then deploy Helm inside the cluster:
 
    .. code-block:: console
 
       $ minikube start --kubernetes-version="v1.12.1" \
         --feature-gates="TTLAfterFinished=true"
+      $ helm init
 
-3. Install REANA-Cluster sources. You probably want to use a virtual environment:
+3. Install Traefik using Helm. With the provided configuration Traefik will be
+   accessible in ports ``30080`` and ``30433``.
+
+   .. code-block:: console
+
+      $ helm install stable/traefik --namespace kube-system \
+        --values reana_cluster/configurations/helm/traefik/minikube.yaml
+
+   .. note::
+      Traefik dashboard is not accessible by default, when deploying Traefik
+      with Helm it creates the Traefik dashboard service as ``ClusterIp``,
+      but to make it work inside Minikube we should use ``NodePort``, see:
+
+      .. code-block:: console
+
+         $ kubectl get svc -n kube-system -l app=traefik | grep dashboard
+         famous-higgs-traefik-dashboard   ClusterIP   10.110.238.255   <none>        80/TCP
+         $ kubectl edit -n kube-system svc famous-higgs-traefik-dashboard
+         # here we change `spec.type: ClusterIp`
+         # to `spec.type: NodePort`
+         # Now we list the service again and we get its NodePort.
+         $ kubectl get -n kube-system svc famous-higgs-traefik-dashboard
+         NAME                             TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+         famous-higgs-traefik-dashboard   NodePort   10.110.238.255   <none>        80:31426/TCP   9m37s
+
+      To visit the dashboard:
+
+      .. code-block:: console
+
+         $ firefox http://$(minikube ip):31426
+
+
+4. Install REANA-Cluster sources. You probably want to use a virtual environment:
 
    .. code-block:: console
 
@@ -36,13 +70,13 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
       $ # install reana-cluster utility
       $ pip install reana-cluster
 
-4. Start REANA cluster instance on Minikube:
+5. Start REANA cluster instance on Minikube:
 
    .. code-block:: console
 
       $ reana-cluster init
 
-5. Check the status of the REANA cluster deployment. (Note that it may take
+6. Check the status of the REANA cluster deployment. (Note that it may take
    several minutes to pull the REANA component images for the first time.)
 
    .. code-block:: console
@@ -51,7 +85,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
       ...
       REANA cluster is ready.
 
-6. Display the commands to set up the environment for the user clients:
+7. Display the commands to set up the environment for the user clients:
 
    .. code-block:: console
 
@@ -74,7 +108,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
 
 
-7. You can now run REANA examples on the locally-deployed cluster using
+8. You can now run REANA examples on the locally-deployed cluster using
    `reana-client <https://reana-client.readthedocs.io/>`_.
 
    Note that after you finish testing REANA, you can delete the locally-deployed

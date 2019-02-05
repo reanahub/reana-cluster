@@ -8,8 +8,10 @@ Prerequisites
 
 REANA cloud uses `Kubernetes <https://kubernetes.io/>`_ container orchestration
 system. The best way to try it out locally on your laptop is to set up `Minikube
-<https://kubernetes.io/docs/getting-started-guides/minikube/>`_. How to do this
-depends on your operating system.
+<https://kubernetes.io/docs/getting-started-guides/minikube/>`_ with
+`Helm <https://docs.helm.sh/using_helm/#install-helm>`_ and
+`Traefik <https://github.com/helm/charts/tree/master/stable/traefik>`_
+installed inside. How to do this depends on your operating system.
 
 Versions
 ~~~~~~~~
