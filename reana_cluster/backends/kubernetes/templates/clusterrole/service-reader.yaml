@@ -11,4 +11,7 @@ rules:
 - apiGroups: ["batch", "extensions"]
   resources: ["jobs"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
- 
+# Interactive web notebooks permissions
+- apiGroups: ["", "extensions"]
+  resources: ["deployments", "services", "ingresses"]
+  verbs: ["get", "create", "delete"]
