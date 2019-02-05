@@ -106,7 +106,6 @@ class KubernetesBackend(ReanaBackendABC):
         self.cluster_spec = cluster_spec
         self.cluster_conf = cluster_conf or \
             self.generate_configuration(cluster_spec,
-                                        cvmfs=cvmfs,
                                         cephfs=cephfs,
                                         cephfs_volume_size=cephfs_volume_size,
                                         debug=debug)
@@ -174,9 +173,6 @@ class KubernetesBackend(ReanaBackendABC):
                 # Load backend conf params
                 backend_conf_parameters = yaml.load(f.read())
                 # change type of deployment (cephfs|cvmfs|hostpath)
-                if cvmfs or cluster_spec['cluster'].get('cvmfs'):
-                    backend_conf_parameters['CVMFS'] = True
-
                 if cephfs or cluster_spec['cluster'].get('cephfs'):
                     backend_conf_parameters['CEPHFS'] = True
                     if not cephfs_volume_size:

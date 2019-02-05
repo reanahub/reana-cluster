@@ -54,9 +54,6 @@ class Config(object):
     help='If set, specifications file is not validated before '
          'starting the initialization.')
 @click.option(
-    '--cvmfs', is_flag=True,
-    help='Specify cvmfs mounts for the pods in the cluster and jobs.')
-@click.option(
     '--cephfs', is_flag=True,
     help='Set cephfs volume for cluster storage.')
 @click.option(
@@ -67,7 +64,7 @@ class Config(object):
     '--debug', is_flag=True,
     help='If set, deploy REANA in debug mode.')
 @click.pass_context
-def cli(ctx, loglevel, skip_validation, file, cvmfs,
+def cli(ctx, loglevel, skip_validation, file,
         cephfs, cephfs_volume_size, debug):
     """Command line application for managing a REANA cluster."""
     logging.basicConfig(
@@ -92,7 +89,6 @@ def cli(ctx, loglevel, skip_validation, file, cvmfs,
                      .format(cluster_type))
         ctx.obj.backend = supported_backends[cluster_type](
             cluster_spec,
-            cvmfs=cvmfs,
             cephfs=cephfs,
             cephfs_volume_size=cephfs_volume_size,
             debug=debug)

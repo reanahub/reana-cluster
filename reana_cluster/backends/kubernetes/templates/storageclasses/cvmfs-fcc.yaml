@@ -1,0 +1,8 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: csi-cvmfs-fcc
+provisioner: csi-cvmfsplugin
+parameters:
+  repository: fcc.cern.ch

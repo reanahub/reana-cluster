@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of REANA.
-# Copyright (C) 2017, 2018 CERN.
+# Copyright (C) 2017, 2018, 2019 CERN.
 #
 # REANA is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -54,7 +54,7 @@ install_requires = [
     'jsonschema>=2.6.0,<2.7',
     'kubernetes>=6.0.0,<7.1',
     'PyYAML>=3.12,<3.14',
-    'reana-commons>=0.5.0.dev20181116,<0.6.0',
+    'reana-commons>=0.5.0.dev20190213,<0.6.0',
     'tablib>=0.12.1,<0.13',
     'urllib3==1.24.1',
 ]
