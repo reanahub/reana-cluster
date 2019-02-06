@@ -60,10 +60,15 @@ class Config(object):
     '--cephfs', is_flag=True,
     help='Set cephfs volume for cluster storage.')
 @click.option(
+    '--cephfs-volume-size',
+    type=int,
+    help='Set cephfs volume size in GB.')
+@click.option(
     '--debug', is_flag=True,
     help='If set, deploy REANA in debug mode.')
 @click.pass_context
-def cli(ctx, loglevel, skip_validation, file, cvmfs, cephfs, debug):
+def cli(ctx, loglevel, skip_validation, file, cvmfs,
+        cephfs, cephfs_volume_size, debug):
     """Command line application for managing a REANA cluster."""
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
@@ -73,6 +78,10 @@ def cli(ctx, loglevel, skip_validation, file, cvmfs, cephfs, debug):
     try:
         cluster_spec = load_spec_file(click.format_filename(file),
                                       skip_validation)
+        if cephfs_volume_size and not cephfs:
+            cephfs_volume_size = None
+            click.echo(click.style('CEPHFS volume size will not be set because'
+                                   ' missing `--cephfs` flag', fg='yellow'))
 
         ctx.obj = Config()
 
@@ -81,10 +90,12 @@ def cli(ctx, loglevel, skip_validation, file, cvmfs, cephfs, debug):
         logging.info("Cluster type specified in cluster "
                      "specifications file is '{}'"
                      .format(cluster_type))
-        ctx.obj.backend = supported_backends[cluster_type](cluster_spec,
-                                                           cvmfs=cvmfs,
-                                                           cephfs=cephfs,
-                                                           debug=debug)
+        ctx.obj.backend = supported_backends[cluster_type](
+            cluster_spec,
+            cvmfs=cvmfs,
+            cephfs=cephfs,
+            cephfs_volume_size=cephfs_volume_size,
+            debug=debug)
 
     # This might be unnecessary since validation of cluster specifications
     # file is done against schema and schema should include the supported

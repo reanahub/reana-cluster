@@ -6,6 +6,7 @@ cluster:
   root_path: "/var/reana"
   shared_volume_path: "/var/reana"
   reana_url: "reana-dev.cern.ch"
+  cephfs_volume_size: 200
   #  cephfs_monitors:
   #    - 188.184.86.25:6790
   #    - 188.184.94.56:6790

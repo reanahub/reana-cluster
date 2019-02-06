@@ -48,6 +48,7 @@ class KubernetesBackend(ReanaBackendABC):
                  kubeconfig=None,
                  kubeconfig_context=None,
                  cephfs=False,
+                 cephfs_volume_size=None,
                  cvmfs=False,
                  debug=False):
         """Initialise Kubernetes specific ReanaBackend-object.
@@ -69,6 +70,8 @@ class KubernetesBackend(ReanaBackendABC):
             current_context from config file will be used.
         :param cephfs: Boolean flag toggling the usage of a cephfs volume as
             storage backend.
+        :param cephfs_volume_size: Int number which represents cephfs volume
+            size (GB)
         :param cvmfs: Boolean flag toggling the mounting of cvmfs volumes in
             the cluster pods.
         :param debug: Boolean flag setting debug mode.
@@ -105,6 +108,7 @@ class KubernetesBackend(ReanaBackendABC):
             self.generate_configuration(cluster_spec,
                                         cvmfs=cvmfs,
                                         cephfs=cephfs,
+                                        cephfs_volume_size=cephfs_volume_size,
                                         debug=debug)
 
     @property
@@ -137,14 +141,15 @@ class KubernetesBackend(ReanaBackendABC):
         return self.kubeconfig
 
     @classmethod
-    def generate_configuration(cls, cluster_spec, cvmfs=False,
-                               cephfs=False, debug=False):
+    def generate_configuration(cls, cluster_spec, cvmfs=False, cephfs=False,
+                               cephfs_volume_size=None, debug=False):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
             cluster spec file.
         :param cephfs: Boolean which represents whether REANA is
             deployed with CEPH or not.
+        :param cephfs_volume_size: Int to set CEPH volume size in GB.
         :param cvmfs: Boolean which represents whether REANA is
             deployed with CVMFS or not.
         :param debug: Boolean which represents whether REANA is
@@ -174,6 +179,11 @@ class KubernetesBackend(ReanaBackendABC):
 
                 if cephfs or cluster_spec['cluster'].get('cephfs'):
                     backend_conf_parameters['CEPHFS'] = True
+                    if not cephfs_volume_size:
+                        cephfs_volume_size = \
+                            cluster_spec['cluster'].get(
+                                'cephfs_volume_size',
+                                200)
 
                 if debug or cluster_spec['cluster'].get('debug'):
                     backend_conf_parameters['DEBUG'] = True
@@ -249,6 +259,7 @@ class KubernetesBackend(ReanaBackendABC):
                            REANA_URL=cluster_spec['cluster'].get(
                                'reana_url',
                                'reana.cern.ch'),
+                           CEPHFS_VOLUME_SIZE=cephfs_volume_size or 1,
                            SERVER_IMAGE=rs_img,
                            JOB_CONTROLLER_IMAGE=rjc_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
@@ -265,12 +276,10 @@ class KubernetesBackend(ReanaBackendABC):
                            RWM_ENVIRONMENT=rwm_environment,
                            RMB_ENVIRONMENT=rmb_environment,
                            )
-
                 # Strip empty lines for improved readability
                 cluster_conf = '\n'.join(
                     [line for line in cluster_conf.splitlines() if
                      line.strip()])
-
                 # Should print the whole configuration in a loop
                 # Now prints just memory address of generator object
                 logging.debug('Loaded K8S config successfully: \n {}'
