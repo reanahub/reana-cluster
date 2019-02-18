@@ -16,7 +16,7 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:v0.4.0-46-gda38827"
+    image: "reanahub/reana-workflow-controller:v0.4.0-51-g9d8a1e4"
     environment:
       - <<: *db_base_config
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
