@@ -562,6 +562,25 @@ class KubernetesBackend(ReanaBackendABC):
                 if e.status == 400:
                     pass
 
+        # delete all CVMFS persistent volume claims
+        pvcs = self._corev1api.list_namespaced_persistent_volume_claim(
+            'default')
+        for pvc in pvcs.items:
+            if pvc.metadata.name.startswith('csi-cvmfs-'):
+                self._corev1api.\
+                        delete_namespaced_persistent_volume_claim(
+                            name=pvc.metadata.name,
+                            body=k8s_client.V1DeleteOptions(),
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
+        # delete all CVMFS storage classes
+        scs = self._storagev1api.list_storage_class()
+        for sc in scs.items:
+            if sc.metadata.name.startswith('csi-cvmfs-'):
+                self._storagev1api.delete_storage_class(
+                    name=sc.metadata.name,
+                    body=k8s_client.V1DeleteOptions())
+
         return True
 
     def get_component(self, component_name, component_namespace='default'):
