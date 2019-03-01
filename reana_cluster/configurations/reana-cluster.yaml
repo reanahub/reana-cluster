@@ -26,7 +26,7 @@ components:
 
   reana-job-controller:
     type: "docker"
-    image: "reanahub/reana-job-controller:v0.4.0-15-gf3855fe"
+    image: "reanahub/reana-job-controller:0.4.0-17-g9eec312"
     environment:
       - <<: *db_base_config
 
