@@ -16,7 +16,7 @@ spec:
         backend:
           serviceName: server
           servicePort: 80
-  {% if not DEBUG %}
+  {% if URL %}
     host: {{REANA_URL}}
   tls:
     - secretName: reana-ssl-secrets

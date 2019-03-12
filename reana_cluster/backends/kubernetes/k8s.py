@@ -50,7 +50,8 @@ class KubernetesBackend(ReanaBackendABC):
                  cephfs=False,
                  cephfs_volume_size=None,
                  cvmfs=False,
-                 debug=False):
+                 debug=False,
+                 url=None):
         """Initialise Kubernetes specific ReanaBackend-object.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -75,6 +76,7 @@ class KubernetesBackend(ReanaBackendABC):
         :param cvmfs: Boolean flag toggling the mounting of cvmfs volumes in
             the cluster pods.
         :param debug: Boolean flag setting debug mode.
+        :param url: REANA cluster url.
 
         """
         logging.debug('Creating a ReanaBackend object '
@@ -108,7 +110,8 @@ class KubernetesBackend(ReanaBackendABC):
             self.generate_configuration(cluster_spec,
                                         cephfs=cephfs,
                                         cephfs_volume_size=cephfs_volume_size,
-                                        debug=debug)
+                                        debug=debug,
+                                        url=url)
 
     @property
     def cluster_type(self):
@@ -141,7 +144,7 @@ class KubernetesBackend(ReanaBackendABC):
 
     @classmethod
     def generate_configuration(cls, cluster_spec, cvmfs=False, cephfs=False,
-                               cephfs_volume_size=None, debug=False):
+                               cephfs_volume_size=None, debug=False, url=None):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -153,6 +156,7 @@ class KubernetesBackend(ReanaBackendABC):
             deployed with CVMFS or not.
         :param debug: Boolean which represents whether REANA is
             deployed in debug mode or not.
+        :param url: REANA cluster url.
 
         :return: A generator/iterable of generated Kubernetes YAML manifests
             as Python objects.
@@ -183,6 +187,9 @@ class KubernetesBackend(ReanaBackendABC):
 
                 if debug or cluster_spec['cluster'].get('debug'):
                     backend_conf_parameters['DEBUG'] = True
+
+                if url or cluster_spec['cluster'].get('url'):
+                    backend_conf_parameters['URL'] = True
 
                 if cluster_spec['cluster'].get('cephfs_monitors'):
                     backend_conf_parameters['CEPHFS_MONITORS'] = \
@@ -247,7 +254,7 @@ class KubernetesBackend(ReanaBackendABC):
                     render(backend_conf_parameters,
                            REANA_URL=cluster_spec['cluster'].get(
                                'reana_url',
-                               'reana.cern.ch'),
+                               url),
                            CEPHFS_VOLUME_SIZE=cephfs_volume_size or 1,
                            SERVER_IMAGE=rs_img,
                            JOB_CONTROLLER_IMAGE=rjc_img,
@@ -633,17 +640,24 @@ class KubernetesBackend(ReanaBackendABC):
                 component_namespace)
 
             logging.debug(comp)
-
             comp_info['external_name'] = comp.spec.external_name
             comp_info['external_ip_s'] = [minikube_ip] or \
                 comp.spec.external_i_ps
             comp_info['internal_ip'] = comp.spec.external_i_ps
 
-            for port in comp.spec.ports:
-                if minikube_ip:
-                    comp_info['ports'].append(str(port.node_port))
-                else:
-                    comp_info['ports'].append(str(port.port))
+            if component_name_without_prefix == 'server':
+                traefik_port = self.get_traefik_port()
+            else:
+                traefik_port = None
+
+            if traefik_port:
+                comp_info['ports'].append(traefik_port)
+            else:
+                for port in comp.spec.ports:
+                    if minikube_ip:
+                        comp_info['ports'].append(str(port.node_port))
+                    else:
+                        comp_info['ports'].append(str(port.port))
 
             logging.debug(comp_info)
 
@@ -661,6 +675,32 @@ class KubernetesBackend(ReanaBackendABC):
             raise e
 
         return comp_info
+
+    def get_traefik_port(self):
+        """Return port of traefik if it is available."""
+        namespace = 'kube-system'
+        label_selector = 'app=traefik'
+        try:
+            traefik_objects = self._corev1api.list_namespaced_service(
+                namespace=namespace,
+                label_selector=label_selector,
+                limit=2)
+            for object in traefik_objects.items:
+                for port in object.spec.ports:
+                    if port.name == 'http':
+                        return port.node_port
+        except ApiException as e:
+            if e.reason == "Not Found":
+                logging.error("K8s traefik objects were not found.")
+            else:
+                logging.error('Exception when calling '
+                              'CoreV1Api->list_namespaced_service:\n {e}'
+                              .format(e))
+            return None
+        except Exception as e:
+            logging.error('Something went wrong. Traefik port '
+                          'was not found:\n {e}'.format(e))
+            return None
 
     def verify_components(self):
         """Verify that REANA components are setup according to specifications.

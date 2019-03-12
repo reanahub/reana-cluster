@@ -198,11 +198,13 @@ Deploy on CERN infrastructure
 
    Edit ``reana_cluster/backends/kubernetes/templates/persistentvolumeclaims/ceph.yaml``
    and set ``spec.recources.requests.storage`` to the size you want the
-   CEPHFS shared volume to be.
+   CEPHFS shared volume to be. Note that it is possible to set CEPHS volume size via
+   cli by passing ``--cephfs-volume-size <size in GB>``. You can also set cluster URL
+   with option ``--url <REANA_cluster_URL>``.
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster.yaml --cvmfs --cephfs init
+      (reana) $ reana-cluster -f reana-cluster.yaml --cvmfs --cephfs --url reana.cern.ch init
 
 10. Test that REANA can be accessed by its domain name:
 

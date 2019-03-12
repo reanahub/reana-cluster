@@ -150,11 +150,13 @@ Initialising a REANA cluster is just a matter of running ``init`` command:
    REANA cluster is initialised.
 
 If you have created a custom configuration, you can use the ``-f`` command-line
-option and specify your own file in the following way:
+option and specify your own file. In the same way you can set URL for REANA cluster
+``--url <cluster_url>``.
 
 .. code-block:: console
 
-  $ reana-cluster -f reana-cluster-custom.yaml init
+  $ reana-cluster -f reana-cluster-custom.yaml --url reana.cern.ch init
+
 
 Verify REANA components
 -----------------------
