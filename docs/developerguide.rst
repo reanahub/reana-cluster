@@ -49,7 +49,6 @@ sources).
    reana-message-broker
    reana-server
    reana-workflow-controller
-   reana-workflow-monitor
    $ minikube mount $HOME/reana/sources:/code
 
 3. Edit sources on your laptop under ``$HOME/reana/sources/reana-<component>/...`` as usual:
@@ -208,19 +207,6 @@ After running ``minikube start`` on the remote host.
        environment:
          - WDB_SOCKET_SERVER: "wdb"
          - WDB_NO_BROWSER_AUTO_OPEN: "True"
-
-     reana-workflow-monitor:
-       type: "docker"
-       image: "reanahub/reana-workflow-monitor:0.1.0"
-       mountpoints:
-         - type: hostPath
-           name: reana-workflow-monitor-code
-           path: "/code/reana-workflow-monitor:/code"
-       environment:
-         - ZMQ_PROXY_CONNECT: tcp://zeromq-msg-proxy.default.svc.cluster.local:8667
-         - WDB_SOCKET_SERVER: "wdb"
-         - WDB_NO_BROWSER_AUTO_OPEN: "True"
-         - FLASK_DEBUG: "1"
 
 .. code-block:: yaml
 
@@ -494,8 +480,6 @@ Stop current cluster (``minikube``, which if you didn't change it, is the defaul
     server-1390351625-dxk52                  1/1       Running   0          7m
     wdb-3285397567-1c8p0                     1/1       Running   0          7m
     workflow-controller-2663988704-3cjlm     1/1       Running   4          7m
-    workflow-monitor-855857361-bzx6f         1/1       Running   0          7m
-    zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   0          7m
     $ minikube stop
     Stopping local Kubernetes cluster...
     Machine stopped.
@@ -589,8 +573,6 @@ Check that all components are created:
     server-2623620487-15pqq                  1/1       Running             0          17m
     wdb-3285397567-cs8tv                     1/1       Running             0          17m
     workflow-controller-3501752780-h327m     1/1       Running             0          5m
-    workflow-monitor-2073990847-g7m13        1/1       Running             1          5m
-    zeromq-msg-proxy-443386439-pdwjt         1/1       Running             0          17m
 
 Switching to previous cluster
 +++++++++++++++++++++++++++++
@@ -646,5 +628,3 @@ If we list now the pods, we can see that they are the original ones:
     server-1390351625-dxk52                  1/1       Running   1          58m
     wdb-3285397567-1c8p0                     1/1       Running   1          58m
     workflow-controller-2663988704-3cjlm     1/1       Running   5          58m
-    workflow-monitor-855857361-bzx6f         1/1       Running   1          58m
-    zeromq-msg-proxy-2640677031-0rdgw        1/1       Running   1          58m

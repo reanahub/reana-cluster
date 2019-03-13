@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of REANA.
-# Copyright (C) 2017, 2018 CERN.
+# Copyright (C) 2017, 2018, 2019 CERN.
 #
 # REANA is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -213,7 +213,6 @@ class KubernetesBackend(ReanaBackendABC):
                 rs_img = components['reana-server']['image']
                 rjc_img = components['reana-job-controller']['image']
                 rwfc_img = components['reana-workflow-controller']['image']
-                rwm_img = components['reana-workflow-monitor']['image']
                 rmb_img = components['reana-message-broker']['image']
 
                 rs_environment = components['reana-server']\
@@ -221,8 +220,6 @@ class KubernetesBackend(ReanaBackendABC):
                 rjc_environment = components['reana-job-controller'] \
                     .get('environment', [])
                 rwfc_environment = components['reana-workflow-controller'] \
-                    .get('environment', [])
-                rwm_environment = components['reana-workflow-monitor'] \
                     .get('environment', [])
                 rmb_environment = components['reana-message-broker'] \
                     .get('environment', [])
@@ -232,8 +229,6 @@ class KubernetesBackend(ReanaBackendABC):
                 rjc_environment = components['reana-job-controller'] \
                     .get('environment', [])
                 rwfc_environment = components['reana-workflow-controller'] \
-                    .get('environment', [])
-                rwm_environment = components['reana-workflow-monitor'] \
                     .get('environment', [])
                 rmb_environment = components['reana-message-broker'] \
                     .get('environment', [])
@@ -243,8 +238,6 @@ class KubernetesBackend(ReanaBackendABC):
                 rjc_mountpoints = components['reana-job-controller']\
                     .get('mountpoints', [])
                 rwfc_mountpoints = components['reana-workflow-controller']\
-                    .get('mountpoints', [])
-                rwm_mountpoints = components['reana-workflow-monitor'] \
                     .get('mountpoints', [])
                 rmb_mountpoints = components['reana-message-broker'] \
                     .get('mountpoints', [])
@@ -259,17 +252,14 @@ class KubernetesBackend(ReanaBackendABC):
                            SERVER_IMAGE=rs_img,
                            JOB_CONTROLLER_IMAGE=rjc_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
-                           WORKFLOW_MONITOR_IMAGE=rwm_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,
                            RS_MOUNTPOINTS=rs_mountpoints,
                            RJC_MOUNTPOINTS=rjc_mountpoints,
                            RWFC_MOUNTPOINTS=rwfc_mountpoints,
-                           RWM_MOUNTPOINTS=rwm_mountpoints,
                            RMB_MOUNTPOINTS=rmb_mountpoints,
                            RS_ENVIRONMENT=rs_environment,
                            RJC_ENVIRONMENT=rjc_environment,
                            RWFC_ENVIRONMENT=rwfc_environment,
-                           RWM_ENVIRONMENT=rwm_environment,
                            RMB_ENVIRONMENT=rmb_environment,
                            )
                 # Strip empty lines for improved readability

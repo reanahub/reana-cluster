@@ -32,9 +32,3 @@ components:
   reana-message-broker:
     type: "docker"
     image: "reanahub/reana-message-broker:latest"
-
-  reana-workflow-monitor:
-    type: "docker"
-    image: "reanahub/reana-workflow-monitor:latest"
-    environment:
-      - ZMQ_PROXY_CONNECT: "tcp://zeromq-msg-proxy.default.svc.cluster.local:8667"

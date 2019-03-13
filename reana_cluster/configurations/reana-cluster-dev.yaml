@@ -70,16 +70,3 @@ components:
     environment:
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
-
-  reana-workflow-monitor:
-    type: "docker"
-    image: "reanahub/reana-workflow-monitor:latest"
-    mountpoints:
-      - type: hostPath
-        name: reana-workflow-monitor-code
-        path: "/code/reana-workflow-monitor:/code"
-    environment:
-      - ZMQ_PROXY_CONNECT: tcp://zeromq-msg-proxy.default.svc.cluster.local:8667
-      - WDB_SOCKET_SERVER: "wdb"
-      - WDB_NO_BROWSER_AUTO_OPEN: "True"
-      - FLASK_ENV:  "development"

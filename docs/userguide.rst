@@ -173,8 +173,6 @@ what is defined in REANA cluster specifications file via the ``verify`` command:
    message-broker          match
    server                  match
    workflow-controller     match
-   workflow-monitor        match
-   zeromq-msg-proxy        match
    wdb                     match
    db                      match
 
@@ -191,8 +189,6 @@ running the ``status`` command:
    message-broker          Running
    server                  Running
    workflow-controller     Running
-   workflow-monitor        Running
-   zeromq-msg-proxy        Running
    wdb                     Running
    db                      Running
    REANA cluster is ready.

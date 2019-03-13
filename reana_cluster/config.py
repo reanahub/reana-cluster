@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of REANA.
-# Copyright (C) 2017, 2018 CERN.
+# Copyright (C) 2017, 2018, 2019 CERN.
 #
 # REANA is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -34,6 +34,5 @@ reana_cluster_ready_necessary_components = ['job-controller',
                                             'message-broker',
                                             'server',
                                             'workflow-controller',
-                                            'workflow-monitor',
-                                            'zeromq-msg-proxy']
+                                            ]
 """Components which must be running for the cluster status to be ready."""
