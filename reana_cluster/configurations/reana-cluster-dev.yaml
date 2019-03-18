@@ -7,7 +7,7 @@ cluster:
 
   # Specifies which K8S context from the kubeconfig configuration will be used.
   # If not specified will use the value of `current-context:` key of kubeconfig.
-  version: "v1.12.1"
+  version: "v1.13.4"
   db_config: &db_base_config
     - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
   root_path: "/var/reana"

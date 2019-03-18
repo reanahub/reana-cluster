@@ -16,7 +16,7 @@ installed inside. How to do this depends on your operating system.
 Versions
 ~~~~~~~~
 
-For REANA v0.5, ``kubectl 1.13.1`` and ``minikube 0.32.0`` are known to work
+For REANA v0.5, ``kubectl 1.13.4`` and ``minikube 0.35.0`` are known to work
 well.
 
 Arch Linux
@@ -47,20 +47,17 @@ Here is one example of well-working versions for REANA v0.5.0:
 .. code-block:: console
 
    $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
-   docker 1:18.09.1-1
-   docker-compose 1.23.2-1
-   docker-machine 0.16.1-1
-   docker-machine-driver-kvm2 0.32.0-1
-   kubectl-bin 1.13.1-1
-   libvirt 4.9.0-2
-   minikube 0.32.0-1
-   python-docker 3.7.0-1
-   python-docker-pycreds 0.4.0-1
-   python-dockerpty 0.4.1-3
-   qemu 3.1.0-1
-   virtualbox 6.0.2-1
-   virtualbox-guest-iso 6.0.2-1
-   virtualbox-host-modules-arch 6.0.2-2
+   docker 1:18.09.3-1
+   docker-machine 0.16.1-2
+   docker-machine-driver-kvm2 0.34.1-1
+   kubectl-bin 1.13.4-1
+   kubernetes-helm 2.12.3-1
+   libvirt 5.1.0-1
+   minikube-bin 0.35.0-1
+   qemu 3.1.0-2
+   virtualbox 6.0.4-4
+   virtualbox-guest-iso 6.0.4-1
+   virtualbox-host-modules-arch 6.0.4-14
 
 Start minikube
 --------------
@@ -71,19 +68,19 @@ running:
 .. code-block:: console
 
    $ minikube config set memory 4096
-   $ minikube start --kubernetes-version="v1.12.1" --feature-gates="TTLAfterFinished=true"
+   $ minikube start --feature-gates="TTLAfterFinished=true"
 
 or, in case of KVM2 hypervisor:
 
 .. code-block:: console
 
-   $ minikube start --kubernetes-version="v1.12.1" --vm-driver=kvm2 --feature-gates="TTLAfterFinished=true"
+   $ minikube start --vm-driver=kvm2 --feature-gates="TTLAfterFinished=true"
 
 You will see an output like:
 
 .. code-block:: console
 
-   Starting local Kubernetes v1.12.1 cluster...
+   Starting local Kubernetes v1.13.4 cluster...
    Starting VM...
    Getting VM IP address...
    Moving files into cluster...

@@ -11,10 +11,10 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.13.1), `minikube
+   (e.g. version 1.13.4), `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   0.32.0) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
-   version 2.12.2):
+   0.35.0) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
+   version 2.12.3):
 
    .. code-block:: console
 
@@ -24,8 +24,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ minikube start --kubernetes-version="v1.12.1" \
-        --feature-gates="TTLAfterFinished=true"
+      $ minikube start --feature-gates="TTLAfterFinished=true"
       $ helm init
 
 3. Install Traefik using Helm. With the provided configuration Traefik will be
