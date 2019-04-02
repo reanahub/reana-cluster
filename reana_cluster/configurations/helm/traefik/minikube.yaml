@@ -12,3 +12,6 @@ service:
   nodePorts:
     http: 30080
     https: 30443
+ssl:
+  enabled: true
+  generateTLS: true
