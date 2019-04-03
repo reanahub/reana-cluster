@@ -27,39 +27,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
       $ minikube start --feature-gates="TTLAfterFinished=true"
       $ helm init
 
-3. Install Traefik using Helm. With the provided configuration Traefik will be
-   accessible in ports ``30080`` and ``30433``.
-
-   .. code-block:: console
-
-      $ helm install stable/traefik --namespace kube-system \
-        --values reana_cluster/configurations/helm/traefik/minikube.yaml
-
-   .. note::
-      Traefik dashboard is not accessible by default, when deploying Traefik
-      with Helm it creates the Traefik dashboard service as ``ClusterIp``,
-      but to make it work inside Minikube we should use ``NodePort``, see:
-
-      .. code-block:: console
-
-         $ kubectl get svc -n kube-system -l app=traefik | grep dashboard
-         famous-higgs-traefik-dashboard   ClusterIP   10.110.238.255   <none>        80/TCP
-         $ kubectl edit -n kube-system svc famous-higgs-traefik-dashboard
-         # here we change `spec.type: ClusterIp`
-         # to `spec.type: NodePort`
-         # Now we list the service again and we get its NodePort.
-         $ kubectl get -n kube-system svc famous-higgs-traefik-dashboard
-         NAME                             TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-         famous-higgs-traefik-dashboard   NodePort   10.110.238.255   <none>        80:31426/TCP   9m37s
-
-      To visit the dashboard:
-
-      .. code-block:: console
-
-         $ firefox http://$(minikube ip):31426
-
-
-4. Install REANA-Cluster sources. You probably want to use a virtual environment:
+3. Install REANA-Cluster sources. You probably want to use a virtual environment:
 
    .. code-block:: console
 
@@ -69,13 +37,21 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
       $ # install reana-cluster utility
       $ pip install reana-cluster
 
-5. Start REANA cluster instance on Minikube:
+4. Start REANA cluster instance on Minikube:
 
    .. code-block:: console
 
-      $ reana-cluster init
+      $ reana-cluster init --traefik
 
-6. Check the status of the REANA cluster deployment. (Note that it may take
+  .. note::
+
+     ``--traefik`` flag triggers installation and initialization of
+     `Traefik <https://docs.traefik.io>`_
+     `ingress controller <https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/>`_.
+     REANA needs it for `interactive session <https://reana-client.readthedocs.io/en/latest/userguide.html#opening-interactive-sessions>`_
+     feature to work.
+
+5. Check the status of the REANA cluster deployment. (Note that it may take
    several minutes to pull the REANA component images for the first time.)
 
    .. code-block:: console
@@ -84,7 +60,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
       ...
       REANA cluster is ready.
 
-7. Display the commands to set up the environment for the user clients:
+6. Display the commands to set up the environment for the user clients:
 
    .. code-block:: console
 
@@ -107,7 +83,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
 
 
-8. You can now run REANA examples on the locally-deployed cluster using
+7. You can now run REANA examples on the locally-deployed cluster using
    `reana-client <https://reana-client.readthedocs.io/>`_.
 
    Note that after you finish testing REANA, you can delete the locally-deployed

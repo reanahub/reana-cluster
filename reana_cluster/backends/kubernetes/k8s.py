@@ -9,12 +9,14 @@
 
 import json
 import logging
+import os
+import shlex
 import subprocess
 
 import pkg_resources
 import yaml
-from jinja2 import Environment, FileSystemLoader, TemplateNotFound, \
-    TemplateSyntaxError
+from jinja2 import (Environment, FileSystemLoader, TemplateNotFound,
+                    TemplateSyntaxError)
 from kubernetes import client as k8s_client
 from kubernetes import config as k8s_config
 from kubernetes.client import Configuration
@@ -77,7 +79,6 @@ class KubernetesBackend(ReanaBackendABC):
             the cluster pods.
         :param debug: Boolean flag setting debug mode.
         :param url: REANA cluster url.
-
         """
         logging.debug('Creating a ReanaBackend object '
                       'for Kubernetes interaction.')
@@ -309,8 +310,11 @@ class KubernetesBackend(ReanaBackendABC):
         # independent YAML documents (split from `---`) as Python objects.
         return yaml.load_all(cluster_conf, Loader=yaml.FullLoader)
 
-    def init(self):
+    def init(self, traefik):
         """Initialize REANA cluster, i.e. deploy REANA components to backend.
+
+        :param traefik: Boolean flag determines if traefik should be
+            initialized.
 
         :return: `True` if init was completed successfully.
         :rtype: bool
@@ -325,6 +329,9 @@ class KubernetesBackend(ReanaBackendABC):
 
         # Should check that cluster is not already initialized.
         # Maybe use `verify_components()` or `get()` each component?
+
+        if traefik is True:
+            self.initialize_traefik()
 
         for manifest in self.cluster_conf:
             try:
@@ -397,6 +404,40 @@ class KubernetesBackend(ReanaBackendABC):
                 raise e
 
         return True
+
+    def initialize_traefik(self):
+        """Install and initialize traefik via Helm.
+
+        Traefik dashboard service is not accessible by default, to make it
+        accessible inside Minikube service type is changed to NodePort.
+        """
+        from reana_cluster.config import traefik_configuration_file_path
+        try:
+            namespace = 'kube-system'
+            label_selector = 'app=traefik'
+            cmd = ('helm install stable/traefik --namespace {} '
+                   '--values {}').format(namespace,
+                                         traefik_configuration_file_path)
+            cmd = shlex.split(cmd)
+            subprocess.check_output(cmd)
+            traefik_objects = self._corev1api.list_namespaced_service(
+                namespace=namespace,
+                label_selector=label_selector,
+                limit=2)
+            traefik_dashboard_body = None
+            for traefik_object in traefik_objects.items:
+                if 'dashboard' in traefik_object.metadata.name:
+                    traefik_dashboard_body = traefik_object
+                    break
+            traefik_dashboard_body.spec.type = 'NodePort'
+            self._corev1api.patch_namespaced_service(
+                name=traefik_dashboard_body.metadata.name,
+                namespace=namespace,
+                body=traefik_dashboard_body
+            )
+        except Exception as e:
+            logging.error('Traefik initialization failed \n {}.'.format(e))
+            raise e
 
     def _add_service_acc_key_to_component(self, component_manifest):
         """Add K8S service account credentials to a component.

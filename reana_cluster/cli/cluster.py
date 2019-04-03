@@ -146,8 +146,12 @@ def restart(ctx, remove_persistent_storage):
     type=click.Path(exists=False, resolve_path=False),
     help='Path where generated cluster configuration files should be saved.'
          'If no value is given no files are outputted.')
+@click.option(
+    '-t',
+    '--traefik', is_flag=True,
+    help='Install and initialize Traefik')
 @click.pass_context
-def init(ctx, skip_initialization, output):
+def init(ctx, skip_initialization, output, traefik):
     """Initialize REANA cluster."""
     try:
         backend = ctx.obj.backend
@@ -155,7 +159,7 @@ def init(ctx, skip_initialization, output):
             logging.info('Connecting to {cluster} at {url}'
                          .format(cluster=backend.cluster_type,
                                  url=backend.cluster_url))
-            backend.init()
+            backend.init(traefik)
             click.echo(
                 click.style("REANA cluster is initialised.", fg='green'))
 

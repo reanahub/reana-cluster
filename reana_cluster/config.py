@@ -22,6 +22,10 @@ cluster_spec_schema_file_path = pkg_resources.resource_filename(
     'reana_cluster', 'schemas/reana-cluster.json')
 """REANA cluster specification schema location."""
 
+traefik_configuration_file_path = pkg_resources.resource_filename(
+    'reana_cluster', 'configurations/helm/traefik/minikube.yaml')
+"""Traefik configuration schema location."""
+
 supported_backends = {
     'kubernetes': KubernetesBackend,
 }
