@@ -20,6 +20,7 @@ import yaml
 from ..config import (generated_cluster_conf_default_path,
                       reana_env_exportable_info_components,
                       reana_cluster_ready_necessary_components)
+from reana_cluster.utils import build_component_url
 from reana_commons.utils import click_table_printer
 
 
@@ -66,13 +67,16 @@ def get(ctx, component, namespace):
     default='default',
     help='Namespace of the components which configuration should be produced.')
 @click.option(
+    '--insecure-url', is_flag=True,
+    help='REANA Server URL with HTTP.')
+@click.option(
     '--include-admin-token',
     is_flag=True,
     help='Display also commands how to set REANA_ACCESS_TOKEN for '
          'administrator access. Use with care! Do no share with regular '
          'users.')
 @click.pass_context
-def env(ctx, namespace, include_admin_token):
+def env(ctx, namespace, insecure_url, include_admin_token):
     """Produce shell exportable list of REANA components' urls."""
     try:
         export_lines = []
@@ -80,15 +84,15 @@ def env(ctx, namespace, include_admin_token):
         for component in reana_env_exportable_info_components:
             component_info = ctx.obj.backend.get_component(
                 component, namespace)
+
             export_lines.append(component_export_line.format(
                 env_var_name='{0}_URL'.format(
                     component.upper().replace('-', '_')),
-                env_var_value='{schema}://{ip}:{port}'.format(
-                    schema='http',
-                    ip=component_info['external_ip_s'][0],
-                    port=component_info['ports'][0]),
+                env_var_value=build_component_url(
+                    component_info['external_ip_s'][0],
+                    component_info['ports'],
+                    insecure=insecure_url),
             ))
-
         if include_admin_token:
             get_admin_token_sql_query_cmd = [
                 'psql', '-U', 'reana', 'reana', '-c',

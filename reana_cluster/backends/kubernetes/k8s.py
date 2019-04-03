@@ -648,12 +648,12 @@ class KubernetesBackend(ReanaBackendABC):
             comp_info['internal_ip'] = comp.spec.external_i_ps
 
             if component_name_without_prefix == 'server':
-                traefik_port = self.get_traefik_port()
+                traefik_ports = self.get_traefik_ports()
             else:
-                traefik_port = None
+                traefik_ports = None
 
-            if traefik_port:
-                comp_info['ports'].append(traefik_port)
+            if traefik_ports:
+                comp_info['ports'].extend(traefik_ports)
             else:
                 for port in comp.spec.ports:
                     if minikube_ip:
@@ -678,8 +678,8 @@ class KubernetesBackend(ReanaBackendABC):
 
         return comp_info
 
-    def get_traefik_port(self):
-        """Return port of traefik if it is available."""
+    def get_traefik_ports(self):
+        """Return the list of Traefik ports if Traefik is present."""
         namespace = 'kube-system'
         label_selector = 'app=traefik'
         try:
@@ -687,10 +687,14 @@ class KubernetesBackend(ReanaBackendABC):
                 namespace=namespace,
                 label_selector=label_selector,
                 limit=2)
+            ports = []
             for object in traefik_objects.items:
                 for port in object.spec.ports:
                     if port.name == 'http':
-                        return port.node_port
+                        ports.append(port.node_port)
+                    elif port.name == 'https':
+                        ports.append(port.node_port)
+            return ports
         except ApiException as e:
             if e.reason == "Not Found":
                 logging.error("K8s traefik objects were not found.")
