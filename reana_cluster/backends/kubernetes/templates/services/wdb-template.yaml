@@ -12,6 +12,7 @@ spec:
     protocol: TCP
   - port: 1984
     targetPort: 1984
+    nodePort: 31984
     name: "ui"
     protocol: TCP
   selector:
