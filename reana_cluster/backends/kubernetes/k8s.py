@@ -411,13 +411,15 @@ class KubernetesBackend(ReanaBackendABC):
         Traefik dashboard service is not accessible by default, to make it
         accessible inside Minikube service type is changed to NodePort.
         """
-        from reana_cluster.config import traefik_configuration_file_path
+        from reana_cluster.config import (traefik_configuration_file_path,
+                                          traefik_release_name)
         try:
             namespace = 'kube-system'
             label_selector = 'app=traefik'
-            cmd = ('helm install stable/traefik --namespace {} '
-                   '--values {}').format(namespace,
-                                         traefik_configuration_file_path)
+            cmd = ('helm install stable/traefik --namespace {} --values {} '
+                   '--name {}').format(namespace,
+                                       traefik_configuration_file_path,
+                                       traefik_release_name)
             cmd = shlex.split(cmd)
             subprocess.check_output(cmd)
             traefik_objects = self._corev1api.list_namespaced_service(
@@ -620,6 +622,12 @@ class KubernetesBackend(ReanaBackendABC):
                 self._storagev1api.delete_storage_class(
                     name=sc.metadata.name,
                     body=k8s_client.V1DeleteOptions())
+
+        # delete traefik objects
+        from reana_cluster.config import traefik_release_name
+        cmd = 'helm del --purge {}'.format(traefik_release_name)
+        cmd = shlex.split(cmd)
+        subprocess.check_output(cmd)
 
         return True
 

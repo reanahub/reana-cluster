@@ -40,3 +40,6 @@ reana_cluster_ready_necessary_components = ['job-controller',
                                             'workflow-controller',
                                             ]
 """Components which must be running for the cluster status to be ready."""
+
+traefik_release_name = 'reana-traefik'
+"""Name used for traefik deployment."""
