@@ -11,9 +11,9 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.13.4), `minikube
+   (e.g. version 1.14.0), `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   0.35.0) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
+   1.0.0) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
    version 2.12.3):
 
    .. code-block:: console

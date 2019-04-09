@@ -16,7 +16,7 @@ installed inside. How to do this depends on your operating system.
 Versions
 ~~~~~~~~
 
-For REANA v0.5, ``kubectl 1.13.4`` and ``minikube 0.35.0`` are known to work
+For REANA v0.5, ``kubectl 1.14.0`` and ``minikube 1.0.0`` are known to work
 well.
 
 Arch Linux
@@ -50,10 +50,10 @@ Here is one example of well-working versions for REANA v0.5.0:
    docker 1:18.09.3-1
    docker-machine 0.16.1-2
    docker-machine-driver-kvm2 0.34.1-1
-   kubectl-bin 1.13.4-1
+   kubectl-bin 1.14.0-1
    kubernetes-helm 2.12.3-1
    libvirt 5.1.0-1
-   minikube-bin 0.35.0-1
+   minikube-bin 1.0.0-1
    qemu 3.1.0-2
    virtualbox 6.0.4-4
    virtualbox-guest-iso 6.0.4-1
@@ -80,7 +80,7 @@ You will see an output like:
 
 .. code-block:: console
 
-   Starting local Kubernetes v1.13.4 cluster...
+   Starting local Kubernetes v1.14.0 cluster...
    Starting VM...
    Getting VM IP address...
    Moving files into cluster...
@@ -146,7 +146,7 @@ Initialising a REANA cluster is just a matter of running ``init`` command:
 
 .. code-block:: console
 
-   $ reana-cluster init
+   $ reana-cluster init --traefik
    REANA cluster is initialised.
 
 If you have created a custom configuration, you can use the ``-f`` command-line
@@ -155,7 +155,7 @@ option and specify your own file. In the same way you can set URL for REANA clus
 
 .. code-block:: console
 
-  $ reana-cluster -f reana-cluster-custom.yaml --url reana.cern.ch init
+  $ reana-cluster -f reana-cluster-custom.yaml --url reana.cern.ch init --traefik
 
 
 Verify REANA components
