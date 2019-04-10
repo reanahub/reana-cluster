@@ -221,3 +221,31 @@ were deployed during ``init``, you can run:
 .. code-block:: console
 
    $ reana-cluster down
+
+Delete interactive sessions
+---------------------------
+
+Interactive sessions that were not closed after work have been finished leave
+active Kubernetes objects (`pod`, `service` and `Ingress`) running in the REANA
+cluster. These objects might need to be deleted from time to time. Please note
+that interactive session pod and service are linked to the Ingress object. If it
+gets deleted other two will be deleted automatically.
+
+To delete open interactive sessions use following commands:
+
+.. code-block:: console
+
+   # get all ingresses of open interactive sessions
+   $ kubectl get ingresses | grep interactive
+   interactive-jupyter-ad814137-baec-4ee5-b899-1d549e90b44a   *                 80      103m
+   interactive-jupyter-e4c7aa38-370b-47b7-bf8c-44f5f0f44b44   *                 80      3h48m
+   interactive-jupyter-ec5438b1-65a8-4bba-a52c-ff7970242e83   *                 80      3h16m
+   interactive-jupyter-f401874d-e9a6-4b2b-9b9d-12b0f141a442   *                 80      103m
+   interactive-jupyter-f9f56f92-a533-4bcc-aad9-581f5e31ff0f   *                 80      103m
+   # lets delete all remaining objects of open interactive sessions
+   $ kubectl delete $(kubectl get ingresses -o name | grep interactive)
+   ingress.extensions "interactive-jupyter-ad814137-baec-4ee5-b899-1d549e90b44a" deleted
+   ingress.extensions "interactive-jupyter-e4c7aa38-370b-47b7-bf8c-44f5f0f44b44" deleted
+   ingress.extensions "interactive-jupyter-ec5438b1-65a8-4bba-a52c-ff7970242e83" deleted
+   ingress.extensions "interactive-jupyter-f401874d-e9a6-4b2b-9b9d-12b0f141a442" deleted
+   ingress.extensions "interactive-jupyter-f9f56f92-a533-4bcc-aad9-581f5e31ff0f" deleted
