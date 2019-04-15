@@ -26,7 +26,7 @@ tests_require = [
     'pytest-cache>=1.0',
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
-    'pytest>=2.8.0'
+    'pytest>=3.8.0'
 ]
 
 extras_require = {
@@ -49,7 +49,7 @@ setup_requires = [
 ]
 
 install_requires = [
-    'click>=7,<8',
+    'click>=7',
     'Jinja2>=2.9.6,<2.11',
     'jsonschema[format]>=2.6.0,<2.7',
     'kubernetes>=9.0.0',
