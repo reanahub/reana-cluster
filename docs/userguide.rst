@@ -27,6 +27,7 @@ For example, on Arch Linux, you should install the following packages:
 - `docker <https://www.archlinux.org/packages/community/x86_64/docker/>`_
 - `kubectl-bin (AUR) <https://aur.archlinux.org/packages/kubectl-bin/>`_
 - `minikube (AUR) <https://aur.archlinux.org/packages/minikube/>`_
+- `kubernetes-helm <https://aur.archlinux.org/packages/kubernetes-helm/>`_
 
 Moreover, if you plan to run Minikube via the VirtualBox hypervisor, you should
 install also:
@@ -59,6 +60,25 @@ Here is one example of well-working versions for REANA v0.5.0:
    virtualbox-guest-iso 6.0.4-1
    virtualbox-host-modules-arch 6.0.4-14
 
+MacOS
+~~~~~
+
+For example, on MacOS, you should install the following packages:
+
+- `docker <https://docs.docker.com/docker-for-mac/install/>`_
+- `kubernetes-cli <https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-with-homebrew-on-macos>`_
+- `hyperkit <https://github.com/moby/hyperkit>`_
+- `minikube <https://kubernetes.io/docs/tasks/tools/install-minikube/#macos>`_
+- `helm <https://helm.sh/docs/using_helm/#from-homebrew-macos>`_
+
+.. code-block:: console
+
+   $ brew install kubernetes-cli
+   $ brew install hyperkit
+   $ brew cask install minikube
+   $ brew install kubernetes-helm
+
+
 Start minikube
 --------------
 
@@ -70,11 +90,17 @@ running:
    $ minikube config set memory 4096
    $ minikube start --feature-gates="TTLAfterFinished=true"
 
-or, in case of KVM2 hypervisor:
+in case of KVM2 hypervisor:
 
 .. code-block:: console
 
    $ minikube start --vm-driver=kvm2 --feature-gates="TTLAfterFinished=true"
+
+or, in case of Hyperkit hypervisor:
+
+.. code-block:: console
+
+  $ minikube start --vm-driver=hyperkit --feature-gates="TTLAfterFinished=true"
 
 You will see an output like:
 
