@@ -25,8 +25,8 @@ Arch Linux
 For example, on Arch Linux, you should install the following packages:
 
 - `docker <https://www.archlinux.org/packages/community/x86_64/docker/>`_
-- `kubectl-bin (AUR) <https://aur.archlinux.org/packages/kubectl-bin/>`_
-- `minikube (AUR) <https://aur.archlinux.org/packages/minikube/>`_
+- `kubectl <https://www.archlinux.org/packages/community/x86_64/kubectl/>`_
+- `minikube <https://www.archlinux.org/packages/community/x86_64/minikube/>`_
 - `kubernetes-helm <https://aur.archlinux.org/packages/kubernetes-helm/>`_
 
 Moreover, if you plan to run Minikube via the VirtualBox hypervisor, you should
@@ -48,17 +48,21 @@ Here is one example of well-working versions for REANA v0.5.0:
 .. code-block:: console
 
    $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
-   docker 1:18.09.3-1
+   docker 1:18.09.5-1
+   docker-compose 1.24.0-1
    docker-machine 0.16.1-2
-   docker-machine-driver-kvm2 0.34.1-1
+   docker-machine-driver-kvm2 1.0.0-1
    kubectl-bin 1.14.0-1
-   kubernetes-helm 2.12.3-1
-   libvirt 5.1.0-1
+   kubernetes-helm-bin 2.13.1-1
+   libvirt 5.2.0-1
    minikube-bin 1.0.0-1
+   python-docker 3.7.2-1
+   python-docker-pycreds 0.4.0-1
+   python-dockerpty 0.4.1-4
    qemu 3.1.0-2
-   virtualbox 6.0.4-4
-   virtualbox-guest-iso 6.0.4-1
-   virtualbox-host-modules-arch 6.0.4-14
+   virtualbox 6.0.6-1
+   virtualbox-guest-iso 6.0.6-1
+   virtualbox-host-modules-arch 6.0.6-1
 
 MacOS
 ~~~~~
