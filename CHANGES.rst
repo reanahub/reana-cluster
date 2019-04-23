@@ -1,6 +1,24 @@
 Changes
 =======
 
+Version 0.5.0 (2019-04-24)
+--------------------------
+
+- Upgrades to Kubernetes 1.14, Helm 2.13 and Minikube 1.0.
+- Separates cluster infrastructure pods from runtime workflow engine pods that
+  will be created by workflow controller.
+- Adds support for exposing user interactive sessions such as Jupyter notebook
+  via Traefik ingress controller.
+- Introduces configurable CVMFS and CephFS shared volume mounts. Changes
+  ``SHARED_VOLUME_PATH`` to ``/var/reana/``.
+- Adds support for optional HTTPS protocol termination at the ``REANA-Server``
+  component.
+- Improves workflow execution queuing and scheduling via ``REANA-Server``
+  sidecar.
+- Removes unused ``REANA-Workflow-Monitor`` component and ``ZeroMQ`` service.
+- Enables Flask debugging mode for the cluster development configuration by
+  setting ``FLASK_ENV`` accordingly.
+
 Version 0.4.0 (2018-11-07)
 --------------------------
 
