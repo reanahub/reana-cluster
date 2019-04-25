@@ -150,10 +150,13 @@ Deploy on CERN infrastructure
       # Get the Kube master name and connect to it
       $ openstack server list | grep -E reana-.*-master
       $ ssh -i <ssh-key> fedora@<master-node>
-      # Add to the `--feature-gates` the `TTLAfterFinished=true` flag
+      # Add `TTLAfterFinished=true` to the `--feature-gates` in
+      # `/etc/kubernetes/apiserver `and `/etc/kubernetes/controller-manager`
       > sudo vi /etc/kubernetes/apiserver
-      # Finally restart the API server
+      > sudo vi /etc/kubernetes/controller-manager
+      # Finally restart both services
       > sudo systemctl restart kube-apiserver
+      > sudo systemctl restart kube-controller-manager
 
 7. Since Python3 does not come by default we have to use the `slc` command to
    activate it and we create a virtual environment for REANA:
@@ -170,17 +173,15 @@ Deploy on CERN infrastructure
 
       (reana) $ pip install reana-cluster
 
-9. Instantiate REANA cluster using CVMFS and CEPHFS:
-
-   Edit ``reana_cluster/backends/kubernetes/templates/persistentvolumeclaims/ceph.yaml``
-   and set ``spec.recources.requests.storage`` to the size you want the
-   CEPHFS shared volume to be. Note that it is possible to set CEPHS volume size via
-   cli by passing ``--cephfs-volume-size <size in GB>``. You can also set cluster URL
-   with option ``--url <REANA_cluster_URL>``.
+9. Instantiate REANA cluster using CEPHFS:
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster.yaml --cvmfs --cephfs --url reana.cern.ch init
+      (reana) $ reana-cluster -f reana-cluster.yaml \
+                              --cephfs
+                              --cephfs-volume-size <size in GB>
+                              --url <reana-instance-url>
+                              init
 
 10. Test that REANA can be accessed by its domain name:
 
