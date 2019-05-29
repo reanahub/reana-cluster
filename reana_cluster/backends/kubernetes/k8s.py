@@ -344,7 +344,8 @@ class KubernetesBackend(ReanaBackendABC):
                     # service-account-token in order to create new Pods.
 
                     components_k8s_token = \
-                        ['job-controller', 'workflow-controller']
+                        ['reana-server', 'job-controller',
+                         'workflow-controller']
                     if manifest['metadata']['name'] in components_k8s_token:
                         manifest = self._add_service_acc_key_to_component(
                             manifest)
