@@ -173,21 +173,58 @@ Deploy on CERN infrastructure
 
       (reana) $ pip install reana-cluster
 
-9. Instantiate REANA cluster using CEPHFS:
+9. Create your own ``reana-cluster.yaml``. For instance, to deploy REANA
+   ``0.5.0`` at CERN with 200 GB Ceph volume and having as URL
+   ``reana-dev.cern.ch`` the file, ``reana-cluster-CERN.yaml``, would look
+   like follows:
+
+   .. code-block:: yaml
+
+      cluster:
+        type: "kubernetes"
+        version: "v1.14.0"
+        db_config: &db_base_config
+         - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
+        root_path: "/var/reana"
+        shared_volume_path: "/var/reana"
+        reana_url: "reana-dev.cern.ch"
+        cephfs_volume_size: 200
+        db_persistence_path: "/var/reana/db"
+
+      components:
+        reana-workflow-controller:
+          type: "docker"
+          image: "reanahub/reana-workflow-controller:0.5.0"
+          environment:
+           - <<: *db_base_config
+           - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+           - REANA_WORKFLOW_ENGINE_IMAGE_CWL: "reanahub/reana-workflow-engine-cwl:0.5.0"
+           - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:0.5.0"
+           - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:0.5.0"
+
+        reana-server:
+          type: "docker"
+          image: "reanahub/reana-server:0.5.0"
+          environment:
+           - <<: *db_base_config
+
+        reana-message-broker:
+          type: "docker"
+          image: "reanahub/reana-message-broker:0.5.0"
+
+
+9. Instantiate REANA cluster:
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster.yaml \
-                              --cephfs
-                              --cephfs-volume-size <size in GB>
-                              --url <reana-instance-url>
-                              init
+      (reana) $ reana-cluster -f reana-cluster-CERN.yaml --cephfs init
 
-10. Test that REANA can be accessed by its domain name:
+
+10. Test that REANA can be accessed by the specified domain name:
 
    .. code-block:: console
 
-      (reana) $ curl http://reana.cern.ch/api/ping
+      (reana) $ curl http://reana-dev.cern.ch/api/ping
       {"message": "OK", "status": "200"}
 
 

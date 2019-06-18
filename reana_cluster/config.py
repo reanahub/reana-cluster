@@ -12,7 +12,7 @@ import pkg_resources
 from .backends.kubernetes import KubernetesBackend
 
 cluster_spec_default_file_path = pkg_resources.resource_filename(
-    'reana_cluster', 'configurations/reana-cluster.yaml')
+    'reana_cluster', 'configurations/reana-cluster-minikube.yaml')
 """REANA cluster specification file default location."""
 
 generated_cluster_conf_default_path = './cluster_config/'

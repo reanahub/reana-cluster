@@ -157,15 +157,15 @@ working REANA cluster, ready to run workflows that users submit via
 In order to achieve this, ``reana-cluster`` needs to know how the REANA cluster
 should be set up; e.g. what versions of REANA components should be deployed and
 how the configuration of each component should be set up. ``reana-cluster``
-expects to get this information via ``reana-cluster.yaml`` file that comes with
+expects to get this information via ``reana-cluster-stable.yaml`` file that comes with
 the package:
 
-.. literalinclude:: ../reana_cluster/configurations/reana-cluster.yaml
+.. literalinclude:: ../reana_cluster/configurations/reana-cluster-stable.yaml
    :language: yaml
 
-You can use the supplied ``reana-cluster.yaml``, or create your own custom
+You can use the supplied ``reana-cluster-stable.yaml``, or create your own custom
 configuration. For instance, if you wish to use a different Docker image for the
-``reana-server`` component, you can copy the default ``reana-cluster.yaml`` to a
+``reana-server`` component, you can copy the default ``reana-cluster-stable.yaml`` to a
 ``reana-cluster-custom.yaml`` file and change the image tag
 ``reanahub/reana-server:0.2.0`` according to your wishes.
 
