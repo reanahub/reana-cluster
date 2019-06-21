@@ -83,7 +83,6 @@ def cli(ctx, loglevel, skip_validation, file,
             cephfs_volume_size = None
             click.echo(click.style('CEPHFS volume size will not be set because'
                                    ' missing `--cephfs` flag', fg='yellow'))
-
         ctx.obj = Config()
 
         cluster_type = cluster_spec['cluster']['type']

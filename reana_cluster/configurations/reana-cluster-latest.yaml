@@ -16,13 +16,6 @@ components:
       - SHARED_VOLUME_PATH: "/var/reana"
       - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
 
-  reana-job-controller:
-    type: "docker"
-    image: "reanahub/reana-job-controller:latest"
-    environment:
-      - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/var/reana"
-
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:latest"

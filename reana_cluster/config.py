@@ -34,11 +34,9 @@ supported_backends = {
 reana_env_exportable_info_components = ['reana-server']
 """Components which information will be produced by ``reana-client env``."""
 
-reana_cluster_ready_necessary_components = ['job-controller',
+reana_cluster_ready_necessary_components = ['workflow-controller',
                                             'message-broker',
-                                            'server',
-                                            'workflow-controller',
-                                            ]
+                                            'server']
 """Components which must be running for the cluster status to be ready."""
 
 traefik_release_name = 'reana-traefik'

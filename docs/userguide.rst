@@ -198,7 +198,6 @@ what is defined in REANA cluster specifications file via the ``verify`` command:
 
    $ reana-cluster verify components
    COMPONENT               IMAGE
-   job-controller          match
    message-broker          match
    server                  match
    workflow-controller     match
@@ -214,7 +213,6 @@ running the ``status`` command:
 .. code-block:: console
 
    $ reana-cluster status
-   job-controller          Running
    message-broker          Running
    server                  Running
    workflow-controller     Running

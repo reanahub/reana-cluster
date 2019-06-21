@@ -45,7 +45,6 @@ sources).
    $ ls -d $HOME/reana/sources
    reana-client
    reana-cluster
-   reana-job-controller
    reana-message-broker
    reana-server
    reana-workflow-controller
@@ -55,17 +54,17 @@ sources).
 
 .. code-block:: console
 
-   $ vim $HOME/reana/sources/reana-job-controller/reana_job_controller/app.py
+   $ vim $HOME/reana/sources/reana-workflow-controller/reana_workflow_controller/app.py
 
 4. Delete your pod and see a new pod being deployed with your changes:
 
 .. code-block:: console
 
-   $ kubectl get pods | grep job-controller
-   $ kubectl delete pod job-controller-2461563162-r4hgg
+   $ kubectl get pods | grep workflow-controller
+   $ kubectl delete pod workflow-controller-2461563162-r4hgg
    $ sleep 10 # wait some time...
-   $ kubectl get pods | grep job-controller
-   $ kubectl exec -i -t job-controller-2461563162-h9ptw /bin/bash
+   $ kubectl get pods | grep workflow-controller
+   $ kubectl exec -i -t workflow-controller-2461563162-h9ptw /bin/bash
 
 Using Minikube running on a remote host
 ---------------------------------------
@@ -171,19 +170,6 @@ After running ``minikube start`` on the remote host.
          - WDB_SOCKET_SERVER: "wdb"
          - WDB_NO_BROWSER_AUTO_OPEN: "True"
          - FLASK_DEBUG: "1"
-
-     reana-job-controller:
-       type: "docker"
-       image: "reanahub/reana-job-controller:0.1.0"
-       mountpoints:
-         - type: hostPath
-           name: reana-job-controller-code
-           path: "/code/reana-job-controller:/code"
-       environment:
-         - REANA_STORAGE_BACKEND: "LOCAL"
-         - WDB_SOCKET_SERVER: "wdb"
-         - WDB_NO_BROWSER_AUTO_OPEN: "True"
-         - FLASK_DEBUG:  "1"
 
      reana-server:
        type: "docker"
@@ -475,7 +461,6 @@ Stop current cluster (``minikube``, which if you didn't change it, is the defaul
 
     $ kubectl get pods
     NAME                                     READY     STATUS    RESTARTS   AGE
-    job-controller-2899072941-5c8ph          1/1       Running   0          7m
     message-broker-1926055025-4jjdm          1/1       Running   0          7m
     server-1390351625-dxk52                  1/1       Running   0          7m
     wdb-3285397567-1c8p0                     1/1       Running   0          7m
@@ -568,7 +553,6 @@ Check that all components are created:
 
     $ kubectl get pods
     NAME                                     READY     STATUS              RESTARTS   AGE
-    job-controller-3021378878-htkvv          1/1       Running             0          5m
     message-broker-3641009106-c2rzx          1/1       Running             0          17m
     server-2623620487-15pqq                  1/1       Running             0          17m
     wdb-3285397567-cs8tv                     1/1       Running             0          17m
@@ -622,7 +606,6 @@ If we list now the pods, we can see that they are the original ones:
 
     $ kubectl get pods
     NAME                                     READY     STATUS    RESTARTS   AGE
-    job-controller-2899072941-5c8ph          1/1       Running   1          58m
     message-broker-1926055025-4jjdm          1/1       Running   1          58m
     server-1390351625-dxk52                  1/1       Running   1          58m
     wdb-3285397567-1c8p0                     1/1       Running   1          58m

@@ -220,13 +220,10 @@ class KubernetesBackend(ReanaBackendABC):
 
                 components = cluster_spec['components']
                 rs_img = components['reana-server']['image']
-                rjc_img = components['reana-job-controller']['image']
                 rwfc_img = components['reana-workflow-controller']['image']
                 rmb_img = components['reana-message-broker']['image']
 
                 rs_environment = components['reana-server']\
-                    .get('environment', [])
-                rjc_environment = components['reana-job-controller'] \
                     .get('environment', [])
                 rwfc_environment = components['reana-workflow-controller'] \
                     .get('environment', [])
@@ -234,8 +231,6 @@ class KubernetesBackend(ReanaBackendABC):
                     .get('environment', [])
 
                 rs_environment = components['reana-server']\
-                    .get('environment', [])
-                rjc_environment = components['reana-job-controller'] \
                     .get('environment', [])
                 rwfc_environment = components['reana-workflow-controller'] \
                     .get('environment', [])
@@ -243,8 +238,6 @@ class KubernetesBackend(ReanaBackendABC):
                     .get('environment', [])
 
                 rs_mountpoints = components['reana-server']\
-                    .get('mountpoints', [])
-                rjc_mountpoints = components['reana-job-controller']\
                     .get('mountpoints', [])
                 rwfc_mountpoints = components['reana-workflow-controller']\
                     .get('mountpoints', [])
@@ -259,15 +252,12 @@ class KubernetesBackend(ReanaBackendABC):
                                url),
                            CEPHFS_VOLUME_SIZE=cephfs_volume_size or 1,
                            SERVER_IMAGE=rs_img,
-                           JOB_CONTROLLER_IMAGE=rjc_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,
                            RS_MOUNTPOINTS=rs_mountpoints,
-                           RJC_MOUNTPOINTS=rjc_mountpoints,
                            RWFC_MOUNTPOINTS=rwfc_mountpoints,
                            RMB_MOUNTPOINTS=rmb_mountpoints,
                            RS_ENVIRONMENT=rs_environment,
-                           RJC_ENVIRONMENT=rjc_environment,
                            RWFC_ENVIRONMENT=rwfc_environment,
                            RMB_ENVIRONMENT=rmb_environment,
                            )
@@ -344,8 +334,7 @@ class KubernetesBackend(ReanaBackendABC):
                     # service-account-token in order to create new Pods.
 
                     components_k8s_token = \
-                        ['reana-server', 'job-controller',
-                         'workflow-controller']
+                        ['reana-server', 'workflow-controller']
                     if manifest['metadata']['name'] in components_k8s_token:
                         manifest = self._add_service_acc_key_to_component(
                             manifest)

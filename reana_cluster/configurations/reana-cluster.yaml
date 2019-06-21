@@ -24,12 +24,6 @@ components:
       - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:0.5.0"
       - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:0.5.0"
 
-  reana-job-controller:
-    type: "docker"
-    image: "reanahub/reana-job-controller:0.5.1"
-    environment:
-      - <<: *db_base_config
-
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:0.5.0"

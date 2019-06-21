@@ -249,7 +249,7 @@ def cli_verify_components(ctx):
     '--component',
     default=None,
     help='Specify for which component you want the status'
-         'e.g. job-controller.')
+         'e.g. workflow-controller.')
 @click.pass_context
 def status(ctx, component):
     """Display the status of cluster components and if the cluster is ready."""
