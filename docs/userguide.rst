@@ -64,6 +64,83 @@ Here is one example of well-working versions for REANA v0.5.0:
    virtualbox-guest-iso 6.0.6-1
    virtualbox-host-modules-arch 6.0.6-1
 
+Ubuntu
+~~~~~~~
+
+Note: you may need to install other quite commonly used libraries or packages,
+if you do not have them already, e.g. ``virtualenv``.
+
+For example, on Ubuntu (e.g. 18.04 LTS), start by installing ``docker ce``. If
+you install it for the first time, update the apt package index and install
+packages to allow ``apt`` to use a repository over HTTPS:
+
+.. code-block:: console
+
+   $ sudo apt-get update
+   $ sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent \
+   software-properties-common
+
+Add Docker’s official GPG key, and set up the stable repository.
+
+.. code-block:: console
+
+   $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+   $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+You may want to change the ``arch`` flag depending on your architecture.
+
+Finally, install the latest version of Docker CE and containerd:
+
+.. code-block:: console
+
+   $ sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+You may want to verify that Docker CE is installed correctly by running the
+hello-world image. This command downloads a test image and runs it in a
+container. When the container runs, it prints an informational message and
+exits.
+
+.. code-block:: console
+
+   $ sudo docker run hello-world
+
+
+Next, install reana prerequsites via ``snap`` as some of the packages are not
+available in the apt Package Manager on Ubuntu. You will be prompted to enter
+your ``sudo`` password and to use the ``--classic`` flag.
+
+.. code-block:: console
+
+   $ sudo snap install kubectl --classic
+   $ sudo snap install minikube --classic
+   $ sudo snap install helm --classic
+
+If you encounter errors, it is possible that the snap installed version is not
+the latest one. In this case, follow their generic installation procedure.
+
+Using the KVM2 hypervisor to run Minikube, the following commands should
+suffice, but if you encounter problems, see the complete installation guidelines
+`kvm <https://help.ubuntu.com/community/KVM/Installation>`_. Install the
+prerequisites and ensure that your username is added to the group libvirtd
+(you may need to create the group):
+
+.. code-block:: console
+
+   $ sudo apt-get install qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils
+   $ sudo addgroup libvirtd
+   $ sudo adduser `id -un` libvirtd
+
+You might have to enable the libvirtd services.
+
+.. code-block:: console
+
+   $ sudo systemctl enable libvirtd.service
+   $ sudo systemctl start libvirtd.service
+   $ sudo systemctl status libvirtd.service
+
+Now you should restart your machine for the changes/installation to take effect.
+
+
 MacOS
 ~~~~~
 
@@ -81,6 +158,7 @@ For example, on MacOS, you should install the following packages:
    $ brew install hyperkit
    $ brew cask install minikube
    $ brew install kubernetes-helm
+
 
 
 Start minikube
@@ -157,17 +235,17 @@ working REANA cluster, ready to run workflows that users submit via
 In order to achieve this, ``reana-cluster`` needs to know how the REANA cluster
 should be set up; e.g. what versions of REANA components should be deployed and
 how the configuration of each component should be set up. ``reana-cluster``
-expects to get this information via ``reana-cluster-stable.yaml`` file that comes with
-the package:
+expects to get this information via ``reana-cluster-stable.yaml`` file that
+comes with the package:
 
 .. literalinclude:: ../reana_cluster/configurations/reana-cluster-stable.yaml
    :language: yaml
 
-You can use the supplied ``reana-cluster-stable.yaml``, or create your own custom
-configuration. For instance, if you wish to use a different Docker image for the
-``reana-server`` component, you can copy the default ``reana-cluster-stable.yaml`` to a
-``reana-cluster-custom.yaml`` file and change the image tag
-``reanahub/reana-server:0.2.0`` according to your wishes.
+You can use the supplied ``reana-cluster-stable.yaml``, or create your own
+custom configuration. For instance, if you wish to use a different Docker image
+for the ``reana-server`` component, you can copy the default
+``reana-cluster-stable.yaml`` to a ``reana-cluster-custom.yaml`` file and
+change the image tag ``reanahub/reana-server:0.2.0`` according to your wishes.
 
 Initialise a REANA cluster
 --------------------------
@@ -180,8 +258,8 @@ Initialising a REANA cluster is just a matter of running ``init`` command:
    REANA cluster is initialised.
 
 If you have created a custom configuration, you can use the ``-f`` command-line
-option and specify your own file. In the same way you can set URL for REANA cluster
-``--url <cluster_url>``.
+option and specify your own file. In the same way you can set URL for REANA
+cluster ``--url <cluster_url>``.
 
 .. code-block:: console
 
