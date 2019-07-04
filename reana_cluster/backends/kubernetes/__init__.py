@@ -10,6 +10,6 @@
 
 from __future__ import absolute_import, print_function
 
-from .k8s import KubernetesBackend
+from reana_cluster.backends.kubernetes.k8s import KubernetesBackend
 
 __all__ = ('KubernetesBackend')

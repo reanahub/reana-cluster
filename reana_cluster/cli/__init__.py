@@ -12,11 +12,10 @@ import sys
 
 import click
 
-from . import cluster
-
-from ..config import cluster_spec_default_file_path, supported_backends
-
-from ..utils import load_spec_file
+from reana_cluster.cli import cluster
+from reana_cluster.config import (cluster_spec_default_file_path,
+                                  supported_backends)
+from reana_cluster.utils import load_spec_file
 
 DEBUG_LOG_FORMAT = '[%(asctime)s] p%(process)s ' \
                    '{%(pathname)s:%(lineno)d} ' \

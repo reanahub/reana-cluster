@@ -17,9 +17,9 @@ import traceback
 import click
 import yaml
 
-from ..config import (generated_cluster_conf_default_path,
-                      reana_env_exportable_info_components,
-                      reana_cluster_ready_necessary_components)
+from reana_cluster.config import (generated_cluster_conf_default_path,
+                                  reana_env_exportable_info_components,
+                                  reana_cluster_ready_necessary_components)
 from reana_cluster.utils import build_component_url
 from reana_commons.utils import click_table_printer
 

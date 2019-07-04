@@ -13,7 +13,7 @@ import logging
 import yaml
 from jsonschema import ValidationError, validate
 
-from .config import cluster_spec_schema_file_path
+from reana_cluster.config import cluster_spec_schema_file_path
 
 
 def load_spec_file(filepath, skip_validation=False):

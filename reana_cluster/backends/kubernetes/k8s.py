@@ -23,7 +23,7 @@ from kubernetes.client import Configuration
 from kubernetes.client.rest import ApiException
 from pkg_resources import parse_version
 
-from reana_cluster import ReanaBackendABC
+from reana_cluster.reana_backend import ReanaBackendABC
 
 
 class KubernetesBackend(ReanaBackendABC):

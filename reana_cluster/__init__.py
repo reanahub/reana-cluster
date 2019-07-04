@@ -10,10 +10,8 @@
 
 from __future__ import absolute_import, print_function
 
-from .version import __version__
-
-from .reana_backend import ReanaBackendABC
-
-from .backends.kubernetes import KubernetesBackend
+from reana_cluster.backends.kubernetes import KubernetesBackend
+from reana_cluster.reana_backend import ReanaBackendABC
+from reana_cluster.version import __version__
 
 __all__ = ('__version__', 'ReanaBackendABC', 'KubernetesBackend')
