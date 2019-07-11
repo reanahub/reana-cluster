@@ -15,7 +15,7 @@ spec:
         image: {{SERVER_IMAGE}}
         {% if DEBUG %}
         command: ["/bin/sh","-c"]
-        args: ["set -e; flask db init; flask users create_default info@reana.io; flask run --host=0.0.0.0"]
+        args: ["set -e; ./scripts/setup; invenio run -h 0.0.0.0 -p 5000"]
         tty: true
         stdin: true
         {% endif %}
