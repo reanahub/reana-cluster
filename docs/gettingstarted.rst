@@ -173,6 +173,16 @@ Deploy on CERN infrastructure
 
       (reana) $ pip install reana-cluster
 
+9. Create the secret named ``reana-db`` which will hold the database login
+   details. Database user inside the ``user`` key and the database password
+   inside the ``password`` key, for example:
+
+   .. code-block:: console
+
+      (reana) $ kubectl create secret generic reana-db \
+                --from-literal=user=reana
+                --from-literal=password=`openssl rand -base64 32`
+
 9. Create your own ``reana-cluster.yaml``. For instance, to deploy REANA
    ``0.5.0`` at CERN with 200 GB Ceph volume and having as URL
    ``reana-dev.cern.ch`` the file, ``reana-cluster-CERN.yaml``, would look
@@ -184,7 +194,9 @@ Deploy on CERN infrastructure
         type: "kubernetes"
         version: "v1.14.0"
         db_config: &db_base_config
-         - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
+          - REANA_DB_NAME: "reana"
+          - REANA_DB_HOST: "db-host-name"
+          - REANA_DB_POSRT: "5432"
         root_path: "/var/reana"
         shared_volume_path: "/var/reana"
         reana_url: "reana-dev.cern.ch"

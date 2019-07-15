@@ -18,12 +18,25 @@ spec:
         env:
         - name: TZ
           value: "Europe/Zurich"
-        - name: POSTGRES_USER
-          value: reana
         - name: POSTGRES_DB
           value: reana
-        - name: POSTGRESQL_PASSWORD
+        {% if DEBUG %}
+        - name: POSTGRES_USER
           value: reana
+        - name: POSTGRES_PASSWORD
+          value: reana
+        {% else %}
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: reana-db
+              key: user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: reana-db
+              key: password
+        {% endif %}
         volumeMounts:
           - name: data
             mountPath: /var/lib/postgresql/data

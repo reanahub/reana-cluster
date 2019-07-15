@@ -2,7 +2,9 @@ cluster:
   type: "kubernetes"
   version: "v1.14.0"
   db_config: &db_base_config
-    - REANA_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://reana:reana@db:5432/reana"
+    - REANA_DB_NAME: "reana"
+    - REANA_DB_HOST: "db"
+    - REANA_DB_POSRT: "5432"
   root_path: "/var/reana"
   shared_volume_path: "/var/reana"
   db_persistence_path: "/var/reana/db"
