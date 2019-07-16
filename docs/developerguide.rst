@@ -22,7 +22,7 @@ Deploying specific component versions
 -------------------------------------
 
 If you want to try different versions of REANA components, you can modify your
-``reana-cluster.yaml`` configuration file; see :ref:`configure`.
+``reana-cluster-minikube.yaml`` configuration file; see :ref:`configure`.
 
 You can check available released versions on `REANA DockerHub
 <https://hub.docker.com/u/reanahub/>`_.
@@ -32,7 +32,7 @@ Deploying latest ``master`` branch versions
 
 If you want to use latest ``master`` branch of REANA components and have the
 code directly editable within pods, you can use ``reana-cluster-latest.yaml``
-(in production-like conditions) or ``reana-cluster-dev.yaml`` (in
+(in production-like conditions) or ``reana-cluster-minikube-dev.yaml`` (in
 development-like conditions with the debugger and live editing of component
 sources).
 
@@ -141,14 +141,14 @@ After running ``minikube start`` on the remote host.
    For reana-cluster to be able to access exposed K8S API on remote host you
    need to provide reana-cluster with a configuration file that describes where
    reana-cluster should connect and how to authenticate to the API.
-   Straigthforward way is to create two new files, ``reana-cluster-dev.yaml`` file
+   Straigthforward way is to create two new files, ``reana-cluster-minikube-dev.yaml`` file
    which gets Kubernetes (K8S API url and authentication details) configuration
    from ``development-kubeconfig.yaml`` file. Below is copy-pasteable contents of
    the two files. Create them on your working directory.
 
 .. code-block:: yaml
 
-   #reana-cluster-dev.yaml
+   #reana-cluster-minikube-dev.yaml
    cluster:
      type: "kubernetes"
      config: "./development-kubeconfig.yaml"
@@ -221,11 +221,11 @@ After running ``minikube start`` on the remote host.
 
 Note that you must change the value of ``$TOKEN`` to the token you acquired in step 2.
 
-6. Instruct ``reana-cluster`` to use your own reana-cluster.yaml by using ``-f`` flag:
+6. Instruct ``reana-cluster`` to use your own reana-cluster-minikube.yaml by using ``-f`` flag:
 
 .. code-block:: console
 
-   $ reana-cluster -f $(pwd)/reana-cluster-dev.yaml verify backend
+   $ reana-cluster -f $(pwd)/reana-cluster-minikube-dev.yaml verify backend
 
 7. Configure ``kubectl`` to connect to K8S API on the remote host running Minikube
 
@@ -521,7 +521,7 @@ Since we have a new cluster, there won't be any ``pod``:
 
 The ``minikube`` concept of ``--profile`` maps to Kubernetes
 ``contexts``, so now we have to amend ``reana-cluster`` config
-(``reana_cluster/configuration/reana-cluster.yaml``) to use this new
+(``reana_cluster/configuration/reana-cluster-minikube.yaml``) to use this new
 context:
 
 .. code:: diff
