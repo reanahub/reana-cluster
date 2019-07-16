@@ -9,11 +9,17 @@
 
 import json
 import logging
+import random
+import string
+import subprocess
+import sys
 
 import yaml
 from jsonschema import ValidationError, validate
 
-from reana_cluster.config import cluster_spec_schema_file_path
+from reana_cluster.config import (DEFAULT_REANA_DB_SECRET_NAME,
+                                  DEFAULT_REANA_DB_USER,
+                                  cluster_spec_schema_file_path)
 
 
 def load_spec_file(filepath, skip_validation=False):
@@ -108,3 +114,60 @@ def build_component_url(host, ports, insecure=False):
 
     return '{scheme}://{host}:{port}'.format(
         scheme=scheme, host=host, port=port)
+
+
+def is_reana_db_secret_created():
+    """Check if the REANA DB secret is created."""
+    try:
+        cmd = 'kubectl describe secret {0}'.format(
+            DEFAULT_REANA_DB_SECRET_NAME)
+        result = subprocess.check_output(cmd, shell=True)
+        output = result.decode('utf-8')
+        if 'user' in output and 'password' in output:
+            return True
+    except subprocess.CalledProcessError as err:
+        logging.info('Default REANA DB secret does not exist:'
+                     ' {}'.format(err))
+        return False
+
+
+def create_reana_db_secret():
+    """Create a REANA DB secret with defaults."""
+    try:
+        cmd = 'kubectl create secret generic  {reana_db_secret_name}' \
+              ' --from-literal=user={user}' \
+              ' --from-literal=password="{password}"'.format(
+                  reana_db_secret_name=DEFAULT_REANA_DB_SECRET_NAME,
+                  user=DEFAULT_REANA_DB_USER,
+                  password=generate_password())
+        result = subprocess.check_output(cmd, shell=True)
+        logging.info(result)
+    except subprocess.CalledProcessError as err:
+        logging.error('Default REANA DB secret could not be created:'
+                      ' {}'.format(err))
+        sys.exit(err.returncode)
+
+
+def delete_reana_db_secret():
+    """Delete REANA DB secret."""
+    try:
+        if is_reana_db_secret_created():
+            cmd = 'kubectl delete secret  {}'.format(
+                DEFAULT_REANA_DB_SECRET_NAME)
+            result = subprocess.check_output(cmd, shell=True)
+            logging.info(result)
+    except subprocess.CalledProcessError as err:
+        logging.error('Default REANA DB secret could not be deleted:'
+                      ' {}'.format(err))
+        sys.exit(err.returncode)
+
+
+def generate_password():
+    """Generate a password."""
+    password_length = 20
+    chars = (string.ascii_lowercase + string.ascii_uppercase +
+             string.digits + string.punctuation)
+    password = ''
+    for _ in range(password_length):
+        password += random.choice(chars)
+    return password

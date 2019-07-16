@@ -41,7 +41,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ reana-cluster init --traefik
+      $ reana-cluster init --traefik --generate-default-secrets
 
   .. note::
 
@@ -173,15 +173,15 @@ Deploy on CERN infrastructure
 
       (reana) $ pip install reana-cluster
 
-9. Create the secret named ``reana-db`` which will hold the database login
+9. Create the secret named ``reana-db-secrets`` which will hold the database login
    details. Database user inside the ``user`` key and the database password
    inside the ``password`` key, for example:
 
    .. code-block:: console
 
-      (reana) $ kubectl create secret generic reana-db \
-                --from-literal=user=reana
-                --from-literal=password=`openssl rand -base64 32`
+      (reana) $ kubectl create secret generic reana-db-secrets \
+                --from-literal=user=<your-db-user>
+                --from-literal=password=<your-db-password>
 
 9. Create your own ``reana-cluster.yaml``. For instance, to deploy REANA
    ``0.5.0`` at CERN with 200 GB Ceph volume and having as URL

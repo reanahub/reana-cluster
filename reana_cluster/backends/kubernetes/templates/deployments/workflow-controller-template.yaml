@@ -51,12 +51,12 @@ spec:
         - name: REANA_DB_USER
           valueFrom:
             secretKeyRef:
-              name: reana-db
+              name: reana-db-secrets
               key: user
         - name: REANA_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: reana-db
+              name: reana-db-secrets
               key: password
         {% endif %}
       - name: job-status-consumer
@@ -78,12 +78,12 @@ spec:
         - name: REANA_DB_USER
           valueFrom:
             secretKeyRef:
-              name: reana-db
+              name: reana-db-secrets
               key: user
         - name: REANA_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: reana-db
+              name: reana-db-secrets
               key: password
         {% endif %}
       volumes:

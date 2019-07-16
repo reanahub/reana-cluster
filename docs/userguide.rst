@@ -176,7 +176,7 @@ Initialising a REANA cluster is just a matter of running ``init`` command:
 
 .. code-block:: console
 
-   $ reana-cluster init --traefik
+   $ reana-cluster init --traefik --generate-default-secrets
    REANA cluster is initialised.
 
 If you have created a custom configuration, you can use the ``-f`` command-line

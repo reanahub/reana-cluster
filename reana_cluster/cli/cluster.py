@@ -17,10 +17,13 @@ import traceback
 import click
 import yaml
 
-from reana_cluster.config import (generated_cluster_conf_default_path,
-                                  reana_env_exportable_info_components,
-                                  reana_cluster_ready_necessary_components)
-from reana_cluster.utils import build_component_url
+from reana_cluster.config import (DEFAULT_REANA_DB_SECRET_NAME,
+                                  reana_cluster_ready_necessary_components,
+                                  reana_env_exportable_info_components)
+from reana_cluster.utils import (build_component_url,
+                                 create_reana_db_secret,
+                                 delete_reana_db_secret,
+                                 is_reana_db_secret_created)
 from reana_commons.utils import click_table_printer
 
 
@@ -35,6 +38,7 @@ from reana_commons.utils import click_table_printer
 def down(ctx, remove_persistent_storage):
     """Bring REANA cluster down, i.e. deletes all deployed components."""
     try:
+        delete_reana_db_secret()
         ctx.obj.backend.down()
     except Exception as e:
         logging.debug(str(e))
@@ -150,10 +154,24 @@ def restart(ctx, remove_persistent_storage):
     '-t',
     '--traefik', is_flag=True,
     help='Install and initialize Traefik')
+@click.option(
+    '--generate-default-secrets', is_flag=True,
+    help='Create all needed secrets with default values. Do not use this in'
+         'production deployments')
 @click.pass_context
-def init(ctx, skip_initialization, output, traefik):
+def init(ctx, skip_initialization, output, traefik, generate_default_secrets):
     """Initialize REANA cluster."""
     try:
+        reana_db_secret_exists = is_reana_db_secret_created()
+        if not reana_db_secret_exists and generate_default_secrets:
+            create_reana_db_secret()
+        elif not reana_db_secret_exists:
+            click.echo(click.style(
+                'The following needed secrets were not created, or do not have'
+                'the expected format:\n{} '.format(
+                    DEFAULT_REANA_DB_SECRET_NAME), fg='red'))
+            sys.exit(1)
+
         backend = ctx.obj.backend
         if not skip_initialization:
             logging.info('Connecting to {cluster} at {url}'
