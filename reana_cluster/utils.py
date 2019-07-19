@@ -165,8 +165,7 @@ def delete_reana_db_secret():
 def generate_password():
     """Generate a password."""
     password_length = 20
-    chars = (string.ascii_lowercase + string.ascii_uppercase +
-             string.digits + string.punctuation)
+    chars = (string.ascii_lowercase + string.ascii_uppercase + string.digits)
     password = ''
     for _ in range(password_length):
         password += random.choice(chars)
