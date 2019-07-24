@@ -544,7 +544,7 @@ And now you can start the cluster as ``reana-cluster`` docs say:
 
 .. code:: console
 
-    $ reana-cluster init --traefik
+    $ reana-cluster init --traefik --generate-db-secrets
     REANA cluster is initialised
 
 Check that all components are created:

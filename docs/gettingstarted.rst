@@ -41,7 +41,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ reana-cluster init --traefik --generate-default-secrets
+      $ reana-cluster init --traefik --generate-db-secrets
 
   .. note::
 

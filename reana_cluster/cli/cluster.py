@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of REANA.
-# Copyright (C) 2017, 2018 CERN.
+# Copyright (C) 2017, 2018, 2019 CERN.
 #
 # REANA is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -155,15 +155,15 @@ def restart(ctx, remove_persistent_storage):
     '--traefik', is_flag=True,
     help='Install and initialize Traefik')
 @click.option(
-    '--generate-default-secrets', is_flag=True,
-    help='Create all needed secrets with default values. Do not use this in'
-         'production deployments')
+    '--generate-db-secrets', is_flag=True,
+    help='Create all necessary database secrets. Do not use this in'
+         'production deployments.')
 @click.pass_context
-def init(ctx, skip_initialization, output, traefik, generate_default_secrets):
+def init(ctx, skip_initialization, output, traefik, generate_db_secrets):
     """Initialize REANA cluster."""
     try:
         reana_db_secret_exists = is_reana_db_secret_created()
-        if not reana_db_secret_exists and generate_default_secrets:
+        if not reana_db_secret_exists and generate_db_secrets:
             create_reana_db_secret()
         elif not reana_db_secret_exists:
             click.echo(click.style(
