@@ -6,66 +6,43 @@ User guide
 Prerequisites
 -------------
 
-REANA cloud uses `Kubernetes <https://kubernetes.io/>`_ container orchestration
-system. The best way to try it out locally on your laptop is to set up `Minikube
-<https://kubernetes.io/docs/getting-started-guides/minikube/>`_ with
-`Helm <https://docs.helm.sh/using_helm/#install-helm>`_ and
-`Traefik <https://github.com/helm/charts/tree/master/stable/traefik>`_
-installed inside. How to do this depends on your operating system.
+REANA cluster uses `Kubernetes <https://kubernetes.io/>`_ container
+orchestration system. The best way to try it out locally on your laptop is to
+install:
 
-Versions
-~~~~~~~~
+- ``kubectl`` 1.14 or higher (see `kubectl installation guide <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_)
+- ``minikube`` 1.0 or higher (see `minikube installation guide <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_)
+- ``helm`` 2.14 or higher (see `helm installation guide <https://helm.sh/docs/using_helm/#installing-helm>`_)
 
-For REANA v0.5, ``kubectl 1.14.0`` and ``minikube 1.0.0`` are known to work
-well.
+Here are examples for several operating systems.
 
 Arch Linux
 ~~~~~~~~~~
 
-For example, on Arch Linux, you should install the following packages:
-
-- `docker <https://www.archlinux.org/packages/community/x86_64/docker/>`_
-- `kubectl <https://www.archlinux.org/packages/community/x86_64/kubectl/>`_
-- `minikube <https://www.archlinux.org/packages/community/x86_64/minikube/>`_
-- `kubernetes-helm <https://aur.archlinux.org/packages/kubernetes-helm/>`_
-
-Moreover, if you plan to run Minikube via the VirtualBox hypervisor, you should
-install also:
-
-- `virtualbox <https://www.archlinux.org/packages/community/x86_64/virtualbox/>`_
-- `virtualbox-guest-iso <https://www.archlinux.org/packages/community/x86_64/virtualbox-guest-iso/>`_
-- `virtualbox-host-modules-arch <https://www.archlinux.org/packages/community/x86_64/virtualbox-host-modules-arch/>`_
-
-Alternatively, if you plan to run Minikube using the KVM2 hypervisor:
-
-- `docker-machine <https://www.archlinux.org/packages/community/x86_64/docker-machine/>`_
-- `docker-machine-driver-kvm2 (AUR) <https://aur.archlinux.org/packages/docker-machine-driver-kvm2/>`_
-- `libvirt <https://www.archlinux.org/packages/community/x86_64/libvirt/>`_
-- `qemu <https://www.archlinux.org/packages/extra/x86_64/qemu/>`_
-
-Here is one example of well-working versions for REANA v0.5.0:
+We recommend to use the ``kvm2`` hypervisor for Minikube on GNU/Linux systems.
+Some of the packages are available in AUR repositories only. You can install
+all necessary dependencies as follows:
 
 .. code-block:: console
 
-   $ pacman -Q | grep -iE '(docker|virtualbox|kube|qemu|libvirt)'
-   docker 1:18.09.5-1
-   docker-compose 1.24.0-1
-   docker-machine 0.16.1-2
-   docker-machine-driver-kvm2 1.0.0-1
-   kubectl-bin 1.14.0-1
-   kubernetes-helm-bin 2.13.1-1
-   libvirt 5.2.0-1
-   minikube-bin 1.0.0-1
-   python-docker 3.7.2-1
-   python-docker-pycreds 0.4.0-1
-   python-dockerpty 0.4.1-4
-   qemu 3.1.0-2
-   virtualbox 6.0.6-1
-   virtualbox-guest-iso 6.0.6-1
-   virtualbox-host-modules-arch 6.0.6-1
+   $ sudo pacman -S kubectl minikube docker-machine libvirt qemu
+   $ yay -S kubernetes-helm-bin docker-machine-driver-kvm2
+
+MacOS
+~~~~~
+
+We recommend to use the ``hyperkit`` hypervisor for Minikube on MacOS systems.
+You can install all necessary dependencies as follows:
+
+.. code-block:: console
+
+   $ brew install kubernetes-cli
+   $ brew install hyperkit
+   $ brew cask install minikube
+   $ brew install kubernetes-helm
 
 Ubuntu
-~~~~~~~
+~~~~~~
 
 Note: you may need to install other quite commonly used libraries or packages,
 if you do not have them already, e.g. ``virtualenv``.
@@ -139,27 +116,6 @@ You might have to enable the libvirtd services.
    $ sudo systemctl status libvirtd.service
 
 Now you should restart your machine for the changes/installation to take effect.
-
-
-MacOS
-~~~~~
-
-For example, on MacOS, you should install the following packages:
-
-- `docker <https://docs.docker.com/docker-for-mac/install/>`_
-- `kubernetes-cli <https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-with-homebrew-on-macos>`_
-- `hyperkit <https://github.com/moby/hyperkit>`_
-- `minikube <https://kubernetes.io/docs/tasks/tools/install-minikube/#macos>`_
-- `helm <https://helm.sh/docs/using_helm/#from-homebrew-macos>`_
-
-.. code-block:: console
-
-   $ brew install kubernetes-cli
-   $ brew install hyperkit
-   $ brew cask install minikube
-   $ brew install kubernetes-helm
-
-
 
 Start minikube
 --------------
