@@ -83,7 +83,7 @@ class KubernetesBackend(ReanaBackendABC):
         logging.debug('Creating a ReanaBackend object '
                       'for Kubernetes interaction.')
 
-        # Load Kubernetes cluster configuration. If reana-cluster-stable.yaml
+        # Load Kubernetes cluster configuration. If reana-cluster-minikube.yaml
         # doesn't specify this K8S Python API defaults to '$HOME/.kube/config'
         self.kubeconfig = kubeconfig or \
             cluster_spec['cluster'].get('config', None)

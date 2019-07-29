@@ -31,7 +31,7 @@ Deploying latest ``master`` branch versions
 -------------------------------------------
 
 If you want to use latest ``master`` branch of REANA components and have the
-code directly editable within pods, you can use ``reana-cluster-latest.yaml``
+code directly editable within pods, you can use ``reana-cluster-minikube.yaml``
 (in production-like conditions) or ``reana-cluster-minikube-dev.yaml`` (in
 development-like conditions with the debugger and live editing of component
 sources).
