@@ -196,7 +196,7 @@ Deploy on CERN infrastructure
         db_config: &db_base_config
           - REANA_DB_NAME: "reana"
           - REANA_DB_HOST: "db-host-name"
-          - REANA_DB_POSRT: "5432"
+          - REANA_DB_PORT: "5432"
         root_path: "/var/reana"
         shared_volume_path: "/var/reana"
         reana_url: "reana-dev.cern.ch"

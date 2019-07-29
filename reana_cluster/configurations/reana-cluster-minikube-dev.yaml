@@ -6,7 +6,7 @@ cluster:
     - REANA_DB_USERNAME: "reana"
     - REANA_DB_PASSWORD: "reana"
     - REANA_DB_HOST: "db"
-    - REANA_DB_POSRT: "5432"
+    - REANA_DB_PORT: "5432"
   root_path: "/var/reana"
   shared_volume_path: "/var/reana"
   db_persistence_path: "/var/reana/db"
