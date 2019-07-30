@@ -1,0 +1,17 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cache
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cache
+    spec:
+      containers:
+      - name: cache
+        image: redis:5.0.5
+        ports:
+        - containerPort: 6379
