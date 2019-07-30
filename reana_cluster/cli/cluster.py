@@ -16,14 +16,13 @@ import traceback
 
 import click
 import yaml
-
 from reana_cluster.config import (DEFAULT_REANA_DB_SECRET_NAME,
                                   reana_cluster_ready_necessary_components,
                                   reana_env_exportable_info_components)
-from reana_cluster.utils import (build_component_url,
-                                 create_reana_db_secret,
+from reana_cluster.utils import (build_component_url, create_reana_db_secret,
                                  delete_reana_db_secret,
                                  is_reana_db_secret_created)
+from reana_cluster.version import __version__
 from reana_commons.utils import click_table_printer
 
 
@@ -310,6 +309,13 @@ def status(ctx, component):
         else:
             click.echo(click.style('REANA cluster is not ready.', fg='yellow'))
         sys.exit(1)
+
+
+@click.command(help='Show version.')
+@click.pass_context
+def version(ctx):
+    """Show version."""
+    click.echo(__version__)
 
 
 verify.add_command(cli_verify_backend)

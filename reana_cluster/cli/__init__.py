@@ -11,7 +11,6 @@ import logging
 import sys
 
 import click
-
 from reana_cluster.cli import cluster
 from reana_cluster.config import (cluster_spec_default_file_path,
                                   supported_backends)
@@ -117,3 +116,4 @@ cli.add_command(cluster.restart)
 cli.add_command(cluster.get)
 cli.add_command(cluster.env)
 cli.add_command(cluster.status)
+cli.add_command(cluster.version)
