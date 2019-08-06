@@ -48,7 +48,7 @@ spec:
         {% endfor %}
         {% endfor %}
         {% if not DEBUG %}
-        - name: REANA_DB_USER
+        - name: REANA_DB_USERNAME
           valueFrom:
             secretKeyRef:
               name: reana-db-secrets
@@ -75,7 +75,7 @@ spec:
         {% endfor %}
         {% endfor %}
         {% if not DEBUG %}
-        - name: REANA_DB_USER
+        - name: REANA_DB_USERNAME
           valueFrom:
             secretKeyRef:
               name: reana-db-secrets
