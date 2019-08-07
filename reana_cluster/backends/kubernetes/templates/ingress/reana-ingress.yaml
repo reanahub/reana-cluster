@@ -12,10 +12,16 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /api
         backend:
           serviceName: server
           servicePort: 80
+      {% if UI %}
+      - path: /
+        backend:
+          serviceName: ui
+          servicePort: 80
+      {%- endif %}
   {% if URL %}
     host: {{REANA_URL}}
   tls:

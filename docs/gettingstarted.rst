@@ -229,8 +229,11 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster-CERN.yaml --cephfs init
+      (reana) $ reana-cluster -f reana-cluster-CERN.yaml --cephfs --ui init
 
+  .. note::
+
+     At CERN we are deploying the REANA UI by passing the ``--ui`` flag.
 
 10. Test that REANA can be accessed by the specified domain name:
 

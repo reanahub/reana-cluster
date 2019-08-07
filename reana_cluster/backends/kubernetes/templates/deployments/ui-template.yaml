@@ -1,0 +1,18 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      containers:
+      - name: ui
+        image: reanahub/reana-ui
+        imagePullPolicy: {{IMAGE_PULL_POLICY}}
+        ports:
+        - containerPort: 80

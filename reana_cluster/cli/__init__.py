@@ -65,9 +65,12 @@ class Config(object):
     '-u',
     '--url',
     help='Set REANA cluster URL')
+@click.option(
+    '--ui', is_flag=True,
+    help='Deploy the REANA-UI inside the REANA Cluster.')
 @click.pass_context
 def cli(ctx, loglevel, skip_validation, file,
-        cephfs, cephfs_volume_size, debug, url):
+        cephfs, cephfs_volume_size, debug, url, ui):
     """Command line application for managing a REANA cluster."""
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
@@ -93,7 +96,8 @@ def cli(ctx, loglevel, skip_validation, file,
             cephfs=cephfs,
             cephfs_volume_size=cephfs_volume_size,
             debug=debug,
-            url=url)
+            url=url,
+            ui=ui)
 
     # This might be unnecessary since validation of cluster specifications
     # file is done against schema and schema should include the supported

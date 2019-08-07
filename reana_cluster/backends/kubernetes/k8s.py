@@ -53,7 +53,8 @@ class KubernetesBackend(ReanaBackendABC):
                  cephfs_volume_size=None,
                  cvmfs=False,
                  debug=False,
-                 url=None):
+                 url=None,
+                 ui=None):
         """Initialise Kubernetes specific ReanaBackend-object.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -79,6 +80,7 @@ class KubernetesBackend(ReanaBackendABC):
             the cluster pods.
         :param debug: Boolean flag setting debug mode.
         :param url: REANA cluster url.
+        :param ui: Should REANA be deployed with REANA-UI?.
         """
         logging.debug('Creating a ReanaBackend object '
                       'for Kubernetes interaction.')
@@ -112,7 +114,8 @@ class KubernetesBackend(ReanaBackendABC):
                                         cephfs=cephfs,
                                         cephfs_volume_size=cephfs_volume_size,
                                         debug=debug,
-                                        url=url)
+                                        url=url,
+                                        ui=ui)
 
     @property
     def cluster_type(self):
@@ -145,7 +148,8 @@ class KubernetesBackend(ReanaBackendABC):
 
     @classmethod
     def generate_configuration(cls, cluster_spec, cvmfs=False, cephfs=False,
-                               cephfs_volume_size=None, debug=False, url=None):
+                               cephfs_volume_size=None, debug=False, url=None,
+                               ui=None):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -189,6 +193,9 @@ class KubernetesBackend(ReanaBackendABC):
 
                 if debug or cluster_spec['cluster'].get('debug'):
                     backend_conf_parameters['DEBUG'] = True
+
+                if ui or cluster_spec['cluster'].get('ui'):
+                    backend_conf_parameters['UI'] = True
 
                 if url or cluster_spec['cluster'].get('url'):
                     backend_conf_parameters['URL'] = True

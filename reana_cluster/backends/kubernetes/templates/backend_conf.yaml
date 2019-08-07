@@ -9,6 +9,10 @@
 {% include 'clusterrole/service-reader.yaml' %}
 {% include 'clusterrolebinding/service-reader.yaml' %}
 {% include 'ingress/reana-ingress.yaml' %}
+{% if UI %}
+{% include 'deployments/ui-template.yaml' %}
+{% include 'services/ui-template.yaml' %}
+{%- endif %}
 {%- if DEBUG %}
 {% include 'deployments/wdb-template.yaml' %}
 {% include 'services/wdb-template.yaml' %}
