@@ -34,6 +34,10 @@ spec:
         - containerPort: 5000
           name: http
         env:
+        {% if REANA_URL %}
+        - name: REANA_URL
+          value: {{REANA_URL}}
+        {% endif %}
         - name: REANA_DEPLOYMENT_TYPE
           value: {{DEPLOYMENT}}
         {% if CEPHFS %}

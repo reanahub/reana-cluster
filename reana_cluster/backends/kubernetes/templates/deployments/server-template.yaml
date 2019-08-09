@@ -32,6 +32,10 @@ spec:
         - containerPort: 5000
           name: http
         env:
+        {% if REANA_URL %}
+        - name: REANA_URL
+          value: {{REANA_URL}}
+        {% endif %}
         {% set environment=RS_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
