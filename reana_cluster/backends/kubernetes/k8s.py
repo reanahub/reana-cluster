@@ -197,9 +197,6 @@ class KubernetesBackend(ReanaBackendABC):
                 if ui or cluster_spec['cluster'].get('ui'):
                     backend_conf_parameters['UI'] = True
 
-                if url or cluster_spec['cluster'].get('url'):
-                    backend_conf_parameters['URL'] = True
-
                 if cluster_spec['cluster'].get('cephfs_monitors'):
                     backend_conf_parameters['CEPHFS_MONITORS'] = \
                         cluster_spec['cluster'].get('cephfs_monitors')
