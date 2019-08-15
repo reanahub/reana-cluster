@@ -16,6 +16,34 @@ spec:
         backend:
           serviceName: server
           servicePort: 80
+      - path: /oauth
+        backend:
+          serviceName: server
+          servicePort: 80
+      - path: /account
+        backend:
+          serviceName: server
+          servicePort: 80
+      - path: /lost-password
+        backend:
+          serviceName: server
+          servicePort: 80
+      - path: /confirm
+        backend:
+          serviceName: server
+          servicePort: 80
+      - path: /login
+        backend:
+          serviceName: server
+          servicePort: 80
+      - path: /logout
+        backend:
+          serviceName: server
+          servicePort: 80
+      - path: /sign-up
+        backend:
+          serviceName: server
+          servicePort: 80
       {% if UI %}
       - path: /
         backend:
