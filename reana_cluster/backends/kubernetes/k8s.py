@@ -373,15 +373,21 @@ class KubernetesBackend(ReanaBackendABC):
 
                 elif manifest['kind'] == 'Ingress':
                     self._extbetav1api.create_namespaced_ingress(
-                            body=manifest,
-                            namespace=manifest['metadata'].get('namespace',
-                                                               'default'))
+                        body=manifest,
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
 
                 elif manifest['kind'] == 'StorageClass':
                     self._storagev1api.create_storage_class(body=manifest)
 
                 elif manifest['kind'] == 'PersistentVolumeClaim':
                     self._corev1api.create_namespaced_persistent_volume_claim(
+                        body=manifest,
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
+
+                elif manifest['kind'] == 'ConfigMap':
+                    self._corev1api.create_namespaced_config_map(
                         body=manifest,
                         namespace=manifest['metadata'].get('namespace',
                                                            'default'))

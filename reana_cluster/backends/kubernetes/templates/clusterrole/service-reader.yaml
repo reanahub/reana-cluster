@@ -6,7 +6,7 @@ metadata:
   name: service-reader
 rules:
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["nodes", "nodes/status", "pods", "pods/log", "secrets", "persistentvolumeclaims"]
+  resources: ["nodes", "nodes/status", "pods", "pods/log", "secrets", "persistentvolumeclaims", "configmaps"]
   verbs: ["get", "list", "create", "update"]
 - apiGroups: ["storage.k8s.io"]
   resources: ["storageclasses"]

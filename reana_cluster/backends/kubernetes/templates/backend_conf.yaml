@@ -11,6 +11,7 @@
 {% include 'clusterrole/service-reader.yaml' %}
 {% include 'clusterrolebinding/service-reader.yaml' %}
 {% include 'ingress/reana-ingress.yaml' %}
+{% include 'configmaps/kerberos.yaml' %}
 {% if UI %}
 {% include 'deployments/ui-template.yaml' %}
 {% include 'services/ui-template.yaml' %}
