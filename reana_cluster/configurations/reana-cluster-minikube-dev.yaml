@@ -23,10 +23,13 @@ components:
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/var/reana"
-      - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+      - REANA_GITLAB_HOST: "<CHANGEME>"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
       - FLASK_ENV:  "development"
+      # Hack to not verify SSL connections https://stackoverflow.com/questions/48391750/disable-python-requests-ssl-validation-for-an-imported-module
+      - CURL_CA_BUNDLE: ""
+      - GIT_SSL_NO_VERIFY: true
 
   reana-server:
     type: "docker"
@@ -37,11 +40,28 @@ components:
         path: "/code/reana-server:/code"
     environment:
       - <<: *db_base_config
-      - SHARED_VOLUME_PATH: "/var/reana"
+      # Development configuration
+      # Hack to not verify SSL connections https://stackoverflow.com/questions/48391750/disable-python-requests-ssl-validation-for-an-imported-module
+      # This is useful when using a self hosted GitLab application locally
+      - CURL_CA_BUNDLE: ""
+      # Disabel CORS in development environment, for example
+      # to connect from an external React application.
+      - INVENIO_CORS_SEND_WILDCARD: "False"
+      - INVENIO_CORS_SUPPORTS_CREDENTIALS: "True"
       - WDB_SOCKET_SERVER: "wdb"
       - WDB_NO_BROWSER_AUTO_OPEN: "True"
+      # REANA configuration
+      - SHARED_VOLUME_PATH: "/var/reana"
       - FLASK_ENV:  "development"
-
+      # In CERN SSO displayed in the "List OAuth Clients" tab as `client_id`
+      - CERN_CONSUMER_KEY: "<CHANGEME>"
+      # In CERN SSO displayed in the OAuth Client view tab as `Secret`
+      - CERN_CONSUMER_SECRET: "<CHANGEME>"
+      - REANA_GITLAB_OAUTH_APP_ID: "<CHANGEME>"
+      - REANA_GITLAB_OAUTH_APP_SECRET: "<CHANGEME>"
+      # GitLab service host name i.e. `gitlab.com`
+      - REANA_GITLAB_HOST: "<CHANGEME>"
+      - REANA_GITLAB_OAUTH_REDIRECT_URL: "<CHANGEME>"
   reana-message-broker:
     type: "docker"
     image: "reanahub/reana-message-broker:latest"

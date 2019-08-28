@@ -16,13 +16,23 @@ components:
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/var/reana"
-      - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
+      # GitLab service host name i.e. `gitlab.cern.ch`
+      - REANA_GITLAB_HOST: "<CHANGEME>"
 
   reana-server:
     type: "docker"
     image: "reanahub/reana-server:latest"
     environment:
       - <<: *db_base_config
+      # In CERN SSO displayed in the "List OAuth Clients" tab as `client_id`
+      - CERN_CONSUMER_KEY: "<CHANGEME>"
+      # In CERN SSO displayed in the OAuth Client view tab as `Secret`
+      - CERN_CONSUMER_SECRET: "<CHANGEME>"
+      - REANA_GITLAB_OAUTH_APP_ID: "<CHANGEME>"
+      - REANA_GITLAB_OAUTH_APP_SECRET: "<CHANGEME>"
+      # GitLab service host name i.e. `gitlab.com`
+      - REANA_GITLAB_HOST: "<CHANGEME>"
+      - REANA_GITLAB_OAUTH_REDIRECT_URL: "<CHANGEME>"
 
   reana-message-broker:
     type: "docker"
