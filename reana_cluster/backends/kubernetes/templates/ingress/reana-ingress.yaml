@@ -52,6 +52,4 @@ spec:
       {%- endif %}
   {% if REANA_URL %}
     host: {{REANA_URL}}
-  tls:
-    - secretName: reana-ssl-secrets
   {% endif %}
