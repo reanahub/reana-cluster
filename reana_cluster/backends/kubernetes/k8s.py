@@ -52,7 +52,6 @@ class KubernetesBackend(ReanaBackendABC):
                  cephfs=False,
                  cephfs_volume_size=None,
                  cephfs_storageclass=None,
-                 cvmfs=False,
                  debug=False,
                  url=None,
                  ui=None):
@@ -78,8 +77,6 @@ class KubernetesBackend(ReanaBackendABC):
         :param cephfs_volume_size: Int number which represents cephfs volume
             size (GB)
         :param cephfs_storageclass: Name of an existing cephfs storageclass.
-        :param cvmfs: Boolean flag toggling the mounting of cvmfs volumes in
-            the cluster pods.
         :param debug: Boolean flag setting debug mode.
         :param url: REANA cluster url.
         :param ui: Should REANA be deployed with REANA-UI?.
@@ -151,7 +148,7 @@ class KubernetesBackend(ReanaBackendABC):
         return self.kubeconfig
 
     @classmethod
-    def generate_configuration(cls, cluster_spec, cvmfs=False, cephfs=False,
+    def generate_configuration(cls, cluster_spec, cephfs=False,
                                cephfs_volume_size=None,
                                cephfs_storageclass=None,
                                debug=False, url=None, ui=None):
@@ -163,11 +160,11 @@ class KubernetesBackend(ReanaBackendABC):
             deployed with CEPH or not.
         :param cephfs_volume_size: Int to set CEPH volume size in GB.
         :param cephfs_storageclass: Name of an existing cephfs storageclass.
-        :param cvmfs: Boolean which represents whether REANA is
-            deployed with CVMFS or not.
         :param debug: Boolean which represents whether REANA is
             deployed in debug mode or not.
         :param url: REANA cluster url.
+        :param ui: Boolean which represents whether REANA is
+            deployed with the User Interface or not.
 
         :return: A generator/iterable of generated Kubernetes YAML manifests
             as Python objects.
@@ -232,13 +229,6 @@ class KubernetesBackend(ReanaBackendABC):
                 rs_img = components['reana-server']['image']
                 rwfc_img = components['reana-workflow-controller']['image']
                 rmb_img = components['reana-message-broker']['image']
-
-                rs_environment = components['reana-server']\
-                    .get('environment', [])
-                rwfc_environment = components['reana-workflow-controller'] \
-                    .get('environment', [])
-                rmb_environment = components['reana-message-broker'] \
-                    .get('environment', [])
 
                 rs_environment = components['reana-server']\
                     .get('environment', [])
