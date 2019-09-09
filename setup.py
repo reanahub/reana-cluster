@@ -44,11 +44,9 @@ setup_requires = [
 install_requires = [
     'click>=7',
     'Jinja2>=2.9.6,<2.11',
-    'jsonschema[format]>=2.6.0,<2.7',
     'PyYAML>=5.1',
     'reana-commons[kubernetes]>=0.6.0.dev20190604,<0.7.0',
     'tablib>=0.12.1,<0.13',
-    'urllib3==1.25.3',
 ]
 
 packages = find_packages()
