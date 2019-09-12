@@ -99,7 +99,6 @@ class KubernetesBackend(ReanaBackendABC):
         k8s_config.load_kube_config(kubeconfig, self.kubeconfig_context,
                                     k8s_api_client_config)
 
-
         Configuration.set_default(k8s_api_client_config)
 
         # Instantiate clients for various Kubernetes REST APIs

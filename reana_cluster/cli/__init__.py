@@ -73,7 +73,7 @@ class Config(object):
     help='Deploy the REANA-UI inside the REANA Cluster.')
 @click.pass_context
 def cli(ctx, loglevel, skip_validation, file,
-        cephfs, cephfs_volume_size , cephfs_storageclass, debug, url, ui):
+        cephfs, cephfs_volume_size, cephfs_storageclass, debug, url, ui):
     """Command line application for managing a REANA cluster."""
     logging.basicConfig(
         format=DEBUG_LOG_FORMAT if loglevel == 'debug' else LOG_FORMAT,
