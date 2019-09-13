@@ -51,6 +51,7 @@ class KubernetesBackend(ReanaBackendABC):
                  kubeconfig_context=None,
                  cephfs=False,
                  cephfs_volume_size=None,
+                 cephfs_storageclass=None,
                  cvmfs=False,
                  debug=False,
                  url=None,
@@ -76,6 +77,7 @@ class KubernetesBackend(ReanaBackendABC):
             storage backend.
         :param cephfs_volume_size: Int number which represents cephfs volume
             size (GB)
+        :param cephfs_storageclass: Name of an existing cephfs storageclass.
         :param cvmfs: Boolean flag toggling the mounting of cvmfs volumes in
             the cluster pods.
         :param debug: Boolean flag setting debug mode.
@@ -97,6 +99,7 @@ class KubernetesBackend(ReanaBackendABC):
         k8s_config.load_kube_config(kubeconfig, self.kubeconfig_context,
                                     k8s_api_client_config)
 
+
         Configuration.set_default(k8s_api_client_config)
 
         # Instantiate clients for various Kubernetes REST APIs
@@ -110,12 +113,14 @@ class KubernetesBackend(ReanaBackendABC):
 
         self.cluster_spec = cluster_spec
         self.cluster_conf = cluster_conf or \
-            self.generate_configuration(cluster_spec,
-                                        cephfs=cephfs,
-                                        cephfs_volume_size=cephfs_volume_size,
-                                        debug=debug,
-                                        url=url,
-                                        ui=ui)
+            self.generate_configuration(
+                cluster_spec,
+                cephfs=cephfs,
+                cephfs_volume_size=cephfs_volume_size,
+                cephfs_storageclass=cephfs_storageclass,
+                debug=debug,
+                url=url,
+                ui=ui)
 
     @property
     def cluster_type(self):
@@ -148,8 +153,9 @@ class KubernetesBackend(ReanaBackendABC):
 
     @classmethod
     def generate_configuration(cls, cluster_spec, cvmfs=False, cephfs=False,
-                               cephfs_volume_size=None, debug=False, url=None,
-                               ui=None):
+                               cephfs_volume_size=None,
+                               cephfs_storageclass=None,
+                               debug=False, url=None, ui=None):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -157,6 +163,7 @@ class KubernetesBackend(ReanaBackendABC):
         :param cephfs: Boolean which represents whether REANA is
             deployed with CEPH or not.
         :param cephfs_volume_size: Int to set CEPH volume size in GB.
+        :param cephfs_storageclass: Name of an existing cephfs storageclass.
         :param cvmfs: Boolean which represents whether REANA is
             deployed with CVMFS or not.
         :param debug: Boolean which represents whether REANA is
@@ -255,6 +262,8 @@ class KubernetesBackend(ReanaBackendABC):
                                'reana_url',
                                url),
                            CEPHFS_VOLUME_SIZE=cephfs_volume_size or 1,
+                           CEPHFS_STORAGECLASS=cephfs_storageclass or
+                           'geneva-cephfs-testing',
                            SERVER_IMAGE=rs_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,

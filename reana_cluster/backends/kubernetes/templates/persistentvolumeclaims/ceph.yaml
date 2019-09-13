@@ -9,6 +9,6 @@ spec:
   resources:
     requests:
       storage: {{CEPHFS_VOLUME_SIZE}}G
-  storageClassName: manila-csicephfs-share
+  storageClassName: {{CEPHFS_STORAGECLASS}}
   mountOptions:
     - nonempty
