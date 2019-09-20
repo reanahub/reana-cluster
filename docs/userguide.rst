@@ -40,6 +40,7 @@ You can install all necessary dependencies as follows:
    $ brew install hyperkit
    $ brew cask install minikube
    $ brew install kubernetes-helm
+   $ brew install docker-machine-driver-hyperkit
 
 Ubuntu
 ~~~~~~
