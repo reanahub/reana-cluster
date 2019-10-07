@@ -8,7 +8,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: manila-csicephfs-share
+  name: {{CEPHFS_STORAGECLASS}}
 provisioner: manila-provisioner
 parameters:
   type: "Geneva CephFS Testing"
@@ -17,4 +17,8 @@ parameters:
   osSecretNamespace: kube-system
   protocol: CEPHFS
   backend: csi-cephfs
-  csi-driver: csi-cephfsplugin
+  csi-driver: cephfs.csi.ceph.com
+  {% if CEPHFS_OS_SHARE_ID and CEPHFS_OS_SHARE_ACCESS_ID %}
+  osShareID: {{CEPHFS_OS_SHARE_ID}}
+  osShareAccessID: {{CEPHFS_OS_SHARE_ACCESS_ID}}
+  {% endif %}

@@ -10,5 +10,3 @@ spec:
     requests:
       storage: {{CEPHFS_VOLUME_SIZE}}G
   storageClassName: {{CEPHFS_STORAGECLASS}}
-  mountOptions:
-    - nonempty

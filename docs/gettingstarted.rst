@@ -229,7 +229,10 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster-CERN.yaml --cephfs --ui init
+      (reana) $ reana-cluster -f reana-cluster-CERN.yaml --cephfs --ui
+                              --cephfs-os-share-id <share-id>
+                              --cephfs-os-share-access-id <share-access-id>
+                              init
 
   .. note::
 

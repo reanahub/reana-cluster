@@ -52,6 +52,8 @@ class KubernetesBackend(ReanaBackendABC):
                  cephfs=False,
                  cephfs_volume_size=None,
                  cephfs_storageclass=None,
+                 cephfs_os_share_id=None,
+                 cephfs_os_share_access_id=None,
                  debug=False,
                  url=None,
                  ui=None):
@@ -77,6 +79,8 @@ class KubernetesBackend(ReanaBackendABC):
         :param cephfs_volume_size: Int number which represents cephfs volume
             size (GB)
         :param cephfs_storageclass: Name of an existing cephfs storageclass.
+        :param cephfs_os_share_id: CephFS Manila share id.
+        :param cephfs_os_share_access_id: CephFS Manila share access id.
         :param debug: Boolean flag setting debug mode.
         :param url: REANA cluster url.
         :param ui: Should REANA be deployed with REANA-UI?.
@@ -114,6 +118,8 @@ class KubernetesBackend(ReanaBackendABC):
                 cephfs=cephfs,
                 cephfs_volume_size=cephfs_volume_size,
                 cephfs_storageclass=cephfs_storageclass,
+                cephfs_os_share_id=cephfs_os_share_id,
+                cephfs_os_share_access_id=cephfs_os_share_access_id,
                 debug=debug,
                 url=url,
                 ui=ui)
@@ -148,10 +154,13 @@ class KubernetesBackend(ReanaBackendABC):
         return self.kubeconfig
 
     @classmethod
-    def generate_configuration(cls, cluster_spec, cephfs=False,
-                               cephfs_volume_size=None,
-                               cephfs_storageclass=None,
-                               debug=False, url=None, ui=None):
+    def generate_configuration(
+            cls, cluster_spec, cvmfs=False, cephfs=False,
+            cephfs_volume_size=None,
+            cephfs_storageclass=None,
+            cephfs_os_share_id=None,
+            cephfs_os_share_access_id=None,
+            debug=False, url=None, ui=None):
         """Generate Kubernetes manifest files used to init REANA cluster.
 
         :param cluster_spec: Dictionary representing complete REANA
@@ -160,6 +169,8 @@ class KubernetesBackend(ReanaBackendABC):
             deployed with CEPH or not.
         :param cephfs_volume_size: Int to set CEPH volume size in GB.
         :param cephfs_storageclass: Name of an existing cephfs storageclass.
+        :param cephfs_os_share_id: CephFS Manila share id.
+        :param cephfs_os_share_access_id: CephFS Manila share access id.
         :param debug: Boolean which represents whether REANA is
             deployed in debug mode or not.
         :param url: REANA cluster url.
@@ -252,7 +263,9 @@ class KubernetesBackend(ReanaBackendABC):
                                url),
                            CEPHFS_VOLUME_SIZE=cephfs_volume_size or 1,
                            CEPHFS_STORAGECLASS=cephfs_storageclass or
-                           'geneva-cephfs-testing',
+                           'manila-csicephfs-share',
+                           CEPHFS_OS_SHARE_ID=cephfs_os_share_id,
+                           CEPHFS_OS_SHARE_ACCESS_ID=cephfs_os_share_access_id,
                            SERVER_IMAGE=rs_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,
