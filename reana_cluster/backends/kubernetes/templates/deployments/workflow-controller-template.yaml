@@ -41,6 +41,10 @@ spec:
         - name: REANA_URL
           value: {{REANA_URL}}
         {% endif %}
+        {% if EOS %}
+        - name: K8S_CERN_EOS_AVAILABLE
+          value: "True"
+        {% endif %}
         - name: REANA_DEPLOYMENT_TYPE
           value: {{DEPLOYMENT}}
         {% if CEPHFS %}

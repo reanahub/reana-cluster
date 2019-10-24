@@ -52,6 +52,10 @@ class Config(object):
     help='If set, specifications file is not validated before '
          'starting the initialization.')
 @click.option(
+    '--eos', is_flag=True,
+    help='If EOS is available in the deployed cluster, this config will '
+         'make it available inside the REANA jobs.')
+@click.option(
     '--cephfs', is_flag=True,
     help='Set cephfs volume for cluster storage.')
 @click.option(
@@ -78,7 +82,7 @@ class Config(object):
     '--ui', is_flag=True,
     help='Deploy the REANA-UI inside the REANA Cluster.')
 @click.pass_context
-def cli(ctx, loglevel, skip_validation, file,
+def cli(ctx, loglevel, skip_validation, file, eos,
         cephfs, cephfs_volume_size, cephfs_storageclass, cephfs_os_share_id,
         cephfs_os_share_access_id, debug, url, ui):
     """Command line application for managing a REANA cluster."""
@@ -107,6 +111,7 @@ def cli(ctx, loglevel, skip_validation, file,
                      .format(cluster_type))
         ctx.obj.backend = supported_backends[cluster_type](
             cluster_spec,
+            eos=eos,
             cephfs=cephfs,
             cephfs_volume_size=cephfs_volume_size,
             cephfs_storageclass=cephfs_storageclass,

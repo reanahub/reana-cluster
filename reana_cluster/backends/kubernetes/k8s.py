@@ -49,6 +49,7 @@ class KubernetesBackend(ReanaBackendABC):
                  cluster_conf=None,
                  kubeconfig=None,
                  kubeconfig_context=None,
+                 eos=False,
                  cephfs=False,
                  cephfs_volume_size=None,
                  cephfs_storageclass=None,
@@ -74,6 +75,7 @@ class KubernetesBackend(ReanaBackendABC):
 
         :param kubeconfig_context: set the active context. If is set to `None`,
             current_context from config file will be used.
+        :param eos: Boolean flag toggling the mount of EOS volume for jobs.
         :param cephfs: Boolean flag toggling the usage of a cephfs volume as
             storage backend.
         :param cephfs_volume_size: Int number which represents cephfs volume
@@ -116,6 +118,7 @@ class KubernetesBackend(ReanaBackendABC):
         self.cluster_conf = cluster_conf or \
             self.generate_configuration(
                 cluster_spec,
+                eos=eos,
                 cephfs=cephfs,
                 cephfs_volume_size=cephfs_volume_size,
                 cephfs_storageclass=cephfs_storageclass,
@@ -156,7 +159,7 @@ class KubernetesBackend(ReanaBackendABC):
 
     @classmethod
     def generate_configuration(
-            cls, cluster_spec, cvmfs=False, cephfs=False,
+            cls, cluster_spec, cephfs=False, eos=False,
             cephfs_volume_size=None,
             cephfs_storageclass=None,
             cephfs_os_share_id=None,
@@ -166,6 +169,7 @@ class KubernetesBackend(ReanaBackendABC):
 
         :param cluster_spec: Dictionary representing complete REANA
             cluster spec file.
+        :param eos: Boolean flag toggling the mount of EOS volume for jobs.
         :param cephfs: Boolean which represents whether REANA is
             deployed with CEPH or not.
         :param cephfs_volume_size: Int to set CEPH volume size in GB.
@@ -212,6 +216,10 @@ class KubernetesBackend(ReanaBackendABC):
                         cluster_spec['cluster'].get(
                             'cephfs_os_share_access_id',
                             cephfs_os_share_access_id)
+
+                if eos or cluster_spec['cluster'].get('eos'):
+                    backend_conf_parameters['EOS'] = \
+                        cluster_spec['cluster'].get('eos', eos)
 
                 if debug or cluster_spec['cluster'].get('debug'):
                     backend_conf_parameters['DEBUG'] = True
