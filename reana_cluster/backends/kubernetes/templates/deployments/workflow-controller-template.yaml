@@ -70,6 +70,11 @@ spec:
         volumeMounts:
         - mountPath: {{SHARED_VOLUME_PATH}}
           name: reana-shared-volume
+        {% set mountpoints=RWFC_MOUNTPOINTS %}
+        {% for mount in mountpoints %}
+        - mountPath: {{mount['path'].split(':')[1]}}
+          name: {{mount['name']}}
+        {% endfor %}
         env:
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
