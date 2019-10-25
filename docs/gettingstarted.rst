@@ -209,7 +209,6 @@ Deploy on CERN infrastructure
           image: "reanahub/reana-workflow-controller:0.5.0"
           environment:
            - <<: *db_base_config
-           - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
            - REANA_WORKFLOW_ENGINE_IMAGE_CWL: "reanahub/reana-workflow-engine-cwl:0.5.0"
            - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:0.5.0"
            - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:0.5.0"

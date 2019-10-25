@@ -10,17 +10,4 @@
 #            real distributed file system and images from a docker
 #            registry.
 DEPLOYMENT: local
-
-# Base system config:
-# Variables used to configure the base system.
 IMAGE_PULL_POLICY: IfNotPresent
-CEPHFS_MONITORS:
-  - 128.142.36.227:6790
-  - 128.142.39.77:6790
-  - 128.142.39.144:6790
-CEPHFS_USER: k8s
-CEPHFS_SECRET_NAME: ceph-secret
-CEPHFS_READONLY: False
-
-# REANA Workflow Controller configuration
-ORGANIZATIONS: "default"

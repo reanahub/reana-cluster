@@ -166,7 +166,6 @@ After running ``minikube start`` on the remote host.
            path: "/code/reana-workflow-controller:/code"
        environment:
          - SHARED_VOLUME_PATH: "/reana"
-         - ORGANIZATIONS: "default,alice,atlas,cms,lhcb"
          - WDB_SOCKET_SERVER: "wdb"
          - WDB_NO_BROWSER_AUTO_OPEN: "True"
          - FLASK_DEBUG: "1"

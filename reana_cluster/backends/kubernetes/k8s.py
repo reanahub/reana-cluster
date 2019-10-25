@@ -196,24 +196,27 @@ class KubernetesBackend(ReanaBackendABC):
                 # Load backend conf params
                 backend_conf_parameters = yaml.load(f.read(),
                                                     Loader=yaml.FullLoader)
-                # change type of deployment (cephfs|cvmfs|hostpath)
+                # Configure CephFS is chosen as shared storage backend
                 if cephfs or cluster_spec['cluster'].get('cephfs'):
                     backend_conf_parameters['CEPHFS'] = True
-                    if not cephfs_volume_size:
-                        cephfs_volume_size = \
-                            cluster_spec['cluster'].get(
-                                'cephfs_volume_size',
-                                200)
+                    backend_conf_parameters['CEPHFS_STORAGECLASS'] = \
+                        cephfs_storageclass or 'manila-csicephfs-share'
+                    backend_conf_parameters['CEPHFS_VOLUME_SIZE'] = \
+                        cluster_spec['cluster'].get(
+                            'cephfs_volume_size', cephfs_volume_size)
+                    backend_conf_parameters['CEPHFS_OS_SHARE_ID'] = \
+                        cluster_spec['cluster'].get(
+                            'cephfs_os_share_id', cephfs_os_share_id)
+                    backend_conf_parameters['CEPHFS_OS_SHARE_ACCESS_ID'] = \
+                        cluster_spec['cluster'].get(
+                            'cephfs_os_share_access_id',
+                            cephfs_os_share_access_id)
 
                 if debug or cluster_spec['cluster'].get('debug'):
                     backend_conf_parameters['DEBUG'] = True
 
                 if ui or cluster_spec['cluster'].get('ui'):
                     backend_conf_parameters['UI'] = True
-
-                if cluster_spec['cluster'].get('cephfs_monitors'):
-                    backend_conf_parameters['CEPHFS_MONITORS'] = \
-                        cluster_spec['cluster'].get('cephfs_monitors')
 
                 if cluster_spec['cluster'].get('root_path'):
                     backend_conf_parameters['ROOT_PATH'] = \
@@ -261,11 +264,6 @@ class KubernetesBackend(ReanaBackendABC):
                            REANA_URL=cluster_spec['cluster'].get(
                                'reana_url',
                                url),
-                           CEPHFS_VOLUME_SIZE=cephfs_volume_size or 1,
-                           CEPHFS_STORAGECLASS=cephfs_storageclass or
-                           'manila-csicephfs-share',
-                           CEPHFS_OS_SHARE_ID=cephfs_os_share_id,
-                           CEPHFS_OS_SHARE_ACCESS_ID=cephfs_os_share_access_id,
                            SERVER_IMAGE=rs_img,
                            WORKFLOW_CONTROLLER_IMAGE=rwfc_img,
                            MESSAGE_BROKER_IMAGE=rmb_img,
