@@ -76,6 +76,10 @@ spec:
           name: {{mount['name']}}
         {% endfor %}
         env:
+        {% if REANA_URL %}
+        - name: REANA_URL
+          value: {{REANA_URL}}
+        {% endif %}
         {% set environment=RWFC_ENVIRONMENT %}
         {% for envvar in environment %}
         {% for key, value in envvar.items() %}
