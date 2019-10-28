@@ -78,8 +78,11 @@ def get(ctx, component, namespace):
     help='Display also commands how to set REANA_ACCESS_TOKEN for '
          'administrator access. Use with care! Do no share with regular '
          'users.')
+@click.option(
+    '--server-hostname',
+    help='Set customized REANA Server hostname.')
 @click.pass_context
-def env(ctx, namespace, insecure_url, include_admin_token):
+def env(ctx, namespace, insecure_url, include_admin_token, server_hostname):
     """Produce shell exportable list of REANA components' urls."""
     try:
         export_lines = []
@@ -91,7 +94,8 @@ def env(ctx, namespace, insecure_url, include_admin_token):
             export_lines.append(component_export_line.format(
                 env_var_name='{0}_URL'.format(
                     component.upper().replace('-', '_')),
-                env_var_value=build_component_url(
+                env_var_value=server_hostname if server_hostname
+                else build_component_url(
                     component_info['external_ip_s'][0],
                     component_info['ports'],
                     insecure=insecure_url),
