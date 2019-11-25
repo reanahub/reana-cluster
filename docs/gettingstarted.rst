@@ -11,21 +11,20 @@ Deploy locally
 Are you looking at installing and deploying REANA cluster locally on your laptop?
 
 1. Install `kubectl <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_
-   (e.g. version 1.14.0), `minikube
+   (e.g. version 1.16.3), `minikube
    <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_ (e.g. version
-   1.0.0) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
-   version 2.12.3):
+   1.5.2) and `Helm <https://docs.helm.sh/using_helm/#installing-helm>`_ (e.g.
+   version 3.0.0):
 
    .. code-block:: console
 
       $ sudo dpkg -i kubectl*.deb minikube*.deb kubernetes-helm*.deb
 
-2. Start Minikube virtual machine and then deploy Helm inside the cluster:
+2. Start Minikube virtual machine:
 
    .. code-block:: console
 
       $ minikube start --feature-gates="TTLAfterFinished=true"
-      $ helm init
 
 3. Install REANA-Cluster sources. You probably want to use a virtual environment:
 

@@ -106,6 +106,7 @@ class KubernetesBackend(ReanaBackendABC):
         self._corev1api = k8s_client.CoreV1Api()
         self._versionapi = k8s_client.VersionApi()
         self._extbetav1api = k8s_client.ExtensionsV1beta1Api()
+        self._appsv1api = k8s_client.AppsV1Api()
         self._rbacauthorizationv1api = k8s_client.RbacAuthorizationV1Api()
         self._storagev1api = k8s_client.StorageV1Api()
 
@@ -351,8 +352,7 @@ class KubernetesBackend(ReanaBackendABC):
                     if manifest['metadata']['name'] in components_k8s_token:
                         manifest = self._add_service_acc_key_to_component(
                             manifest)
-
-                    self._extbetav1api.create_namespaced_deployment(
+                    self._appsv1api.create_namespaced_deployment(
                         body=manifest,
                         namespace=manifest['metadata'].get('namespace',
                                                            'default'))
@@ -425,10 +425,12 @@ class KubernetesBackend(ReanaBackendABC):
         try:
             namespace = 'kube-system'
             label_selector = 'app=traefik'
-            cmd = ('helm install stable/traefik --namespace {} --values {} '
-                   '--name {}').format(namespace,
-                                       traefik_configuration_file_path,
-                                       traefik_release_name)
+            cmd = ('helm install {} stable/traefik --namespace {} '
+                   ' --values {} ').format(
+                       traefik_release_name,
+                       namespace,
+                       traefik_configuration_file_path,
+                       traefik_release_name)
             cmd = shlex.split(cmd)
             subprocess.check_output(cmd)
             traefik_objects = self._corev1api.list_namespaced_service(
@@ -469,8 +471,7 @@ class KubernetesBackend(ReanaBackendABC):
         # Get all secrets for default namespace
         # Cannot use `k8s_corev1.read_namespaced_secret()` since
         # exact name of the token (e.g. 'default-token-8p260') is not know.
-        secrets = self._corev1api.list_namespaced_secret(
-            'default', include_uninitialized='false')
+        secrets = self._corev1api.list_namespaced_secret('default')
 
         # Maybe debug print all secrets should not be enabled?
         # logging.debug(k8s_corev1.list_secret_for_all_namespaces())
@@ -544,7 +545,7 @@ class KubernetesBackend(ReanaBackendABC):
                 logging.debug(json.dumps(manifest))
 
                 if manifest['kind'] == 'Deployment':
-                    self._extbetav1api.delete_namespaced_deployment(
+                    self._appsv1api.delete_namespaced_deployment(
                         name=manifest['metadata']['name'],
                         body=k8s_client.V1DeleteOptions(
                             propagation_policy="Foreground",
@@ -805,7 +806,7 @@ class KubernetesBackend(ReanaBackendABC):
                     spec_img = manifest['spec'][
                         'template']['spec']['containers'][0]['image']
 
-                    deployed_comp = self._extbetav1api. \
+                    deployed_comp = self._appsv1api. \
                         read_namespaced_deployment(component_name, 'default')
 
                     logging.debug(deployed_comp)
