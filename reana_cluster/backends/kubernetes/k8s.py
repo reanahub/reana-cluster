@@ -423,6 +423,11 @@ class KubernetesBackend(ReanaBackendABC):
         from reana_cluster.config import (traefik_configuration_file_path,
                                           traefik_release_name)
         try:
+            add_helm_repo_cmd = \
+                ('helm repo add stable'
+                 ' https://kubernetes-charts.storage.googleapis.com/')
+            add_helm_repo_cmd = shlex.split(add_helm_repo_cmd)
+            subprocess.check_output(add_helm_repo_cmd)
             namespace = 'kube-system'
             label_selector = 'app=traefik'
             cmd = ('helm install {} stable/traefik --namespace {} '
