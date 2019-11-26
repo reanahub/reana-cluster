@@ -641,11 +641,14 @@ class KubernetesBackend(ReanaBackendABC):
         # delete traefik objects
         from reana_cluster.config import traefik_release_name
         namespace = 'kube-system'
-        cmd = 'helm del --namespace {} {}'.format(
-            namespace,
-            traefik_release_name)
-        cmd = shlex.split(cmd)
-        subprocess.check_output(cmd)
+        helm_ls_cmd = 'helm ls -n {}'.format(namespace)
+        helm_ls_cmd = shlex.split(helm_ls_cmd)
+        if 'traefik_release_name' in subprocess.check_output(helm_ls_cmd):
+            cmd = 'helm del --namespace {} {}'.format(
+                namespace,
+                traefik_release_name)
+            cmd = shlex.split(cmd)
+            subprocess.check_output(cmd)
 
         return True
 
