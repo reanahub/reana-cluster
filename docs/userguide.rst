@@ -10,9 +10,9 @@ REANA cluster uses `Kubernetes <https://kubernetes.io/>`_ container
 orchestration system. The best way to try it out locally on your laptop is to
 install:
 
-- ``kubectl`` 1.14 or higher (see `kubectl installation guide <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_)
-- ``minikube`` 1.0 or higher (see `minikube installation guide <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_)
-- ``helm`` 2.14 or higher (see `helm installation guide <https://helm.sh/docs/using_helm/#installing-helm>`_)
+- ``kubectl`` 1.16.3 or higher (see `kubectl installation guide <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_)
+- ``minikube`` 1.5.2 or higher (see `minikube installation guide <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_)
+- ``helm`` 3.0.0 or higher (see `helm installation guide <https://helm.sh/docs/using_helm/#installing-helm>`_)
 
 Here are examples for several operating systems.
 
@@ -145,7 +145,7 @@ You will see an output like:
 
 .. code-block:: console
 
-   Starting local Kubernetes v1.14.0 cluster...
+   Starting local Kubernetes v1.16.3 cluster...
    Starting VM...
    Getting VM IP address...
    Moving files into cluster...

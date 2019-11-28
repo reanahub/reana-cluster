@@ -153,7 +153,7 @@ After running ``minikube start`` on the remote host.
      type: "kubernetes"
      config: "./development-kubeconfig.yaml"
      config_context: "minikube"
-     version: "v1.14.0"
+     version: "v1.16.3"
      url: "https://localhost:8443"
 
    components:
@@ -473,7 +473,7 @@ Now we create a new cluster to host a new ``reana`` version (0.1.0):
 .. code:: console
 
     $ minikube start --profile reana-0.1.0 --feature-gates="TTLAfterFinished=true"
-    Starting local Kubernetes v1.14.0 cluster...
+    Starting local Kubernetes v1.16.3 cluster...
     Starting VM...
     Getting VM IP address...
     Moving files into cluster...
@@ -536,7 +536,7 @@ context:
       # If not specified will use the value of `current-context:` key of kubeconfig.
     - # config_context: "minikube"
     + config_context: "reana-0.1.0"
-      version: "v1.14.0"
+      version: "v1.16.3"
       url: "http://localhost"
 
 And now you can start the cluster as ``reana-cluster`` docs say:
@@ -589,7 +589,7 @@ Now we can restart the cluster:
 .. code:: console
 
     $ minikube start --profile minikube --feature-gates="TTLAfterFinished=true"
-    Starting local Kubernetes v1.14.0 cluster...
+    Starting local Kubernetes v1.16.3 cluster...
     Starting VM...
     Getting VM IP address...
     Moving files into cluster...

@@ -191,7 +191,7 @@ Deploy on CERN infrastructure
 
       cluster:
         type: "kubernetes"
-        version: "v1.14.0"
+        version: "v1.16.3"
         db_config: &db_base_config
           - REANA_DB_NAME: "reana"
           - REANA_DB_HOST: "db-host-name"
