@@ -643,7 +643,7 @@ class KubernetesBackend(ReanaBackendABC):
         namespace = 'kube-system'
         helm_ls_cmd = 'helm ls -n {}'.format(namespace)
         helm_ls_cmd = shlex.split(helm_ls_cmd)
-        if 'traefik_release_name' in subprocess.check_output(helm_ls_cmd):
+        if traefik_release_name in subprocess.check_output(helm_ls_cmd):
             cmd = 'helm del --namespace {} {}'.format(
                 namespace,
                 traefik_release_name)
