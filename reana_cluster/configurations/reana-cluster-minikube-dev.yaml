@@ -61,7 +61,6 @@ components:
       - REANA_GITLAB_OAUTH_APP_SECRET: "<CHANGEME>"
       # GitLab service host name i.e. `gitlab.com`
       - REANA_GITLAB_HOST: "<CHANGEME>"
-      - REANA_GITLAB_OAUTH_REDIRECT_URL: "<CHANGEME>"
   reana-message-broker:
     type: "docker"
     image: "reanahub/reana-message-broker:latest"
