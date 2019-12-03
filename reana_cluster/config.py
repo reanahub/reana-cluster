@@ -47,3 +47,16 @@ DEFAULT_REANA_DB_SECRET_NAME = 'reana-db-secrets'
 
 DEFAULT_REANA_DB_USER = 'reana'
 """Default name for REANA DB user name."""
+
+DEFAULT_REANA_CERN_SSO_SECRET_NAME = 'reana-cern-sso-secrets'
+"""Default name for CERN SSO Kubernetes secrets object."""
+
+DEFAULT_REANA_CERN_GITLAB_SECRET_NAME = 'reana-cern-gitlab-secrets'
+"""Default name for CERN GitLab Kubernetes secrets object."""
+
+DEFAULT_REANA_SECRETS_LIST = [
+    DEFAULT_REANA_DB_SECRET_NAME,
+    DEFAULT_REANA_CERN_SSO_SECRET_NAME,
+    DEFAULT_REANA_CERN_GITLAB_SECRET_NAME
+]
+"""Default secrets required by default."""

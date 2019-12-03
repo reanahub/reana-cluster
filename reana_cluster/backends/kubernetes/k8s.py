@@ -322,11 +322,15 @@ class KubernetesBackend(ReanaBackendABC):
         # independent YAML documents (split from `---`) as Python objects.
         return yaml.load_all(cluster_conf, Loader=yaml.FullLoader)
 
-    def init(self, traefik):
+    def init(self, traefik, interactive):
         """Initialize REANA cluster, i.e. deploy REANA components to backend.
 
         :param traefik: Boolean flag determines if traefik should be
             initialized.
+        :type traefik: bool
+        :param interactive: Boolean flag determines if configuration should be
+            read from an interactive prompt.
+        :type interactive: bool
 
         :return: `True` if init was completed successfully.
         :rtype: bool
@@ -344,6 +348,9 @@ class KubernetesBackend(ReanaBackendABC):
 
         if traefik is True:
             self.initialize_traefik()
+
+        from reana_cluster.utils import check_needed_secrets_are_created
+        check_needed_secrets_are_created(interactive=interactive)
 
         for manifest in self.cluster_conf:
             try:
@@ -528,11 +535,16 @@ class KubernetesBackend(ReanaBackendABC):
         """
         raise NotImplementedError()
 
-    def down(self):
+    def down(self, delete_traefik=False, delete_secrets=False):
         """Bring REANA cluster down, i.e. deletes all deployed components.
 
         Deletes all Kubernetes Deployments, Namespaces, Resourcequotas and
         Services that were created during initialization of REANA cluster.
+
+        :param delete_traefik: Wheter REANA traefik should be deleted or not.
+        :type delete_traefik: bool
+        :param delete_secrets: Wheter REANA secrets should be deleted or not.
+        :type delete_secrets: bool
 
         :return: `True` if all components were destroyed successfully.
         :rtype: bool
@@ -646,17 +658,22 @@ class KubernetesBackend(ReanaBackendABC):
                     name=sc.metadata.name,
                     body=k8s_client.V1DeleteOptions())
 
-        # delete traefik objects
-        from reana_cluster.config import traefik_release_name
-        namespace = 'kube-system'
-        helm_ls_cmd = 'helm ls -n {}'.format(namespace)
-        helm_ls_cmd = shlex.split(helm_ls_cmd)
-        if traefik_release_name in subprocess.check_output(helm_ls_cmd):
-            cmd = 'helm del --namespace {} {}'.format(
-                namespace,
-                traefik_release_name)
-            cmd = shlex.split(cmd)
-            subprocess.check_output(cmd)
+        if delete_traefik:
+            from reana_cluster.config import traefik_release_name
+            namespace = 'kube-system'
+            helm_ls_cmd = 'helm ls -n {}'.format(namespace)
+            helm_ls_cmd = shlex.split(helm_ls_cmd)
+            helm_ls_output = \
+                subprocess.check_output(helm_ls_cmd).decode('UTF-8')
+            if traefik_release_name in helm_ls_output:
+                cmd = 'helm del --namespace {} {}'.format(
+                    namespace,
+                    traefik_release_name)
+                cmd = shlex.split(cmd)
+                subprocess.check_output(cmd)
+        if delete_secrets:
+            from reana_cluster.utils import delete_reana_secrets
+            delete_reana_secrets()
 
         return True
 

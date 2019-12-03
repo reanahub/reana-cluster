@@ -40,15 +40,7 @@ Are you looking at installing and deploying REANA cluster locally on your laptop
 
    .. code-block:: console
 
-      $ reana-cluster init --traefik --generate-db-secrets
-
-  .. note::
-
-     ``--traefik`` flag triggers installation and initialization of
-     `Traefik <https://docs.traefik.io>`_
-     `ingress controller <https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/>`_.
-     REANA needs it for `interactive session <https://reana-client.readthedocs.io/en/latest/userguide.html#opening-interactive-sessions>`_
-     feature to work.
+      $ reana-cluster init
 
 5. Check the status of the REANA cluster deployment. (Note that it may take
    several minutes to pull the REANA component images for the first time.)
@@ -125,22 +117,7 @@ Deploy on CERN infrastructure
       $ kubectl label node <node-name> role=ingress
       $ openstack server set --property landb-alias=<your-subdomain> <ingress-node>
 
-5. Create or add ssl secrets:
-
-   .. code-block:: console
-
-      $ openssl req -x509 -nodes -days 365 -newkey rsa:2048
-            -keyout /tmp/tls.key -out /tmp/tls.crt
-            -subj "/CN=<your-subdomain>.cern.ch"
-      $ kubectl create secret tls reana-ssl-secrets
-            --key /tmp/tls.key --cert /tmp/tls.crt
-
-.. note::
-
-   This is important to set even if HTTPS is not desired, otherwise the
-   Traefik controller will not redirect the traffic.
-
-6. As we are using the alpha feature gate `TTLAfterFinished
+5. As we are using the alpha feature gate `TTLAfterFinished
    <https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/>`_
    we need to manually activate it:
 
@@ -157,7 +134,7 @@ Deploy on CERN infrastructure
       > sudo systemctl restart kube-apiserver
       > sudo systemctl restart kube-controller-manager
 
-7. Since Python3 does not come by default we have to use the `slc` command to
+6. Since Python3 does not come by default we have to use the `slc` command to
    activate it and we create a virtual environment for REANA:
 
    .. code-block:: console
@@ -166,23 +143,14 @@ Deploy on CERN infrastructure
       $ virtualenv reana
       $ source reana/bin/activate
 
-8. Install `reana-cluster`:
+7. Install `reana-cluster`:
 
    .. code-block:: console
 
       (reana) $ pip install reana-cluster
 
-9. Create the secret named ``reana-db-secrets`` which will hold the database login
-   details. Database user inside the ``user`` key and the database password
-   inside the ``password`` key, for example:
 
-   .. code-block:: console
-
-      (reana) $ kubectl create secret generic reana-db-secrets \
-                --from-literal=user=<your-db-user>
-                --from-literal=password=<your-db-password>
-
-9. Create your own ``reana-cluster.yaml``. For instance, to deploy REANA
+8. Create your own ``reana-cluster.yaml``. For instance, to deploy REANA
    ``0.5.0`` at CERN with 200 GB Ceph volume and having as URL
    ``reana-dev.cern.ch`` the file, ``reana-cluster-CERN.yaml``, would look
    like follows:
@@ -199,7 +167,12 @@ Deploy on CERN infrastructure
         root_path: "/var/reana"
         shared_volume_path: "/var/reana"
         reana_url: "reana-dev.cern.ch"
+        ui: True
+        eos: True
+        cephfs: True
         cephfs_volume_size: 200
+        cephfs_os_share_id: <cephfs-share-id>
+        cephfs_os_share_access_id: <cephfs-share-access-id>
         db_persistence_path: "/var/reana/db"
 
       components:
@@ -227,14 +200,7 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      (reana) $ reana-cluster -f reana-cluster-CERN.yaml --cephfs --ui
-                              --cephfs-os-share-id <share-id>
-                              --cephfs-os-share-access-id <share-access-id>
-                              init
-
-  .. note::
-
-     At CERN we are deploying the REANA UI by passing the ``--ui`` flag.
+      (reana) $ reana-cluster -f reana-cluster-CERN.yaml init
 
 10. Test that REANA can be accessed by the specified domain name:
 

@@ -211,7 +211,7 @@ Initialising a REANA cluster is just a matter of running ``init`` command:
 
 .. code-block:: console
 
-   $ reana-cluster init --traefik --generate-db-secrets
+   $ reana-cluster init
    REANA cluster is initialised.
 
 If you have created a custom configuration, you can use the ``-f`` command-line
@@ -220,8 +220,7 @@ cluster ``--url <cluster_url>``.
 
 .. code-block:: console
 
-  $ reana-cluster -f reana-cluster-custom.yaml --url reana.cern.ch init \\
-                  --traefik --generate-db-secrets
+  $ reana-cluster -f reana-cluster-custom.yaml --url reana.cern.ch init
 
 
 Verify REANA components

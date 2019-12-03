@@ -69,6 +69,11 @@ spec:
             secretKeyRef:
               name: reana-db-secrets
               key: password
+        - name: REANA_GITLAB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: reana-cern-gitlab-secrets
+              key: REANA_GITLAB_HOST
         {% endif %}
       - name: job-status-consumer
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
