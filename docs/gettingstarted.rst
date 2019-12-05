@@ -106,7 +106,7 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      $ $(openstack coe cluster config reana-cloud)
+      $ $(openstack coe cluster config <cluster-name>)
       $ kubectl get pods -w
 
 4. Set one of the nodes to be an ingress controller
@@ -114,6 +114,8 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
+      # Get all cluster nodes
+      $ kubectl get nodes
       $ kubectl label node <node-name> role=ingress
       $ openstack server set --property landb-alias=<your-subdomain> <ingress-node>
 
@@ -123,16 +125,18 @@ Deploy on CERN infrastructure
 
    .. code-block:: console
 
-      # Get the Kube master name and connect to it
+      $ # Get the Kube master name and connect to it
       $ openstack server list | grep -E reana-.*-master
       $ ssh -i <ssh-key> fedora@<master-node>
-      # Add `TTLAfterFinished=true` to the `--feature-gates` in
-      # `/etc/kubernetes/apiserver `and `/etc/kubernetes/controller-manager`
-      > sudo vi /etc/kubernetes/apiserver
-      > sudo vi /etc/kubernetes/controller-manager
-      # Finally restart both services
-      > sudo systemctl restart kube-apiserver
-      > sudo systemctl restart kube-controller-manager
+      ssh> # Add `TTLAfterFinished=true` to the `--feature-gates` in
+      ssh> # `/etc/kubernetes/apiserver `and `/etc/kubernetes/controller-manager`
+      ssh> sudo vi /etc/kubernetes/apiserver
+      ssh> sudo vi /etc/kubernetes/controller-manager
+      ssh> # Finally restart both services
+      ssh> sudo systemctl restart kube-apiserver
+      ssh> sudo systemctl restart kube-controller-manager
+      ssh> # Logout from the master node
+      ssh> exit
 
 6. Since Python3 does not come by default we have to use the `slc` command to
    activate it and we create a virtual environment for REANA:
