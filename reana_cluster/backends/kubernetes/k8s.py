@@ -107,10 +107,10 @@ class KubernetesBackend(ReanaBackendABC):
         # Instantiate clients for various Kubernetes REST APIs
         self._corev1api = k8s_client.CoreV1Api()
         self._versionapi = k8s_client.VersionApi()
-        self._extbetav1api = k8s_client.ExtensionsV1beta1Api()
         self._appsv1api = k8s_client.AppsV1Api()
         self._rbacauthorizationv1api = k8s_client.RbacAuthorizationV1Api()
         self._storagev1api = k8s_client.StorageV1Api()
+        self._networkingv1api = k8s_client.NetworkingV1beta1Api()
 
         self.k8s_api_client_config = k8s_api_client_config
 
@@ -282,6 +282,7 @@ class KubernetesBackend(ReanaBackendABC):
                            RS_ENVIRONMENT=rs_environment,
                            RWFC_ENVIRONMENT=rwfc_environment,
                            RMB_ENVIRONMENT=rmb_environment,
+                           REANA_SERVICE_ACCOUNT_NAME='reana-system'
                            )
                 # Strip empty lines for improved readability
                 cluster_conf = '\n'.join(
@@ -329,7 +330,7 @@ class KubernetesBackend(ReanaBackendABC):
             initialized.
         :type traefik: bool
         :param interactive: Boolean flag determines if configuration should be
-            read from an interactive prompt.
+            provided by the user via interactive prompt.
         :type interactive: bool
 
         :return: `True` if init was completed successfully.
@@ -358,15 +359,6 @@ class KubernetesBackend(ReanaBackendABC):
                 logging.debug(json.dumps(manifest))
 
                 if manifest['kind'] == 'Deployment':
-
-                    # REANA Job Controller needs access to K8S-cluster's
-                    # service-account-token in order to create new Pods.
-
-                    components_k8s_token = \
-                        ['reana-server', 'workflow-controller']
-                    if manifest['metadata']['name'] in components_k8s_token:
-                        manifest = self._add_service_acc_key_to_component(
-                            manifest)
                     self._appsv1api.create_namespaced_deployment(
                         body=manifest,
                         namespace=manifest['metadata'].get('namespace',
@@ -387,13 +379,19 @@ class KubernetesBackend(ReanaBackendABC):
                                                            'default'))
                 elif manifest['kind'] == 'ClusterRole':
                     self._rbacauthorizationv1api.create_cluster_role(
-                        body=manifest)
+                            body=manifest)
                 elif manifest['kind'] == 'ClusterRoleBinding':
-                    self._rbacauthorizationv1api.\
-                        create_cluster_role_binding(body=manifest)
+                    self._rbacauthorizationv1api.create_cluster_role_binding(
+                            body=manifest)
 
                 elif manifest['kind'] == 'Ingress':
-                    self._extbetav1api.create_namespaced_ingress(
+                    self._networkingv1api.create_namespaced_ingress(
+                        body=manifest,
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
+
+                elif manifest['kind'] == 'ServiceAccount':
+                    self._corev1api.create_namespaced_service_account(
                         body=manifest,
                         namespace=manifest['metadata'].get('namespace',
                                                            'default'))
@@ -472,44 +470,6 @@ class KubernetesBackend(ReanaBackendABC):
             logging.error('Traefik initialization failed \n {}.'.format(e))
             raise e
 
-    def _add_service_acc_key_to_component(self, component_manifest):
-        """Add K8S service account credentials to a component.
-
-        In order to interact (e.g. create Pods to run workflows) with
-        Kubernetes cluster REANA Job Controller needs to have access to
-        API credentials of Kubernetes service account.
-
-        :param component_manifest: Python object representing Kubernetes
-            Deployment manifest file of a REANA component generated with
-            `generate_configuration()`.
-
-        :return: Python object representing Kubernetes Deployment-
-            manifest file of the given component with service account
-            credentials of the Kubernetes instance `reana-cluster`
-            if configured to interact with.
-        """
-        # Get all secrets for default namespace
-        # Cannot use `k8s_corev1.read_namespaced_secret()` since
-        # exact name of the token (e.g. 'default-token-8p260') is not know.
-        secrets = self._corev1api.list_namespaced_secret('default')
-
-        # Maybe debug print all secrets should not be enabled?
-        # logging.debug(k8s_corev1.list_secret_for_all_namespaces())
-
-        # K8S might return many secrets. Find `service-account-token`.
-        for item in secrets.items:
-            if item.type == 'kubernetes.io/service-account-token':
-                srv_acc_token = item.metadata.name
-
-                # Search for appropriate place to place the token
-                # in job-controller deployment manifest
-                for i in (component_manifest['spec']['template']['spec']
-                                            ['volumes']):
-                    if i['name'] == 'svaccount':
-                        i['secret']['secretName'] = srv_acc_token
-
-        return component_manifest
-
     def _cluster_running(self):
         """Verify that interaction with cluster backend is possible.
 
@@ -541,9 +501,9 @@ class KubernetesBackend(ReanaBackendABC):
         Deletes all Kubernetes Deployments, Namespaces, Resourcequotas and
         Services that were created during initialization of REANA cluster.
 
-        :param delete_traefik: Wheter REANA traefik should be deleted or not.
+        :param delete_traefik: Whether REANA traefik should be deleted or not.
         :type delete_traefik: bool
-        :param delete_secrets: Wheter REANA secrets should be deleted or not.
+        :param delete_secrets: Whether REANA secrets should be deleted or not.
         :type delete_secrets: bool
 
         :return: `True` if all components were destroyed successfully.
@@ -565,6 +525,7 @@ class KubernetesBackend(ReanaBackendABC):
         # All K8S objects seem to use default -namespace.
         # Is this true always, or do we create something for non-default
         # namespace (in the future)?
+
         for manifest in self.cluster_conf:
             try:
                 logging.debug(json.dumps(manifest))
@@ -609,16 +570,24 @@ class KubernetesBackend(ReanaBackendABC):
                             body=k8s_client.V1DeleteOptions())
 
                 elif manifest['kind'] == 'Ingress':
-                    self._extbetav1api.delete_namespaced_ingress(
+                    self._networkingv1api.delete_namespaced_ingress(
                             name=manifest['metadata']['name'],
                             body=k8s_client.V1DeleteOptions(),
                             namespace=manifest['metadata'].get('namespace',
                                                                'default'))
 
+                elif manifest['kind'] == 'ServiceAccount':
+                    self._corev1api.delete_namespaced_service_account(
+                        name=manifest['metadata']['name'],
+                        namespace=manifest['metadata'].get('namespace',
+                                                           'default'))
+
                 elif manifest['kind'] == 'StorageClass':
                     self._storagev1api.delete_storage_class(
                             name=manifest['metadata']['name'],
-                            body=k8s_client.V1DeleteOptions())
+                            body=k8s_client.V1DeleteOptions(),
+                            namespace=manifest['metadata'].get('namespace',
+                                                               'default'))
 
                 elif manifest['kind'] == 'PersistentVolumeClaim':
                     self._corev1api.\

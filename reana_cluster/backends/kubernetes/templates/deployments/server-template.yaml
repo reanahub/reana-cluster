@@ -13,6 +13,7 @@ spec:
       labels:
         app: server
     spec:
+      serviceAccountName: {{REANA_SERVICE_ACCOUNT_NAME}}
       containers:
       - name: server
         image: {{SERVER_IMAGE}}

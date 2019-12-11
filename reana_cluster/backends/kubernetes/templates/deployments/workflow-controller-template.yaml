@@ -13,6 +13,7 @@ spec:
       labels:
         app: workflow-controller
     spec:
+      serviceAccountName: {{REANA_SERVICE_ACCOUNT_NAME}}
       containers:
       - name: rest-api-server
         image: {{WORKFLOW_CONTROLLER_IMAGE}}
@@ -24,8 +25,6 @@ spec:
         {% endif %}
         imagePullPolicy: {{IMAGE_PULL_POLICY}}
         volumeMounts:
-        - name: svaccount
-          mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
         - mountPath: {{SHARED_VOLUME_PATH}}
           name: reana-shared-volume
         {% set mountpoints=RWFC_MOUNTPOINTS %}
@@ -37,6 +36,8 @@ spec:
         - containerPort: 5000
           name: http
         env:
+        - name: K8S_REANA_SERVICE_ACCOUNT_NAME
+          value: {{REANA_SERVICE_ACCOUNT_NAME}}
         {% if REANA_URL %}
         - name: REANA_URL
           value: {{REANA_URL}}
@@ -121,9 +122,6 @@ spec:
         hostPath:
           path: {{ROOT_PATH}}
         {% endif %}
-      - name: svaccount
-        secret:
-          secretName: {{K8S_APISERVER_SECRET}}
       {% for mount in mountpoints %}
       - name: {{mount['name']}}
         {{mount['type']}}:

@@ -2,12 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: service-reader-job
+  name: manage-deployments
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: service-reader
+  name: deployment-manager
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: {{REANA_SERVICE_ACCOUNT_NAME}}
   namespace: default
