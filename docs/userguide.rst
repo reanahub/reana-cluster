@@ -10,23 +10,25 @@ REANA cluster uses `Kubernetes <https://kubernetes.io/>`_ container
 orchestration system. The best way to try it out locally on your laptop is to
 install:
 
-- ``kubectl`` 1.16.3 or higher (see `kubectl installation guide <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_)
-- ``minikube`` 1.5.2 or higher (see `minikube installation guide <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_)
-- ``helm`` 3.0.0 or higher (see `helm installation guide <https://helm.sh/docs/using_helm/#installing-helm>`_)
+- ``docker`` e.g. 19.03.0 (see `Docker installation guide <https://docs.docker.com/v17.09/glossary/?term=installation>`_)
+- ``helm`` e.g. 3.0.0 (see `helm installation guide <https://helm.sh/docs/using_helm/#installing-helm>`_)
+- ``kubectl`` e.g. 1.16.3 (see `kubectl installation guide <https://kubernetes.io/docs/tasks/tools/install-kubectl/>`_)
+- ``minikube`` e.g. 1.5.2 (see `minikube installation guide <https://kubernetes.io/docs/tasks/tools/install-minikube/>`_)
+- ``virtualbox`` e.g. 6.1.0 (see `VirtualBox installation guide <https://www.virtualbox.org/manual/ch02.html>`_)
 
 Here are examples for several operating systems.
 
 Arch Linux
 ~~~~~~~~~~
 
-We recommend to use the ``kvm2`` hypervisor for Minikube on GNU/Linux systems.
 Some of the packages are available in AUR repositories only. You can install
 all necessary dependencies as follows:
 
 .. code-block:: console
 
-   $ sudo pacman -S kubectl minikube docker-machine libvirt qemu
-   $ yay -S kubernetes-helm-bin docker-machine-driver-kvm2
+   $ sudo pacman -S kubectl minikube docker virtualbox \
+                    virtualbox-host-modules-arch virtualbox-guest-iso
+   $ yay -S kubernetes-helm-bin
 
 MacOS
 ~~~~~
@@ -36,87 +38,11 @@ You can install all necessary dependencies as follows:
 
 .. code-block:: console
 
-   $ brew install kubernetes-cli
-   $ brew install hyperkit
-   $ brew cask install minikube
+   $ brew install docker
    $ brew install kubernetes-helm
-   $ brew install docker-machine-driver-hyperkit
-
-Ubuntu
-~~~~~~
-
-Note: you may need to install other quite commonly used libraries or packages,
-if you do not have them already, e.g. ``virtualenv``.
-
-For example, on Ubuntu (e.g. 18.04 LTS), start by installing ``docker ce``. If
-you install it for the first time, update the apt package index and install
-packages to allow ``apt`` to use a repository over HTTPS:
-
-.. code-block:: console
-
-   $ sudo apt-get update
-   $ sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent \
-   software-properties-common
-
-Add Docker’s official GPG key, and set up the stable repository.
-
-.. code-block:: console
-
-   $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-   $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-You may want to change the ``arch`` flag depending on your architecture.
-
-Finally, install the latest version of Docker CE and containerd:
-
-.. code-block:: console
-
-   $ sudo apt-get install docker-ce docker-ce-cli containerd.io
-
-You may want to verify that Docker CE is installed correctly by running the
-hello-world image. This command downloads a test image and runs it in a
-container. When the container runs, it prints an informational message and
-exits.
-
-.. code-block:: console
-
-   $ sudo docker run hello-world
-
-
-Next, install reana prerequsites via ``snap`` as some of the packages are not
-available in the apt Package Manager on Ubuntu. You will be prompted to enter
-your ``sudo`` password and to use the ``--classic`` flag.
-
-.. code-block:: console
-
-   $ sudo snap install kubectl --classic
-   $ sudo snap install minikube --classic
-   $ sudo snap install helm --classic
-
-If you encounter errors, it is possible that the snap installed version is not
-the latest one. In this case, follow their generic installation procedure.
-
-Using the KVM2 hypervisor to run Minikube, the following commands should
-suffice, but if you encounter problems, see the complete installation guidelines
-`kvm <https://help.ubuntu.com/community/KVM/Installation>`_. Install the
-prerequisites and ensure that your username is added to the group libvirtd
-(you may need to create the group):
-
-.. code-block:: console
-
-   $ sudo apt-get install qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils
-   $ sudo addgroup libvirtd
-   $ sudo adduser `id -un` libvirtd
-
-You might have to enable the libvirtd services.
-
-.. code-block:: console
-
-   $ sudo systemctl enable libvirtd.service
-   $ sudo systemctl start libvirtd.service
-   $ sudo systemctl status libvirtd.service
-
-Now you should restart your machine for the changes/installation to take effect.
+   $ brew install kubernetes-cli
+   $ brew cask install minikube
+   $ brew cask install virtualbox
 
 Start minikube
 --------------
@@ -127,19 +53,7 @@ running:
 .. code-block:: console
 
    $ minikube config set memory 4096
-   $ minikube start --feature-gates="TTLAfterFinished=true"
-
-in case of KVM2 hypervisor:
-
-.. code-block:: console
-
-   $ minikube start --vm-driver=kvm2 --feature-gates="TTLAfterFinished=true"
-
-or, in case of Hyperkit hypervisor:
-
-.. code-block:: console
-
-  $ minikube start --vm-driver=hyperkit --feature-gates="TTLAfterFinished=true"
+   $ minikube start --vm-driver=virtualbox --feature-gates="TTLAfterFinished=true"
 
 You will see an output like:
 
