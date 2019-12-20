@@ -1,6 +1,26 @@
 Changes
 =======
 
+Version 0.6.0 (2019-12-27)
+--------------------------
+
+- Upgrades to Kubernetes 1.16.
+- Moves Traefik installation to Helm 3.0.0.
+- Creates a new Kubernetes service account for REANA with appropriate
+  permissions.
+- Makes database connection details configurable so that REANA can connect to
+  databases external to the cluster.
+- Adds an interactive mode on cluster initialisation to allow providing
+  deployment secrets such as OAuth integration, GitLab integration or
+  external database details.
+- Autogenerates deployment secrets if not provided by the administrator at
+  cluster creation time.
+- Adds CERN specific Kerberos configuration files.
+- Adds new flag and configuration to optionally deploy with CERN EOS storage.
+- Renames ``reana-cluster.yaml`` to ``reana-cluster-minikube.yaml`` for local
+  developments.
+- Adds Python 3.8 support.
+
 Version 0.5.0 (2019-04-24)
 --------------------------
 

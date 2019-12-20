@@ -155,7 +155,7 @@ Deploy on CERN infrastructure
 
 
 8. Create your own ``reana-cluster.yaml``. For instance, to deploy REANA
-   ``0.5.0`` at CERN with 200 GB Ceph volume and having as URL
+   ``0.6.0`` at CERN with 200 GB Ceph volume and having as URL
    ``reana-dev.cern.ch`` the file, ``reana-cluster-CERN.yaml``, would look
    like follows:
 
@@ -182,22 +182,23 @@ Deploy on CERN infrastructure
       components:
         reana-workflow-controller:
           type: "docker"
-          image: "reanahub/reana-workflow-controller:0.5.0"
+          image: "reanahub/reana-workflow-controller:0.6.0"
           environment:
            - <<: *db_base_config
-           - REANA_WORKFLOW_ENGINE_IMAGE_CWL: "reanahub/reana-workflow-engine-cwl:0.5.0"
-           - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:0.5.0"
-           - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:0.5.0"
+           - REANA_JOB_CONTROLLER_IMAGE: "reanahub/reana-job-controller:0.6.0"
+           - REANA_WORKFLOW_ENGINE_IMAGE_CWL: "reanahub/reana-workflow-engine-cwl:0.6.0"
+           - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:0.6.0"
+           - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:0.6.0"
 
         reana-server:
           type: "docker"
-          image: "reanahub/reana-server:0.5.0"
+          image: "reanahub/reana-server:0.6.0"
           environment:
            - <<: *db_base_config
 
         reana-message-broker:
           type: "docker"
-          image: "reanahub/reana-message-broker:0.5.0"
+          image: "reanahub/reana-message-broker:0.6.0"
 
 
 9. Instantiate REANA cluster:

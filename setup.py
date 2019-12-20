@@ -19,7 +19,7 @@ readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
-    'pytest-reana>=0.6.0.dev20190705,<0.7.0',
+    'pytest-reana>=0.6.0,<0.7.0',
 ]
 
 extras_require = {
@@ -45,7 +45,7 @@ install_requires = [
     'click>=7',
     'Jinja2>=2.9.6,<2.11',
     'PyYAML>=5.1',
-    'reana-commons[kubernetes]>=0.6.0.dev20190604,<0.7.0',
+    'reana-commons[kubernetes]>=0.6.0,<0.7.0',
     'tablib>=0.12.1,<0.13',
 ]
 
