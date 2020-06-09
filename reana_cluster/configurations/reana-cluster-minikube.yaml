@@ -12,21 +12,21 @@ cluster:
 components:
   reana-workflow-controller:
     type: "docker"
-    image: "reanahub/reana-workflow-controller:latest"
+    image: "reanahub/reana-workflow-controller:0.6.1"
     environment:
       - <<: *db_base_config
       - SHARED_VOLUME_PATH: "/var/reana"
-      - REANA_JOB_CONTROLLER_IMAGE: "reanahub/reana-job-controller:latest"
-      - REANA_WORKFLOW_ENGINE_IMAGE_CWL: "reanahub/reana-workflow-engine-cwl:latest"
-      - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:latest"
-      - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:latest"
+      - REANA_JOB_CONTROLLER_IMAGE: "reanahub/reana-job-controller:0.6.1"
+      - REANA_WORKFLOW_ENGINE_IMAGE_CWL: "reanahub/reana-workflow-engine-cwl:0.6.1"
+      - REANA_WORKFLOW_ENGINE_IMAGE_YADAGE: "reanahub/reana-workflow-engine-yadage:0.6.1"
+      - REANA_WORKFLOW_ENGINE_IMAGE_SERIAL: "reanahub/reana-workflow-engine-serial:0.6.1"
 
   reana-server:
     type: "docker"
-    image: "reanahub/reana-server:latest"
+    image: "reanahub/reana-server:0.6.1"
     environment:
       - <<: *db_base_config
 
   reana-message-broker:
     type: "docker"
-    image: "reanahub/reana-message-broker:latest"
+    image: "reanahub/reana-message-broker:0.6.0"
