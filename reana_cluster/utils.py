@@ -108,6 +108,7 @@ def build_component_url(host, ports, insecure=False):
                 continue
         return ports[https_port_index] if https_port_index else None
 
+    ports.sort()
     https_port = _discover_https_port(ports)
     if https_port and not insecure:
         scheme = 'https'
