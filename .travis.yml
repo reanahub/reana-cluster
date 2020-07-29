@@ -7,39 +7,7 @@
 notifications:
   email: false
 
-sudo: true
-
 language: python
 
-cache:
-  - pip
-
-matrix:
-  fast_finish: true
-  include:
-    - python: 2.7.15
-    - python: 3.6
-    - python: 3.7
-    - python: 3.8
-
-before_install:
-  - pip install -r requirements-dev.txt
-  - travis_retry pip install --upgrade pip setuptools py
-  - travis_retry pip install twine wheel coveralls requirements-builder==0.3.0 click==7.0
-  - requirements-builder -e $EXTRAS --level=min setup.py > .travis-lowest-requirements.txt
-  - requirements-builder -e $EXTRAS --level=pypi setup.py > .travis-release-requirements.txt
-  - requirements-builder -e $EXTRAS --level=dev --req requirements-dev.txt setup.py > .travis-devel-requirements.txt
-
-install:
-  - travis_retry pip install -r .travis-${REQUIREMENTS}-requirements.txt
-  - travis_retry pip install -e .[$EXTRAS]
-
-
-install:
-  - travis_retry pip install -e .[all]
-
 script:
-  - ./run-tests.sh
-
-after_success:
-  - coveralls
+  - true
