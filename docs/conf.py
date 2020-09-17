@@ -101,7 +101,6 @@ html_theme_options = {
     'github_user': 'reanahub',
     'github_repo': 'reana-cluster',
     'github_button': False,
-    'github_banner': True,
     'show_powered_by': False,
     "nosidebar": True,
 }
@@ -109,7 +108,7 @@ html_theme_options = {
 # Add any paths that contain custom _static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin _static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, maps document names to template names.
 # html_sidebars = {
