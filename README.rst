@@ -7,5 +7,5 @@ Helm deployment covered in `reana <https://github.com/reanahub/reana>`_.
 
 Please check our documentation:
 
-- `Deploying locally <http://docs.reana.io/development/deploying-locally/>`_
-- `Deploying at scale <http://docs.reana.io/development/deploying-at-scale/>`_
+- `Deploying locally <https://docs.reana.io/administration/deployment/deploying-locally/>`_
+- `Deploying at scale <https://docs.reana.io/administration/deployment/deploying-at-scale/>`_
